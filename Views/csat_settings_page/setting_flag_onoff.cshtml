@@ -1,0 +1,704 @@
+﻿
+@{
+    ViewData["Title"] = "setting_flag_onoff";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script src="~/js/main.js"></script>
+
+<body onload="getfilename(); GetFlagconfiguration(); DataBind();">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#add_flag" title="Add Task" onclick="devicedatabind();">Add Flag <b style="font-weight:bolder;">+</b></button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Set Flag </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post" id="frm_flag_onoff" name="frm_flag_onoff">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name='Branch/Unit' id='DrpOU1'>
+                                                <option value='-1'>Select Branch/ Unit</option>
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name=" AllDevices" id="drpDevice1">
+                                                <option value="-1">Select System Name</option>
+                                                </select>*@
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip1" id="drpip1">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip adrss" id="drpip1">
+                                                    <option value="-1">Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" id="btnshowreport" onclick="GetFlagconfiguration()">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12" id="GetFlagconfiguration_div">
+                    <table id="GetFlagconfiguration" class="table table-striped table-bordered " width="100%"></table>
+                </div>
+            </div>
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+    </div>
+
+    <!--Add New Task model box  Content-->
+
+    <div class="modal fade" id="add_flag" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Add Flag
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_add_flag">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Filename</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id='filenamelist' name="filenamelist" placeholder="Select Filename"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Section</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id="sectionlist" name="sectionlist" placeholder="Select Section"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Flag Name</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id="propertylist" name="propertylist" placeholder="Select Flag Name"></select>
+                                    </div>
+                                </div>
+
+                                @*<div class="form-group">
+            <label for="nameField" class="col-xs-2 form_label">Type</label>
+            <div class="col-xs-6">
+                <select class='form-control col-sm-3 col-lg-3 col-md-3' id="type">
+                    <option value="-1">Select Type</option>
+                    <option value="0">String</option>
+                    <option value="1">Integer</option>
+                </select>
+            </div>
+        </div>*@
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Action</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id="flag_action" name="flag_action" onchange="action_change();">
+                                            <option value="">Select Action</option>
+                                            <option value="1">Get</option>
+                                            <option value="2">Set</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Flag Value</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="flagvalues" name="flagvalues" placeholder="Enter Property Value" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Branch/ Unit</label>
+                                    <div class="col-xs-6">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou" id="drpou"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">System Name</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="add_flag_systemname" name="add_flag_systemname" placeholder="Enter System Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">IP Address</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="add_flag_ipadd" name="add_flag_ipadd" placeholder="Enter IP Address" />
+                                    </div>
+                                </div>
+                                <div class="form-group">                                    
+                                    <div class="col-xs-2"></div>
+                                    <div class="col-xs-6">
+                                        <button type="button" class="btn btn-primary" onclick="devicedatabind();">Show Device</button>
+                                    </div>
+                                </div>
+
+                                @*<button type="submit">submit form</button>*@
+                            </form>
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="devicelistdata_div">
+                                <table id="devicelistdata" class="table table-striped table-bordered " width="100%"></table>
+                            </div>
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label"></label>
+                                    <div class="col-xs-6">
+                                        <button type="button" class="btn btn-primary" onclick="Flagsubmit();">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="edit_flag" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Edit Flag
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Filename</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="editfilenamelist" name="editfilenamelist" disabled />
+                                        @*<select class='form-control col-sm-3 col-lg-3 col-md-3' name="filenamelist" id='editfilenamelist'></select>*@
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Section</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="editsectionlist" name="editsectionlist" disabled />
+                                        @*<select class='form-control col-sm-3 col-lg-3 col-md-3' name="sectionlist" id="editsectionlist"></select>*@
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Flag Name</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="editpropertylist" name="editpropertylist" disabled />
+                                        @*<select class='form-control col-sm-3 col-lg-3 col-md-3' name="propertylist" id="editpropertylist"></select>*@
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Flag Value</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" id="editflagvalues" name="editflagvalues" placeholder="Enter Property Value" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Type</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id="edittype" disabled>
+                                            <option value="-1">Select Type</option>
+                                            <option value="0">String</option>
+                                            <option value="1">Integer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Action</label>
+                                    <div class="col-xs-6">
+                                        <select class='form-control col-sm-3 col-lg-3 col-md-3' id="editflag_action" disabled>
+                                            <option value="-1">Select Action</option>
+                                            <option value="1">Get</option>
+                                            <option value="2">Set</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label"></label>
+                                    <div class="col-xs-6">
+                                        <button type="button" class="btn btn-primary" onclick="editFlagsubmit();">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="delete_flag" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <script>
+       function DataBind() {
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou');
+                var setdata1 = $('#DrpOU1');
+                jQuery('#drpou').html('');
+                jQuery('#DrpOU1').html('');
+                var oudata = "<option value=''>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+                setdata1.append(oudata);
+            }
+        });
+        }
+
+    var vtable;
+    function GetFlagconfiguration()
+    {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        var ouidvalue = document.getElementById('DrpOU1').value;
+        var sysname = document.getElementById('add_systemname').value;
+        var ipadd = document.getElementById('drpip1').value;
+        //url: '@Url.Content("~/csat_settings_page/Bindflagconfiguration")',
+        $.ajax({
+	          type : "POST",
+            url: '@Url.Content("~/csat_settings_page/Bindflagconfiguration?ouid=")' + ouidvalue + '&devicename=' + sysname + '&ipaddress=' + ipadd,
+	          success : function(data)
+              {
+                  //debugger;
+                  var agent_divclear = document.getElementById('GetFlagconfiguration_div');
+                        agent_divclear.innerHTML = '&nbsp;';
+                  $('#GetFlagconfiguration_div').append("<table id='GetFlagconfiguration' class='table table-striped table-bordered' width='100%'></table>");
+                  vtable = document.getElementById('GetFlagconfiguration');
+                        var data1 = [];
+                  for (var i = 0; i < data.dtflagconfig.length; i++) {
+                      if (data.dtflagconfig[i].propertyvalue == "-1")
+                          data.dtflagconfig[i].propertyvalue = "";
+                      //var editflag = "<i class=' glyphicon glyphicon-pencil manage_icon' type='button' onclick=editflag(" + data.dtflagconfig[i].device_id + ",'" + encodeURIComponent(data.dtflagconfig[i].filename) + "','" + encodeURIComponent(data.dtflagconfig[i].section) + "','" + encodeURIComponent(data.dtflagconfig[i].propertyname) + "','" + encodeURIComponent(data.dtflagconfig[i].propertyvalue) + "') title='Edit'></i>";
+                      //var deleteflag = "<i class=' glyphicon glyphicon-trash manage_icon' type='button' onclick=deleteflag(" + data.dtflagconfig[i].device_id + ",'" + encodeURIComponent(data.dtflagconfig[i].filename) + "','" + encodeURIComponent(data.dtflagconfig[i].section) + "','" + encodeURIComponent(data.dtflagconfig[i].propertyname) + "','" + encodeURIComponent(data.dtflagconfig[i].propertyvalue) + "') title='Delete'></i>";
+                      data1.push([data.dtflagconfig[i].ou_longname, data.dtflagconfig[i].device_name, data.dtflagconfig[i].ip, data.dtflagconfig[i].filename, data.dtflagconfig[i].section, data.dtflagconfig[i].propertyname, data.dtflagconfig[i].action, data.dtflagconfig[i].propertyvalue, data.dtflagconfig[i].response]);
+                        }
+                  vtable = $("#GetFlagconfiguration").DataTable({
+                            data: data1, scrollX: !0, searching: !1,
+                      columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Name" }, { title: "Section" }, { title: "Flag Name" }, { title: "Action" }, { title: "Flag Value" }, { title: "Response" }]
+                  });
+                  $(".table").css({ "width": "100%" });
+                  $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                }
+
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+     }
+    function getfilename() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/Bindfilenamelist")',
+                success: function (data) {
+                    var SetData = $('#filenamelist');
+                    jQuery('#filenamelist').html('');
+                    var userdata = "<option value='' selected>Select Filename</option>";
+                    for (var i = 0; i < data.filenamelist.length; i++) {
+                        userdata += "<option value='" + data.filenamelist[i].filename + "'>" + data.filenamelist[i].filename + "</option>";
+                    }
+                    SetData.append(userdata);
+                }
+            });
+        }
+     $("#filenamelist").change(function () {
+        //debugger;
+         var filenames = document.getElementById("filenamelist").value;
+         var url = '@Url.Content("~/csat_settings_page/Bindsectionlist?filename=")' + filenames;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			// debugger;
+                var SetDatadevice = $('#sectionlist');
+                jQuery('#sectionlist').html('');
+			  var devicedata = "<option value=''>Select Section</option>";
+                for (var i = 0; i < data.sectionlist.length; i++) {
+                    devicedata += "<option value='" + data.sectionlist[i].section + "'>" + data.sectionlist[i].section +"</option>";
+				}
+                SetDatadevice.append(devicedata);
+            }
+
+            })
+    });
+     $("#sectionlist").change(function () {
+        //debugger;
+         var filenames = document.getElementById("filenamelist").value;
+         var sectionnames = document.getElementById("sectionlist").value;
+         var url = '@Url.Content("~/csat_settings_page/Bindpropertynamelist?filename=")' + filenames + '&sectionname=' + sectionnames;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			// debugger;
+                var SetDatadevice = $('#propertylist');
+                jQuery('#propertylist').html('');
+			  var devicedata = "<option value=''>Select Property Name</option>";
+                for (var i = 0; i < data.propertylist.length; i++) {
+                    devicedata += "<option value='" + data.propertylist[i].propertyname + "'>" + data.propertylist[i].propertyname +"</option>";
+				}
+                SetDatadevice.append(devicedata);
+            }
+
+            })
+     });
+        $("#drpou").change(function () {
+            devicedatabind();
+        });
+    var otable;
+    function devicedatabind()
+    {
+        var ouid = document.getElementById("drpou").value;
+        var sysname = document.getElementById("add_flag_systemname").value;
+        var ipadd = document.getElementById("add_flag_ipadd").value;
+        $.ajax({
+	        type : "POST",
+            url: '@Url.Content("~/csat_settings_page/Getdevicelist?ouid=")' + ouid + '&sysname=' + sysname + '&ipadd=' + ipadd,
+	        success : function(data) {
+                var agent_divclear = document.getElementById('devicelistdata_div');
+                agent_divclear.innerHTML = '&nbsp;';
+                $('#devicelistdata_div').append("<table id='devicelistdata' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('devicelistdata');
+                var data1 = [];
+                for (var i = 0; i < data.devicedata.length; i++) {
+                    data1.push([data.devicedata[i].device_id, data.devicedata[i].ou_longname, data.devicedata[i].systemname, data.devicedata[i].ip]);
+                }
+                otable = $("#devicelistdata").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    'columnDefs': [{'targets': 0,'checkboxes': {'selectRow': true}},{orderable: false,targets: 1} ],'select': {'style': 'multi'},'order': [[2, 'asc']],
+                    columns: [{ title: "", width: '10px' }, { title: "Branch/ Unit", width: '170px' },{ title: "System Name", width: '90px' }, { title: "IP Address", width: '50px' } ]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+        }
+
+        function action_change() {
+            if (document.getElementById("flag_action").value == "1") {
+                $("#flagvalues").attr("disabled", "disabled");
+            }
+            else {
+                $("#flagvalues").removeAttr('disabled');
+            }
+        }
+     var deviceidall="";
+     function Flagsubmit() {
+        debugger;
+
+         var form = this;
+         var rows_selected = otable.column(0).checkboxes.selected();
+         $.each(rows_selected, function (index) {
+             deviceidall = "";
+             for (var i = 0; i < rows_selected.length; i++) {
+                 deviceidall += "," + rows_selected[i];
+             }
+         });
+         var $valid = $('#frm_add_flag').valid();
+         if (!$valid) {
+             $validatorform.focusInvalid();
+             return false;
+         } else {
+             //if (document.getElementById("flag_action").value != "1") {
+             //    alert('please enter the flag value')
+             //}
+             Fun_SetFlag(deviceidall);
+         }
+         //if (document.getElementById("filenamelist").value == "") {
+         //    alert("Please select filename !");
+         //    return false;
+         //}
+         //else if (document.getElementById("sectionlist").value == "") {
+         //    alert("Please select section !");
+         //    return false;
+         //}
+         //else if (document.getElementById("propertylist").value == "") {
+         //    alert("Please select flag name !");
+         //    return false;
+         //}
+         //else if (document.getElementById("flagvalues").value == "") {
+         //    alert("Please enter flag value !");
+         //        return false;
+         //}
+         //else if (document.getElementById("type").value == "-1") {
+         //    alert("Please select type !");
+         //    return false;
+         //}
+         //else if (document.getElementById("flag_action").value == "") {
+         //    alert("Please select action !");
+         //    return false;
+         //}
+         //else if (document.getElementById("drpou").value == "") {
+         //    alert("Please select branch/unit !");
+         //    return false;
+         //}
+         //else
+         //{
+
+         //}
+     }
+     function Fun_SetFlag(deviceidall) {
+         //debugger;
+         if (document.getElementById("flag_action").value == "1")
+             document.getElementById("flagvalues").value = "";
+         //else if (document.getElementById("flagvalues").value == "") {
+         //    alert("Please enter flag value !");
+         //    return false;
+         //}
+
+         if (deviceidall == '' || deviceidall == "undefined") {
+             alert("Please select device !");
+             return false;
+         }
+         else {
+             var filenames = document.getElementById("filenamelist").value;
+             var sectionnames = document.getElementById("sectionlist").value;
+             var flagnames = document.getElementById("propertylist").value;
+             var flagvalues = document.getElementById("flagvalues").value;
+             //var type = document.getElementById("type").value;
+             var flag_action = document.getElementById("flag_action").value;
+             var url = '@Url.Content("~/csat_settings_page/SetFlag?filename=")' + filenames + '&sectionname=' + sectionnames + '&flagname=' + flagnames + '&flagvalue=' + flagvalues + '&deviceidall=' + deviceidall + '&flag_action=' + flag_action;
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 success: function (data) {
+                     alert(data);
+                     $('#add_flag').modal('hide');
+                     document.getElementById("filenamelist").value == "";
+                     document.getElementById("sectionlist").value == "";
+                     document.getElementById("propertylist").value == "";
+                     document.getElementById("flagvalues").value == "";
+                     //document.getElementById("type").value == '-1';
+                     document.getElementById("flag_action").value == "";
+                     document.getElementById("drpou").value == "";
+                     GetFlagconfiguration();
+                 }
+             })
+         }
+     }
+
+
+
+        function editflag(device_id, filename, section, propertyname, propertyvalue) {
+            deviceidall = device_id;
+            document.getElementById("editfilenamelist").value = filename;
+            document.getElementById("editsectionlist").value = section;
+            document.getElementById("editpropertylist").value = propertyname;
+            document.getElementById("editflagvalues").value = propertyvalue;
+            //var type = document.getElementById("type").value;
+            var flag_action = document.getElementById("flag_action").value;
+            $("#edit_flag").modal('show');
+        }
+        function editFlagsubmit() {
+            // debugger;
+            if (document.getElementById("editflagvalues").value == "") {
+                alert("Please enter flag value !");
+                return false;
+            }
+            else
+            {
+                edit_Fun_SetFlag(deviceidall);
+            }
+        }
+        function edit_Fun_SetFlag(deviceidall) {
+            var filenames = document.getElementById("editfilenamelist").value;
+            var sectionnames = document.getElementById("editsectionlist").value;
+            var flagnames = document.getElementById("editpropertylist").value;
+            var flagvalues = document.getElementById("editflagvalues").value;
+
+            var url = '@Url.Content("~/csat_settings_page/edit_SetFlag?filename=")' + filenames + '&sectionname=' + sectionnames + '&flagname=' + flagnames + '&flagvalue=' + flagvalues + '&deviceid=' + deviceidall;
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 success: function (data) {
+                     alert(data);
+                     $('#edit_flag').modal('hide');
+                     GetFlagconfiguration();
+                 }
+             })
+
+        }
+        function deleteflag(device_id, filename, section, propertyname, propertyvalue) {
+         //debugger;
+         $("#delete_flag").modal('show');
+         $('#btndelete').on('click',function(){
+             var url1 = '@Url.Content("~/csat_settings_page/DeleteFlag?deviceid=")' + device_id + '&filename=' + filename + '&section=' + section + '&propertyname=' + propertyname + '&propertyvalue=' + propertyvalue;
+	             $.ajax({
+                        type: "POST",
+                        url:url1,
+                        success: function (result) {
+			            alert(result);
+                            $('#delete_flag').modal('hide');
+                            GetFlagconfiguration();
+			            }
+			            });
+
+	            });
+        }
+
+        function cleardata() {
+            $('#add_flag').modal('hide');
+            document.getElementById("filenamelist").value == "";
+            document.getElementById("sectionlist").value == "";
+            document.getElementById("propertylist").value == "";
+            document.getElementById("flagvalues").value == "";
+            //document.getElementById("type").value == '-1';
+            document.getElementById("flag_action").value == "";
+            document.getElementById("drpou").value == "";
+        }
+    </script>
+
+
+    <script>
+        // Ajay script
+        $(document).ready(function () {
+            validateSingleForm('#frm_add_flag');
+        });
+            //jQuery('#frm_add_flag').submit(function (e) {
+            //    //debugger;
+            //    e.preventDefault();
+            //    var $valid = $('#frm_add_flag').valid();
+            //    if (!$valid) {
+            //        $validatorform.focusInvalid();
+            //        return false;
+            //    } else {
+            //        alert("form is valid");
+            //    }
+            //});
+            //function Flagsubmit() {
+            //    //debugger;
+            //    var form = this;
+            //    var rows_selected = otable.column(0).checkboxes.selected();
+            //    $.each(rows_selected, function (index) {
+            //        deviceidall = "";
+            //        for (var i = 0; i < rows_selected.length; i++) {
+            //            deviceidall += "," + rows_selected[i];
+            //        }
+            //    });
+            //    if (document.getElementById("filenamelist").value == "-1") {
+            //        alert("Please select filename !");
+            //        return false;
+            //    }
+            //    else if (document.getElementById("sectionlist").value == "-1") {
+            //        alert("Please select section !");
+            //        return false;
+            //    }
+            //    else if (document.getElementById("propertylist").value == "-1") {
+            //        alert("Please select flag name !");
+            //        return false;
+            //    }
+            //    //else if (document.getElementById("flagvalues").value == "") {
+            //    //    alert("Please enter flag value !");
+            //    //        return false;
+            //    //}
+            //    //else if (document.getElementById("type").value == "-1") {
+            //    //    alert("Please select type !");
+            //    //    return false;
+            //    //}
+            //    else if (document.getElementById("flag_action").value == "-1") {
+            //        alert("Please select action !");
+            //        return false;
+            //    }
+            //    else if (document.getElementById("drpou").value == "-1") {
+            //        alert("Please select branch/unit !");
+            //        return false;
+            //    }
+            //    else {
+            //        Fun_SetFlag(deviceidall);
+            //    }
+            //}
+    </script>
+</body>

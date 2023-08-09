@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/images/aa1.png" rel="shortcut icon" title="tectonas" type="image/png">
+    <title>@ViewBag.Title - Login</title>
+    @*<script src="~/js/jquery-1.12.4.js"></script>*@
+    @*<script src="~/js/jquery-3.3.1.js"></script>*@
+    <script src="~/js/jquery-3.6.0.js"></script>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/OverlayScrollbars.css" rel="stylesheet" />
+    <script src="~/js/OverlayScrollbars.js"></script>
+    <link href="~/css/ownyit_csat.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/jquery.validate.js"></script>
+    <script src="~/js/Tectona_Validation.js"></script>
+    <script>
+        $(function () {
+            //The passed argument has to be at least a empty object or a object with your desired options
+            $('body').overlayScrollbars({
+                callbacks: {
+                    onInitialized: null,               //null || function
+                    onInitializationWithdrawn: null,   //null || function
+                    onDestroyed: null,                 //null || function
+                    onScrollStart: null,               //null || function
+                    onScroll: null,                    //null || function
+                    onScrollStop: null,                 //null || function
+                    onOverflowChanged: null,           //null || function
+                    onOverflowAmountChanged: null,     //null || function
+                    onDirectionChanged: null,          //null || function
+                    onContentSizeChanged: null,        //null || function
+                    onHostSizeChanged: null,           //null || function
+                    onUpdated: null                    //null || function
+                }
+            });
+            $('.modal-body').overlayScrollbars({
+                className: "os-theme-dark"
+            });
+            //$('.dataTables_scroll').overlayScrollbars({
+            //    className: "os-theme-dark"
+            //});
+
+        });
+    </script>
+    @*<script type="text/javascript">
+            function validateForm() {
+                //  debugger;
+                var x = document.forms["logform"]["username"].value;
+                var y = document.forms["logform"]["password"].value;
+                if (x == "" || y == "") {
+                    //alert("Please Enter valid Username");
+                    $("#msg").removeClass("msghide").addClass("msgshow");
+                    logform.username.focus();
+                    return false;
+                }
+                var alpha = /^[a-zA-Z][a-zA-Z\s-]+[a-zA-Z]$/;
+                if (!x.match(alpha)) {
+                    //alert('Invalid Username ->' + x);
+                    $("#msg").removeClass("msghide").addClass("msgshow");
+                    logform.username.focus();
+                    return false;
+                }
+                //if (y == "") {
+                //    alert("Please Enter valid Password");
+                //    logform.password.focus();
+                //    return false;
+                //}
+                if (!y.match(/^((?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*\W).{8,})$/)) {
+                    //alert("Please enter Password at least one digit/lowercase/uppercase letter and be at least 8 characters long");
+                    $("#msg").removeClass("msghide").addClass("msgshow");
+                    logform.password.focus();
+                    return false;
+                }
+                else {
+                    return (true);
+                }
+            }
+
+
+        </script>*@
+    <script>
+        $(document).ready(function () {
+            validateSingleForm("#loginsubmit");
+        });
+        function validateForm() {
+            //debugger;
+            var $valid = $('#loginsubmit').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            }
+            else {
+                //debugger;
+                // encoding the string
+                var str_username = document.getElementById('username').value;
+                var username = window.btoa(str_username);
+                document.getElementById('username_enc').value = username;
+                //document.getElementById('username').value = str_username;
+                var str_password = document.getElementById('password').value;
+                var password = window.btoa(str_password);
+                document.getElementById('password').value = password;
+                return (true);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-default navbar-static-top" style="position:relative;">
+        <div class="container-flued">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" id="productlogo">
+                    <img src="~/images/Setting/logo.png" style="height: 62px;margin-top: 1px;width: 90%;" alt="" />
+
+                </a>
+                <b style="color:#fff;font-size:25px;margin-top: 14px;position: absolute;" >Cyber Security Audit Tool</b>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" style="margin-top:30px;">
+        @RenderBody()
+    </div>
+    <footer class="foo">
+        <p style="text-align:center;color:#3075a0;margin-top: 3px;font-weight:600">Copyright &copy; @DateTime.Now.Year - Powered By TectonaS</p>
+    </footer>
+    <script>
+         $(document).ready(function () {        
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_report/reportlogo")',
+                success: function (data) {
+                     //debugger;       
+                    for (var i = 0; i < data.getproduct.length; i++) {
+                        if (data.getproduct[i].propertyname == "ProductName") {
+                            localStorage.setItem("dtproduct", data.getproduct[i].propertyvalue);
+                        }
+                        else if (data.getproduct[i].propertyname == "ProductLogo") {
+                            localStorage.setItem("dtlogo", data.getproduct[i].propertyvalue);  
+                        }
+                    }                                                                                                                
+                },
+                error: function () {
+                    alert("something went to wrong!")
+                }
+            });      
+        });
+        //window.addEventListener('load', function () {
+        //    //document.getElementById('productname').innerText = localStorage.getItem("dtproduct");
+        //    //document.getElementById('productnameheader').innerText = localStorage.getItem("dtproduct");
+        //    //$('#productlogo img').attr('src', 'data:image/png;base64,' + localStorage.getItem("dtlogo"));
+        //    //$('#loginlogo img').attr('src', 'data:image/png;base64,' + localStorage.getItem("dtlogo")); 
+        //})
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+

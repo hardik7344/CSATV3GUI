@@ -1,0 +1,40 @@
+﻿
+<div class="category-tree mb30">
+    @*<div class="input-group">
+        <input type="search" class="form-control" placeholder="Search">
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>
+        </div>
+    </div>*@
+    <div class="category-tree">
+        <h2>Actions</h2>
+    </div>
+    <ul class="subcategories" id="show_node_popup">
+        @*<li class="72 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "sendmsg_popup" ? "active" : "")"><a data-toggle="modal" id="sendmsg" href="" onclick="return checkselect('sendmsg_popup');">Send Message</a></li>*@
+        <li class="72 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "sendmsg_popup" ? "active" : "")"><a data-toggle="modal" id="sendmsg" onclick="return checkselect('sendmsg_popup');">Send Message</a></li>
+        <li class="73 div_none"><a data-toggle="modal" href="" id="execute_command" onclick="return checkselect('execute_command_popup');">Execute Command</a></li>
+        <li class="74 div_none"><a data-toggle="modal" href="" id="manage_system" onclick="return checkselect('manage_system_popup');">System Control</a></li>
+        <li class="75 div_none"><a data-toggle="modal" href="" id="fetch_all" onclick="return checkselect('fetch_alldata_popup');">Refresh All Data</a></li>
+        <li class="76 div_none"><a data-toggle="modal" href="" id="clean_temp" onclick="return checkselect('clean_tempfile_popup');">Clean Temporary Files</a></li>
+        <li class="77 div_none"><a data-toggle="modal" href="" id="set_uninstall" onclick="return checkselect('set_unistall_password');">Set Uninstall Agent Password</a></li>
+        <li class="78 div_none"><a data-toggle="modal" href="" id="manage_agent" onclick="return checkselect('manage_agent_registry');">Manage System Registry</a></li>
+        <li class="79 div_none"><a data-toggle="modal" href="" id="set_serverip" onclick="return checkselect('serverip_popup');">Set server IP</a></li>
+    </ul>
+</div>
+<script>
+     $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('.category-tree').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+</script>

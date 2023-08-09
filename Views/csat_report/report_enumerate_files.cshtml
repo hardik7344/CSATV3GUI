@@ -1,0 +1,750 @@
+﻿
+@{
+    ViewData["Title"] = "report_enumerate_files";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script>
+    var start_date;
+    var end_date;
+    $(function () {
+        $('input[name="scandate"]').daterangepicker({
+            autoUpdateInput: true,
+            timePicker: true,   
+            startDate: moment().add(-24, 'hour'),
+            endDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY  hh:mm A'
+            }
+        })
+        $('input[name="scandate"]').on('apply.daterangepicker', function (ev, picker) {        
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            start_date = picker.startDate.format('DD/MM/YYYY');
+            end_date = picker.endDate.format('DD/MM/YYYY');
+        });
+
+        $('input[name="scandate"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(window).bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+    });
+   
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#add_extension").click(function () {
+            $("#add_extension_form_show").toggle();
+            document.getElementById('Addnewextention').value = '';
+        });
+    });
+</script>
+
+<div class="row">
+   
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" onclick="opensettingpopup()">Scan Settings</button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Enumerate Files </li>
+                </ul>
+            </div>
+        </div>
+  
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_enumfile_report" id="frm_enumfile_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpDevice">
+                                        <option>Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpIP" id="drpIP">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpIP">
+                <option>Select IP Address</option>
+            </select>*@
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="scandate" class="form-control" placeholder="DD/MM/YYYY hh:mm A " id="enumerate_files">
+                                </div>
+
+                                <label for="nameField" class="col-xs-1 form_label"> Extension</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Extension" id="drpExtension">
+                                        <option>Select File Extension </option>
+                                    </select>
+                                </div>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="ShowExceptionResult()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--enum file  Details Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content">
+                <div class="table-responsive" id="divEnumResult">
+
+                </div>
+            </div>
+        </div>
+        <!-- enum file Details end-->
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+</div>
+
+<!-- scan settings model box Content-->
+<div class="modal fade scan_settings_popup1" id="scan_settings_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cancelException()">&times;</button>
+                <h6 class=" modal-title">
+                    Settings Enumerate Files
+                </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="frm_settingenumfiles_report" id="frm_settingenumfiles_report">
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2  form_label">Branch/ Unit Name </label>
+                                <div class="col-xs-6">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit Name " id="drpoupopup">
+                                        <option>Select Branch/ Unit Name </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2  form_label">System Name </label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" id="add_scanset_systemname" name="add_scanset_systemname" placeholder="Enter System Name" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2  form_label">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control" id="add_scanset_apadd" name="add_scanset_apadd" placeholder="Enter IP Address" />
+                                </div>
+                                <div class="col-xs-4"><button type="button" class="btn btn-primary" onclick="BindDevice();">Show Device</button></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2">File Extension </label>
+                                <div class="col-xs-6">
+                                    <div id="add_extension_form_show" style="display:none;">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label" style="margin-left: 12px;"> Add New </label>
+                                            <div class="col-xs-7">
+                                                <input type="text" class="form-control" id="Addnewextention" placeholder="Add New" name="Addnewextention" />
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <button type="button" class="btn btn-primary btn-md" onclick="AddException();" style="margin-left: -8px;">Add New </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div style="margin-left: -4px;">
+                                            <button type="button" class="btn btn-primary" id="add_extension"> Add Extension</button>
+                                            <button type="button" class="btn btn-primary" id="remove_extension" onclick="removeException();"> Remove</button>
+                                        </div>
+                                        <div class="table-responsive" id="chkextention">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Enumerate Files Datatable start-->
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="table-responsive" id="divdevicepopup">
+                                    </div>
+                                </div>
+                            </div>   <!--Enumerate Files Datatable end-->
+                            <div class="form-group" id="btnscan" style="display:none">
+                                <div class="col-xs-5" style="margin-top: -56px; margin-left: 14px;">
+                                    <input type="submit" class="btn btn-primary" name="save" value="Apply" onclick="ApplyException();" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Cancel" onclick="cancelException();" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" name="close" onclick="cancelException();" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End scan settings model box Content -->
+<!-- manage_branch_Unit_popup  model box Content-->
+<div class="modal fade" id="results_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Show Results
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="divscanresultdevice_div">
+                        <table id="divscanresultdevice" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+               
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="scanresultdata_div">
+                        <table id="scanresultdata" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End manage_branch_Unit_popup model box Content -->
+<script>
+    $(document).ready(function () {
+        
+        validateSingleForm("#frm_enumfile_report");
+        validateSingleForm("#frm_settingenumfiles_report");
+    });
+</script>
+<script>
+    var ou_id;
+    var device_name;
+    var ip_address;
+    var start_date;
+    var end_date;
+    var ouidvalue;
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",   
+            url: url,
+            success: function (data) {
+                    var SetData = $('#drpou');
+                    var SetDataPopup = $('#drpoupopup');
+                    jQuery('#drpou').html('');
+                    jQuery('#drpoupopup').html('');
+
+                    var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                    for (var i = 0; i < data.ou.length; i++) {
+                        oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    }
+                    SetData.append(oudata);
+                    SetDataPopup.append(oudata);
+
+                    var SetExtension = $('#drpExtension');
+                    jQuery('#drpExtension').html('');
+                    var SetExtensioncheck = $('#chkextention');
+                    jQuery('#chkextention').html('');
+                    var extentiondata = "<option value='-1'>Select Extention</option>";
+                            var extentiondatacheck = "<table class='table table-striped table-bordered tblsimple' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group3' id='checkallextention' onclick='checkallitems(this,this.id);' /></th><th class='col-sm-5'>File Extension</th></tr></thead><tbody>";
+                            for (var i = 0; i < data.extention.length; i++) {
+                        extentiondata += "<option value='" + data.extention[i].extentionname + "'>" + data.extention[i].extentionname + "</option>";            
+                        extentiondatacheck += "<tr><td class='select'><input type='checkbox' class='group3'  name='check[]' id='checkallextention' onchange='getcheckedvalue()' value='" + data.extention[i].extentionname + "' /></td><td class='col-sm-12'>" + data.extention[i].extentionname + "</td></tr>";
+                    }
+                    SetExtension.append(extentiondata);
+                    SetExtensioncheck.append(extentiondatacheck);
+                        datatable_simple();                      
+                    $(".parent").each(function (index) {
+                        var group = $(this).data("group");
+                        var parent = $(this);
+
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                            parent.prop('checked', true);
+                        }
+                        parent.change(function () {  //"select all" change
+                            $(group).prop('checked', parent.prop("checked"));
+                            //checkallextention(source, parentid);
+                            getcheckedvalue();
+                        });
+                        $(group).change(function () {
+                            parent.prop('checked', false);
+                            if ($(group + ':checked').length == $(group).length) {
+                                parent.prop('checked', true);
+                            }
+                        });
+                    });
+            }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+    }
+    $("#drpou").change(function () {
+
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpDevice');
+            //var SetDataip = $('#drpIP');
+        jQuery('#drpDevice').html('');
+            //jQuery('#drpIP').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+
+        }
+
+        });
+
+    });
+    $("#drpoupopup").change(function () {
+
+        ouidvalue = this.value;
+        BindDevice();
+    });
+    function BindDevice() {
+        //alert(111);
+        //alert(ouidvalue);
+        //var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        var sysname = document.getElementById('add_scanset_systemname').value;
+        var ipadd = document.getElementById('add_scanset_apadd').value;
+
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip_file_enum?ouid=")' + ouidvalue + '&devicename=' + sysname + '&ipaddress=' + ipadd;
+        //alert(url);
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        //debugger;
+            var SetDatadevice = $('#divdevicepopup');
+            jQuery('#divdevicepopup').html('');
+            var devicedata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-xs-1 select' data-orderable='false'><input type='checkbox' class='parent' data-group='.group111' id='chkpopupdeviceid' onclick='getcheckeddevice()'   /></th><th class='col-xs-3'>System Name</th><th class='col-xs-2'>IP Address</th><th class='col-xs-6'>Branch/ Unit Name</th></tr></thead><tbody>";
+            for (var i = 0; i < data.systemip.length; i++) {
+                devicedata += "<tr><td class='col-xs-1 select'><input type='checkbox' class='group111' name='check[]' id='chkpopupdeviceid' value='" + data.systemip[i].device_id +"' /></td>";
+                devicedata += "<td class='col-xs-3'>" + data.systemip[i].device_name + "</td>";
+                devicedata += "<td class='col-xs-2'>" + data.systemip[i].ip + "</td>";
+                devicedata += "<td class='col-xs-6'>" + data.systemip[i].ou_longname + "</td>";
+            }
+            devicedata += "</tbody></table>";
+            SetDatadevice.append(devicedata);
+            if (data.systemip.length > 0)
+                $("#btnscan").show();
+                //Setgriddata.append("<div class='form-group'><div class='col-xs-5'><input type='button' class='btn btn-primary' name='save' value='Apply' onclick='ApplyException();' /></div></div>");
+            datatable_paging();
+            $(".parent").each(function (index) {
+                var group = $(this).data("group");
+                var parent = $(this);
+
+                parent.prop('checked', false);
+                if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                    parent.prop('checked', true);
+                }
+                parent.change(function () {  //"select all" change
+                    $(group).prop('checked', parent.prop("checked"));
+                    getcheckeddevice();
+                });
+                $(group).change(function () {
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length) {
+                        parent.prop('checked', true);
+                    }
+                });
+            });
+        }
+        });
+    }
+    $("#drpDevice").change(function () {
+
+        device_name = this.value;
+    });
+    //$("#drpIP").change(function () {
+
+    //    ip_address = this.value;
+    //});
+</script>
+<script>   
+    function AddException() {
+        var $valid = $('#frm_settingenumfiles_report').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            var extentionname = document.getElementById('Addnewextention').value;
+            var url = '@Url.Content("~/csat_report/add_fileextension_data?extentionname=")' + extentionname;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    //debugger;
+                    var SetExtensioncheck = $('#chkextention');
+                    jQuery('#chkextention').html('');
+                    var extentiondatacheck = "<table class='table table-striped table-bordered tblsimple' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group11' id='checkallextention' onclick='fetchdata(this)' /></th><th class='col-sm-5'>File Extension</th></tr></thead><tbody>";
+                    for (var i = 0; i < data.fileextensiondata.length; i++) {
+                        extentiondatacheck += "<tr><td class='select'><input type='checkbox' class='group11' name='check[]' id='checkallextention'  value='" + data.fileextensiondata[i].extentionname + "' /></td><td class='col-sm-12'>" + data.fileextensiondata[i].extentionname + "</td></tr>";
+                    }
+                    SetExtensioncheck.append(extentiondatacheck);
+                    document.getElementById('Addnewextention').value = '';
+                    datatable_simple();
+                    $(".parent").each(function (index) {
+                        var group = $(this).data("group");
+                        var parent = $(this);
+
+                        parent.change(function () {  //"select all" change
+                            $(group).prop('checked', parent.prop("checked"));
+                            //  UncheckMain1();
+                            getcheckedvalue();
+                        });
+                        $(group).change(function () {
+                            parent.prop('checked', false);
+                            if ($(group + ':checked').length == $(group).length) {
+                                parent.prop('checked', true);
+
+                            }
+                        });
+                    });
+
+                }
+            });
+        }
+    }
+</script>
+<script>
+    function removeException() {
+        //debugger;
+        getcheckedvalue();
+        var url = '@Url.Content("~/csat_report/remove_fileextension_data?extentionname=")'+ checkedextention;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //debugger;
+                var SetExtensioncheck = $('#chkextention');
+                jQuery('#chkextention').html('');
+                var extentiondatacheck = "<table class='table table-striped table-bordered tblsimple' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group2' id='checkallextention' onclick='fetchdata(this)' /></th><th class='col-sm-5'>File Extension</th></tr></thead><tbody>";
+                for (var i = 0; i < data.fileextensiondata.length; i++) {
+                    extentiondatacheck += "<tr><td class='select'><input type='checkbox' class='group2' name='check[]' id='checkallextention'  value='" + data.fileextensiondata[i].extentionname + "' /></td><td class='col-sm-12'>" + data.fileextensiondata[i].extentionname + "</td></tr>";
+                }
+                SetExtensioncheck.append(extentiondatacheck);
+                datatable_simple();        
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        //  UncheckMain1();
+                        getcheckedvalue();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+
+                        }
+                    });
+                });
+
+            }
+        });
+    }
+   
+    var checkedextention = "";
+    var checkedextention1 = "";
+    var checkedextentioncount = 0;
+    function checkallitems(source, parentid) {
+        //debugger;
+        checkedextention = "";
+        checkedextention1 = "";
+        checkedextentioncount = 0;
+        var checkboxes = document.querySelectorAll('input[id="' + parentid + '"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+                checkboxes[i].checked = source.checked;
+        }
+    }
+
+    var checkedextention = "";
+    var checkedextention1 = "";
+    var checkedextentioncount = 0;
+    function getcheckedvalue() {
+        //debugger;
+        checkedextention = "";
+        checkedextention1 = "";
+        checkedextentioncount = 0;
+        var checkboxes = document.querySelectorAll('input[id="checkallextention"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {      
+                checkedextention += ",'" + checkboxes[i].value + "'";
+                checkedextention1 += "," + checkboxes[i].value;
+                checkedextentioncount++;
+            }
+            else {
+            }
+        }
+    }
+
+    var checkeddevice = "";
+    function getcheckeddevice() {
+        //debugger;
+        checkeddevice = "";
+        var checkboxes = document.querySelectorAll('input[id="chkpopupdeviceid"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkeddevice += "," + checkboxes[i].value;
+            }
+            else {}
+        }
+    }
+
+    function ApplyException() {
+        //debugger;
+        var SystemChecked = $('input[id="chkpopupdeviceid"]:checked').length > 0;
+        var fileextensionChecked = $('input[id="checkallextention"]:checked').length > 0;
+
+        if (SystemChecked == true && fileextensionChecked == true) {
+            // return true;
+            getcheckedvalue();
+            getcheckeddevice();
+            var url = '@Url.Content("~/csat_report/apply_fileextension_data?extentionname=")' + checkedextention + '&deviceidlist=' + checkeddevice + '&extentionnamecount=' + checkedextentioncount + '&extentionname1=' + checkedextention1;
+             $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                alert(data);
+            }
+        });
+        }
+        else {
+            alert("Select any one File Extension n System Name !");
+            return false;
+        }
+        //getcheckedvalue();
+        //getcheckeddevice();
+        
+    }
+    function cancelException() {
+        document.getElementById("drpoupopup").value = '-1';
+        $("#add_extension_form_show").hide();
+        document.getElementById('Addnewextention').value = '';
+        checkedextention = "";
+        checkedextention1 = "";
+        checkedextentioncount = 0;
+        var checkboxesext = document.querySelectorAll('input[id="checkallextention"]');
+        for (var i = 0; i < checkboxesext.length; i++) {
+            checkboxesext[i].checked = false;
+        }
+        var checkboxesdevice = document.querySelectorAll('input[id="chkpopupdeviceid"]');
+        for (var i = 0; i < checkboxesdevice.length; i++) {
+            checkboxesdevice[i].checked = false;
+        }
+        $("#btnscan").hide();
+
+    }
+
+    function ShowExceptionResult() {
+        var $valid = $('#frm_enumfile_report').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var ip_address = document.getElementById('drpIP').value;
+            start_date = $('#enumerate_files').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            end_date = $('#enumerate_files').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            getcheckedvalue();
+            getcheckeddevice();
+            var device_name = document.getElementById('add_systemname').value;
+            if (device_name == "") {
+                device_name = document.getElementById("drpDevice").value;
+            }
+            var fileex = document.getElementById('drpExtension').value;
+            var url = '@Url.Content("~/csat_report/report_fileextension_scanresult?ouid=")' + ouidvalue + '&ip=' + ip_address + '&device=' + device_name + '&fileex=' + fileex + '&sdate=' + start_date + '&edate=' + end_date;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var SetExtensioncheck = $('#divEnumResult');
+                    jQuery('#divEnumResult').html('');
+                    var extentiondatacheck = "<table class='table table-striped table-bordered tbl_pdfexport_date' style='width:100%'><thead><tr><th class='col-sm-3'>Branch/ Unit</th><th class='col-sm-2'>System Name</th><th class='col-sm-2'>IP Address</th><th class='col-sm-2'>File Extention</th><th class='col-sm-2'>Scan Timestamp</th>" +
+                        //"<th class='col-sm-2'>Status</th>" +
+                        "<th class='icon noExport' data-orderable='false'>Results</th></tr></thead> <tbody>";
+                    for (var i = 0; i < data.fileextensionscanresult.length; i++) {
+                        extentiondatacheck += "<tr><td class='col-sm-3'>" + data.fileextensionscanresult[i].ou_longname + "</td><td class='col-sm-2'>" + data.fileextensionscanresult[i].device_name + "</td><td class='col-sm-2'>" + data.fileextensionscanresult[i].ip + "</td><td class='col-sm-2'>" + data.fileextensionscanresult[i].file_extention + "</td><td class='col-sm-2'>" + data.fileextensionscanresult[i].file_enum_time + "</td>";
+                        //extentiondatacheck += "<td class='col-sm-2'>" + data.fileextensionscanresult[i].status + "</td>";
+                        extentiondatacheck += "<td class='col-sm-1 icon'><i class='glyphicon glyphicon-list-alt manage_icon' type='button' data-toggle='modal' onclick='showresultdata(" + data.fileextensionscanresult[i].file_enum_id + ", " + data.fileextensionscanresult[i].device_id + ")' title='Results Detail'></i></td></tr > ";
+                    }
+                    extentiondatacheck += "</tbody></table>";
+                    SetExtensioncheck.append(extentiondatacheck);
+
+                    reportdate = document.getElementById('enumerate_files').value;
+                    reportname = "Enumerate Files Report";
+                    datatable_pdfexport_date(reportname, reportdate);
+
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    }
+    function showresultdata(file_enum_id, device_id) {
+        //debugger;
+        $("#results_popup").modal('show');
+        var url = '@Url.Content("~/csat_report/report_fileextension_scanresult_data?file_enum_id=")' + file_enum_id + '&deviceid=' + device_id;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var dataclear = document.getElementById('divscanresultdevice_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divscanresultdevice_div').append("<table id='divscanresultdevice' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divscanresultdevice');
+                var data1 = [];
+                for (var i = 0; i < data.fileextensionscanresultdevice.length; i++) {
+                    data1.push([data.fileextensionscanresultdevice[i].ou_longname, data.fileextensionscanresultdevice[i].device_name, data.fileextensionscanresultdevice[i].ip, data.fileextensionscanresultdevice[i].file_enum_time]);
+                }
+                var otable = $("#divscanresultdevice").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Scan Timestamp" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });    
+
+                var dataclear = document.getElementById('scanresultdata_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#scanresultdata_div').append("<table id='scanresultdata' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('scanresultdata');
+                var data1 = [];
+                for (var i = 0; i < data.fileextensionscanresultdata.length; i++) {
+                    data1.push([data.fileextensionscanresultdata[i].e111extension, data.fileextensionscanresultdata[i].e111filename, data.fileextensionscanresultdata[i].e111size]);
+                }
+                var otable = $("#scanresultdata").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Event Monitoring_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Event Monitoring Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "File Type" }, { title: "File Name" }, { title: "File Size [KB]" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function cleardata() {
+        var dataclear = document.getElementById('divscanresultdevice_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#divscanresultdevice_div').append("<table id='divscanresultdevice' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('divscanresultdevice');
+
+        var dataclear = document.getElementById('scanresultdata_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#scanresultdata_div').append("<table id='scanresultdata' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('scanresultdata');
+    }
+</script>
+<script>
+    function opensettingpopup() {
+        var SetDatadevice = $('#divdevicepopup');
+        jQuery('#divdevicepopup').html('');
+        var devicedata = "";
+        SetDatadevice.append(devicedata);
+        $(".scan_settings_popup1").modal('show');       
+    }
+
+ 
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>

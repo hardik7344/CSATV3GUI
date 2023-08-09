@@ -1,0 +1,2159 @@
+﻿
+@{
+    ViewData["Title"] = "setting_user_mgmt";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<link href="~/css/jsTree/style.css" rel="stylesheet" />
+<script src="~/js/utils.js"></script>
+<link href="~/css/intlTelInput.css" rel="stylesheet" />
+<script src="~/js/intlTelInput.min.js"></script>
+<script>
+    $(document).ready(function () {
+        //  debugger;
+        $('#contactno').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            //  hiddenInput: "full_phone",
+            initialCountry: "in",
+        });
+        //$('#contactno').on('input', function () {
+        //    var number = $(this).val().replace(/[^\d]/g, '')
+        //    //if (number.length == 7) {
+        //    //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+        //    //    // US & Canada Formatting
+        //    //} else if (number.length == 10) {
+        //    //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+        //    //}
+        //    if (number.length == 10) {
+        //        number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+        //    }
+        //    //France Formatting
+        //    else if (number.length == 11) {
+        //        number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+        //    }
+        //    //German Formattiing
+        //    else if (number.length == 13) {
+        //        number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+        //    }
+        //    $(this).val(number)
+        //});
+    });
+
+    $(document).ready(function () {
+        //  debugger;
+        $('#contactnoedit').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            //  hiddenInput: "full_phone",
+            initialCountry: "in",
+        });
+        $("#contactnoedit").on("countrychange", function (e, countryData) {
+            $("#contactnoedit").val('');
+            $("#contactnoedit").attr('placeholder').replace(/[0-9]/g, 0);
+        });
+        //$('#contactnoedit').on('input', function () {
+        //    var number = $(this).val().replace(/[^\d]/g, '')
+        //    if (number.length == 10) {
+        //        number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+        //    }
+        //    //France Formatting
+        //    else if (number.length == 11) {
+        //        number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+        //    }
+        //    //German Formattiing
+        //    else if (number.length == 13) {
+        //        number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+        //    }
+        //    $(this).val(number)
+        //});
+    });
+</script>
+
+<body onload="showgroupmgmt();">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Administrator", "setting_organization_structure", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> User Management</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("admin_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <h6 class="header_tag">GROUP MANAGEMENT</h6>
+                            <button type="button" data-toggle="modal" data-target="#add_new_group" onclick="addnewgroup()" class="btn btn-primary pull-right " style="margin-bottom: 5px;">Add New Group<b style="font-weight:bolder;">+</b></button>
+                            <div class="table-responsive" id="divgroupmgmt">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <h6 class="header_tag">USER MANAGEMENT</h6>
+                            <button type="button" data-toggle="modal" data-target="#add_new_user" onclick="addnewuser()" class="btn btn-primary pull-right " style="margin-bottom: 5px;">Add New User<b style="font-weight:bolder;">+</b></button>
+                            <div class="table-responsive" id="divusermgmt">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+    </div>
+    <!--add new Group form content-->
+    <div class="modal fade" id="add_new_group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Add New Group </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" id="frm_addgroup" name="frm_addgroup">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="group_name" id="group_name" class="form-control" placeholder="Enter Group Name" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Description </label>
+                                            <div class="col-xs-6">
+                                                <textarea id="description" name="description" class="form-control" placeholder="Enter Description" style="resize:none;"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Type <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="grouptype" id="grouptype">
+                                                    <option value="">Select Group Type</option>
+                                                    <option value="Custom">Custom</option>
+                                                    <option value="Supervisor">Supervisor</option>
+                                                    <option value="Guest">Guest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Select Username</label>
+                                            <div class="col-xs-6">
+                                                <div class="table-responsive" id="binduser">
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Select Rights </label>
+                                            <div class="col-xs-6 well" id="divTreeParent">
+                                                @*<div id="jstree_add">
+                                                    </div>
+                                                    <input type="hidden" name="selectedItems_add" id="selectedItems_add" />*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Add Group" name="add group" onclick="group_add_validate()" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="cancel" data-dismiss="modal" onclick="cleardata()" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--add_new_user form content End-->
+    <!--Edit Group form content-->
+    <div class="modal fade" id="edit_group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Edit Group </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_editgroup" id="frm_editgroup">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="group_name" id="group_nameedit" class="form-control" placeholder="Enter Group Name" value="Default" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Description </label>
+                                            <div class="col-xs-6">
+                                                <textarea id="descriptionedit" class="form-control" placeholder="Enter Description" style="resize:none;">Group Info</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Type</label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="grouptype" id="grouptypeedit">
+                                                    <option value="-1">Select Group Type</option>
+                                                    <option value="Custom">Custom</option>
+                                                    <option value="Supervisor">Supervisor</option>
+                                                    <option value="Guest">Guest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Select Username</label>
+                                            <div class="col-xs-6">
+                                                <div class="table-responsive" id="binduseredit">
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Select Rights</label>
+                                            <div class="col-xs-6 well">
+                                                <div id="jstree_edit">
+                                                </div>
+                                                <input type="hidden" name="selectedItems_edit" id="selectedItems_edit" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Edit Group" name="submit" onclick="group_edit_validate()" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="cancel" data-dismiss="modal" onclick="cleardata()" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--Edit Group form content End-->
+    <!--Apply User Rights  model box Content-->
+    <div class="modal fade" id="set_user_right" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Apply Group Rights
+                    </h6>
+
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row well">
+                        <form class="form-horizontal" method="post" name="frm_setuserright" id="frm_setuserright">
+                            <div class=" col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12" id="group_right_name"></label>
+                                </div>
+                            </div>
+                            <div class=" col-sm-12 col-md-12 col-lg-12">
+                                <div id="jstree">
+                                </div>
+                                <input type="hidden" name="selectedItems" id="selectedItems" />
+                            </div>
+
+                            <div class="form-group model-button">
+                                <div class="col-xs-7 pull-right ">
+                                    <input type="button" class="btn btn-primary" value="Apply" name="apply" onclick="apply_user_rights()" />
+                                    <input type="button" class="btn btn-default" value="Cancel" name="cancel" data-dismiss="modal" onclick="cleardata()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End    Apply User Rights model box Content -->
+    <!--User Linkup List  pop-up model box  Content-->
+    <div class="modal fade" id="user_linkup_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title" id="user_group_name">
+                        User Linkup
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <button type="button" onclick="linkuser()" class="btn btn-primary pull-right " style="margin-bottom: 5px;">Link User<b style="font-weight:bolder;">+</b></button>
+                            <div class="table-responsive" id="tbluserlinkup">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End  User Linkup List  pop-up model box Content end-->
+    <!--Link User pop-up model box  Content-->
+    <div class="modal fade" id="link_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Link User
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="tbllinkuser">
+
+                            </div>
+                        </div>
+                        <div class="form-group model-button">
+                            <div class="col-xs-7 pull-right ">
+                                @*<input type="submit" class="btn btn-primary" value="Apply" name="apply" onclick="applylinkuser()" />*@
+                                <input type="button" class="btn btn-default" value="Cancel" name="cancel" data-dismiss="modal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End Link User pop-up model box Content end-->
+    <!--delete_user_popup  model  content-->
+    <div class="modal fade" id="delete_user_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to unlink this User?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deleteuserpopup()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_user_popup device model  content-->
+    <!--delete_group  model  content-->
+    <div class="modal fade" id="delete_group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this Group?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deletegroup()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_group device model  content-->
+    <!--add new  user form content-->
+    <div class="modal fade" id="add_new_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Add New User </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_adduser" id="frm_adduser">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">User Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="user_name" id="user_name" class="form-control" placeholder="Enter User Name" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">User Type <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="usertype" id="usertype">
+                                                    <option value="">Select Type</option>
+                                                    <option value="Supervisor">Supervisor</option>
+                                                    <option value="Normal">Normal</option>
+                                                    <option value="Guest">Guest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="groupname" id="groupname">
+                                                    <option value="">Select Group</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Email ID <b class="loginmsg">*</b> </label>
+                                            <div class="col-xs-6">
+                                                <input type="email" name="emailid" id="emailid" class="form-control" placeholder="Enter Email ID" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Password <b class="loginmsg">*</b> </label>
+                                            <div class="col-xs-6">
+                                                <input type="password" id="userpassword" name="userpassword" class="form-control required pass" placeholder="Enter Password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Contact No. <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="contactno" id="contactno" class="form-control" placeholder="Enter Contact No." onkeypress="return isNumberKey(event)" maxlength="10" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label">Security Question <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="securityquestion" id="securityquestion">
+                                                    <option value="">Select Security Question</option>
+                                                    <option value="What is your favorite food?">What is your favorite food?</option>
+                                                    <option value="What is your favorite color?">What is your favorite color?</option>
+                                                    <option value="What is your favorite pet name?">What is your favorite pet name?</option>
+                                                    <option value="What is your favorite movie?">What is your favorite movie?</option>
+                                                    <option value="What is your favorite restaurant?">What is your favorite restaurant?</option>
+                                                    <option value="What is your favorite sports team?">What is your favorite sports team?</option>
+                                                    <option value="What is your favorite musician?">What is your favorite musician?</option>
+                                                    <option value="What city were you born in?">What city were you born in?</option>
+                                                    <option value="What is your favorite book?">What is your favorite book?</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Security Answer <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="password" id="securityanswer" name="securityanswer" class="form-control required" placeholder="Enter Security Answer">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-xs-12">
+                                                <label style="color:#ff6a00"> Please keep these in mind while changing your password: </label>
+                                                <ul style="list-style-type:decimal">
+                                                    <li> Password should be a mix of alphabets, numerals and special characters ($#@@&!) without any space in between. </li>
+                                                    <li> The password length should be between 8 to 28 characters.</li>
+                                                </ul>
+                                                @*<label for="nameField">Note:Password should be a mix of alphabets and numerals or alphabets and special characters ($#^@\&%_.~!*) without any space in between.Password must be at least 8 characters long, and contain at least one number, one uppercase , one lowercase letter and  two numbers and one special character.</label>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Save" name="add user" onclick="user_add_validate()" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="Add cancel1" data-dismiss="modal" onclick="cleardata()" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--add_new_user form content End-->
+    <!--edit_new_user user form content-->
+    <div class="modal fade" id="edit_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Edit User </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_edituser" id="frm_edituser">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">User Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="user_nameedit" id="user_nameedit" disabled class="form-control" placeholder="Enter User Name" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">User Type <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="usertypeedit" id="usertypeedit">
+                                                    <option value="">Select Type</option>
+                                                    <option value="Supervisor">Supervisor</option>
+                                                    <option value="Normal">Normal</option>
+                                                    <option value="Guest">Guest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Group Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="groupnamedit" id="groupnameedit">
+                                                    <option value="">Select Group</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Email ID <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="email" name="emailidedit" id="emailidedit" class="form-control" placeholder="Enter Email ID" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Password <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="password" id="userpasswordedit" class="form-control required pass" name="passwordedit" placeholder="Enter Password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Contact No. <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="contactnoedit" id="contactnoedit" class="form-control" placeholder="Enter Contact No." onkeypress="return isNumberKey(event)" maxlength="10" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label">Security Question <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="securityquestion1" id="securityquestion1">
+                                                    <option value="">Select Security Question</option>
+                                                    <option value="What is your favorite food?">What is your favorite food?</option>
+                                                    <option value="What is your favorite color?">What is your favorite color?</option>
+                                                    <option value="What is your favorite pet name?">What is your favorite pet name?</option>
+                                                    <option value="What is your favorite movie?">What is your favorite movie?</option>
+                                                    <option value="What is your favorite restaurant?">What is your favorite restaurant?</option>
+                                                    <option value="What is your favorite sports team?">What is your favorite sports team?</option>
+                                                    <option value="What is your favorite musician?">What is your favorite musician?</option>
+                                                    <option value="What city were you born in?">What city were you born in?</option>
+                                                    <option value="What is your favorite book?">What is your favorite book?</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Security Answer <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-6">
+                                                <input type="password" name="securityanswer1" id="securityanswer1" class="form-control" placeholder="Enter User Name" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-xs-12">
+                                                <label style="color:#ff6a00"> Please keep these in mind while changing your password: </label>
+                                                <ul style="list-style-type:decimal">
+                                                    <li> Password should be a mix of alphabets, numerals and special characters ($#@@&!) without any space in between. </li>
+                                                    <li> The password length should be between 8 to 28 characters.</li>
+                                                </ul>
+                                                @*<label for="nameField">Note:Password should be a mix of alphabets and numerals or alphabets and special characters ($#^@\&%_.~!*) without any space in between.Password must be at least 8 characters long, and contain at least one number, one uppercase , one lowercase letter and  two numbers and one special character.</label>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Save" name="Edit user" onclick="user_edit_validate()" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="Add cancel1" data-dismiss="modal" onclick="cleardata()" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--edit_new_user form content End-->
+    <!--delete_user  model  content-->
+    <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this User?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deleteuser()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" onclik="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_user device model  content-->
+    <!--Reset Password popup model box  Content-->
+    <div class="modal fade" id="reset_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Reset Password
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_resetpsw" name="frm_resetpsw">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"> Old Password <b class="loginmsg">*</b> </label>
+                                    <div class="col-xs-8">
+                                        <input type="password" class="form-control " name="oldpassword" id="oldpassword" placeholder="Enter Old Password" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4">New Password <b class="loginmsg">*</b></label>
+                                    <div class="col-xs-8">
+                                        <input type="password" class="form-control required pass" name="newpassword" id="newpassword" placeholder="Enter New Password" data-placement="top" data-trigger="hover" data-content="Password should be a mix of alphabets, numerals and special characters ($#^@@\&%_.~!*) without any space in between and password length should be between 8 to 28 characters.">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4">Confirm Password <b class="loginmsg">*</b></label>
+                                    <div class="col-xs-8">
+                                        <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter Confirm Password" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <label style="color:#ff6a00"> Please keep these in mind while changing your password: </label>
+                                        <ul style="list-style-type:decimal">
+                                            <li> Password should be a mix of alphabets, numerals and special characters ($#@@&!) without any space in between. </li>
+                                            <li> The password length should be between 8 to 28 characters.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-4">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" onclick="return(reset_password_validate());" />
+                                        <input type="button" class="btn btn-primary" name="Cancel" value="Cancel" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Reset Password pop-up model box Content end-->
+</body>
+
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_addgroup");
+        validateSingleForm("#frm_adduser");
+        validateSingleForm("#frm_edituser");
+        validateSingleForm("#frm_resetpsw");
+    });
+</script>
+
+<script>
+    function group_add_validate() {
+        //if ($("#group_name").val() == "" && $("#grouptype").val() == '-1') {
+        //    alert("Please enter Group Details !");
+        //    return false;
+        //}
+        //if ($("#group_name").val() == "") {
+        //    alert("Please enter Group Name !");
+        //    return false;
+        //}
+        //if ($("#grouptype").val() == '-1') {
+        //    alert("Please select Group Type !");
+        //    return false;
+        //}
+        var $valid = $('#frm_addgroup').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            addgroup();
+            return (true);
+        }
+    }
+    function group_edit_validate() {
+        if ($("#group_nameedit").val() == "" && $("#grouptypeedit").val() == '-1') {
+            alert("Please enter Group Details !");
+            return false;
+        }
+        if ($("#group_nameedit").val() == "") {
+            alert("Please enter Group Name !");
+            return false;
+        }
+        if ($("#grouptypeedit").val() == '-1') {
+            alert("Please select Group Type !");
+            return false;
+        }
+        else {
+            editgroup();
+            return (true);
+        }
+    }
+    function user_add_validate() {
+        var userpassword = document.getElementById("userpassword").value;
+        var email = document.getElementById("emailid").value;
+        var contact = document.getElementById("contactno").value;
+        //if ($("#user_name").val() == "" && $("#usertype").val() == '-1' && $("#groupname").val() == '-1' && $("#emailid").val() == "" && $("#userpassword").val() == "" && $("#contactno").val() == "" && $("#securityquestion").val() == "-1" && $("#securityanswer").val() == "")
+        //{
+        //    alert("Please enter User details !");
+        //    return false;
+        //}
+        //if ($("#user_name").val() == "") {
+        //    alert("Please enter User Name !");
+        //    return false;
+        //}
+        //if ($("#usertype").val() == '-1') {
+        //    alert("Please select User Type !");
+        //    return false;
+        //}
+        //if ($("#groupname").val() == '-1') {
+        //    alert("Please select Group Name !");
+        //    return false;
+        //}
+        //if ($("#emailid").val() == "") {
+        //    alert("Please enter Email Id !");
+        //    return false;
+        //}
+        //var reg = /^([\w\.\-]+)@@([\w\-]+)((\.(\w){2,3})+)$/;
+        //if (!email.match(reg)) {
+        //    alert('Invalid Email ID ->' + email);
+        //    return false;
+        //}
+        //if ($("#userpassword").val() == "") {
+        //    alert("Please enter User Password !");
+        //    return false;
+        //}
+        //if (!userpassword.match(/^((?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*\W).{8,})$/)) {
+        //    alert("Please enter Password at least one digit/lowercase/uppercase letter and be at least 8 characters long");
+        //    return false;
+        //}
+        //if ($("#contactno").val() == "") {
+        //    alert("Please enter Contact No. !");
+        //    return false;
+        //}
+        //if (contact.length < 10) {
+        //    alert("Please enter a valid Contact No.");
+        //    return false;
+        //}
+        //if ($("#securityquestion").val() == "-1") {
+        //    alert("Please Select Any Security Question !");
+        //    return false;
+        //}
+        //if ($("#securityanswer").val() == "") {
+        //    alert("Please enter Security Answer !");
+        //    return false;
+        //}
+        var $valid = $('#frm_adduser').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            adduser();
+            return (true);
+        }
+    }
+    function reset_password_validate() {
+        var password = $("#newpassword").val();
+        //if ($("#oldpassword").val() == "" && $("#newpassword").val() == "" && $("#confirmpassword").val() == "") {
+        //    alert("Please enter Password Detail!");
+        //    return false;
+        //}
+        //if ($("#oldpassword").val() == "") {
+        //    alert("Please enter Password !");
+        //    return false;
+        //}
+        //if ($("#newpassword").val() == "") {
+        //    alert("Please enter Password !");
+        //    return false;
+        //}
+        //if ($("#confirmpassword").val() == "") {
+        //    alert("Please enter Password !");
+        //    return false;
+        //}
+        //if (!password.match(/^((?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*\W).{8,})$/)) {
+        //    alert("Please enter password at least one digit/lowercase/uppercase letter and be at least 8 characters long");
+        //    return false;
+        //}
+        //if ($("#newpassword").val() != $("#confirmpassword").val()) {
+        //    alert("New Password and Confirm Password do not match!");
+        //    return false;
+        //}
+        var $valid = $('#frm_resetpsw').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            checkPasswordMatch();
+            return (true);
+        }
+    }
+
+    function checkPasswordMatch() {
+        if ($("#oldpassword").val() != "") {
+            old_password_match();
+        }
+    }
+
+    function old_password_match() {
+        var user_id = userid;
+        var oldpassword = document.getElementById("oldpassword").value;
+        var url = '@Url.Content("~/csat_settings_page/old_password_match?oldpassword=")' + oldpassword + '&user_id=' + userid;
+		$.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //debugger;
+                if (data == "Please enter valid old password.") {
+                    alert(data);
+                    document.getElementById("oldpassword").value = "";
+                    document.getElementById("newpassword").value = "";
+                    document.getElementById("confirmpassword").value = "";
+                }
+                else {
+                    save_reset_password();
+                }
+            }
+		});
+    }
+
+    function user_edit_validate() {
+        var userpassword = document.getElementById("userpasswordedit").value;
+        var email = document.getElementById("emailidedit").value;
+        var contact = document.getElementById("contactnoedit").value;
+        //if ($("#user_nameedit").val() == "" && $("#usertypeedit").val() == '-1' && $("#groupnameedit").val() == '-1' && $("#emailidedit").val() == "" && $("#userpasswordedit").val() == "" && $("#contactnoedit").val() == "" && $("#securityquestion1").val() == "-1" && $("#securityanswer1").val() == "") {
+        //    alert("Please enter User details !");
+        //    return false;
+        //}
+        //if ($("#user_nameedit").val() == "") {
+        //    alert("Please enter User Name !");
+        //    return false;
+        //}
+        //if ($("#usertypeedit").val() == '-1') {
+        //    alert("Please select User Type !");
+        //    return false;
+        //}
+        //if ($("#groupnameedit").val() == '-1') {
+        //    alert("Please select Group Name !");
+        //    return false;
+        //}
+        //if ($("#emailidedit").val() == "") {
+        //    alert("Please enter Email Id !");
+        //    return false;
+        //}
+        //var reg = /^([\w\.\-]+)@@([\w\-]+)((\.(\w){2,3})+)$/;
+        //if (!email.match(reg)) {
+        //    alert('Invalid Email ID ->' + email);
+        //    return false;
+        //}
+        //if ($("#userpasswordedit").val() == "") {
+        //    alert("Please enter User Password !");
+        //    return false;
+        //}
+        //if (!userpassword.match(/^((?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*\W).{8,})$/)) {
+        //    alert("Please enter Password at least one digit/lowercase/uppercase letter and be at least 8 characters long");
+        //    return false;
+        //}
+        //if ($("#contactnoedit").val() == "") {
+        //    alert("Please enter Contact No. !");
+        //    return false;
+        //}
+        //if (contact.length < 10) {
+        //    alert("Please enter a valid Contact No.");
+        //    return false;
+        //}
+        //if ($("#securityquestion1").val() == "-1") {
+        //    alert("Please Select Any Security Question !");
+        //    return false;
+        //}
+        //if ($("#securityanswer1").val() == "") {
+        //    alert("Please enter Security Answer !");
+        //    return false;
+        //}
+        var $valid = $('#frm_edituser').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            edituser();
+            return (true);
+        }
+    }
+
+    $.fn.goValidate = function () {
+        var $form = this,
+            $inputs = $form.find('input:text, input:password');
+
+        var validators = {
+            name: {
+                regex: /^[A-Za-z]{3,}$/
+            },
+            pass: {
+                regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
+            }
+        };
+        var validate = function (klass, value) {
+            var isValid = true,
+                error = '';
+
+            if (!value && /required/.test(klass)) {
+                error = 'This field is required';
+                isValid = false;
+            } else {
+                klass = klass.split(/\s/);
+                $.each(klass, function (i, k) {
+                    if (validators[k]) {
+                        if (value && !validators[k].regex.test(value)) {
+                            isValid = false;
+                            error = validators[k].error;
+                        }
+                    }
+                });
+            }
+            return {
+                isValid: isValid,
+                error: error
+            }
+        };
+        var showError = function ($input) {
+            var klass = $input.attr('class'),
+                value = $input.val(),
+                test = validate(klass, value);
+
+            $input.removeClass('invalid').parent().removeClass('has-error');
+
+            if (!test.isValid) {
+                $input.addClass('invalid');
+
+                if (typeof $input.data("shown") == "undefined" || $input.data("shown") == false) {
+                    $input.popover('show').parent().addClass('has-error');
+                }
+
+            }
+            else {
+                $input.popover('hide');
+            }
+        };
+        $inputs.each(function () {
+            if ($(this).is('.required')) {
+                //showError($(this)); /* rem comment to enable initial display of validation rules */
+            }
+        });
+        $inputs.keyup(function () {
+            showError($(this));
+        });
+
+        $inputs.on('shown.bs.popover', function () {
+            $(this).data("shown", true);
+        });
+
+        $inputs.on('hidden.bs.popover', function () {
+            $(this).data("shown", false);
+        });
+        return this;
+    };
+
+    $('form').goValidate();
+</script>
+
+<script>
+
+    //$(".parent").each(function (index) {
+    //    var group = $(this).data("group");
+    //    var parent = $(this);
+
+    //    parent.change(function () {  //"select all" change
+    //        $(group).prop('checked', parent.prop("checked"));
+    //    });
+    //    $(group).change(function () {
+    //        parent.prop('checked', false);
+    //        if ($(group + ':checked').length == $(group).length) {
+    //            parent.prop('checked', true);
+    //        }
+    //    });
+    //});
+    //$('.tree-toggle').click(function () {
+    //    $(this).parent().children('ul.tree').toggle(200);
+    //});
+    //$(function () {
+    //    $('.tree-toggle').parent().children('ul.tree').toggle(200);
+    //})
+
+    //$.fn.extend({
+    //    treed: function (o) {
+
+    //        var openedClass = 'glyphicon-minus-sign';
+    //        var closedClass = 'glyphicon-plus-sign';
+
+    //        if (typeof o != 'undefined') {
+    //            if (typeof o.openedClass != 'undefined') {
+    //                openedClass = o.openedClass;
+    //            }
+    //            if (typeof o.closedClass != 'undefined') {
+    //                closedClass = o.closedClass;
+    //            }
+    //        };
+
+    //        //initialize each of the top levels
+    //        var tree = $(this);
+    //        tree.addClass("tree");
+    //        tree.find('li').has("ul").each(function () {
+    //            var branch = $(this); //li with children ul
+    //            branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+    //            branch.addClass('branch');
+    //            branch.on('click', function (e) {
+    //                if (this == e.target) {
+    //                    var icon = $(this).children('i:first');
+    //                    icon.toggleClass(openedClass + " " + closedClass);
+    //                    $(this).children().children().toggle();
+    //                }
+    //            })
+    //            branch.children().children().toggle();
+    //        });
+    //        //fire event from the dynamically added icon
+    //        tree.find('.branch .indicator').each(function () {
+    //            $(this).on('click', function () {
+    //                $(this).closest('li').click();
+    //            });
+    //        });
+    //        //fire event to open branch if the li contains an anchor instead of text
+    //        tree.find('.branch>a').each(function () {
+    //            $(this).on('click', function (e) {
+    //                $(this).closest('li').click();
+    //                e.preventDefault();
+    //            });
+    //        });
+    //        //fire event to open branch if the li contains a button instead of text
+    //        tree.find('.branch>button').each(function () {
+    //            $(this).on('click', function (e) {
+    //                $(this).closest('li').click();
+    //                e.preventDefault();
+    //            });
+    //        });
+    //    }
+    //});
+
+    ////Initialization of treeviews
+    //$('#tree_group_right').treed({ openedClass: 'glyphicon-chevron-right', closedClass: 'glyphicon-chevron-down' });
+    //$('#tree_add_group_right').treed({ openedClass: 'glyphicon-chevron-right', closedClass: 'glyphicon-chevron-down' });
+    //$('#tree_edit_group_right').treed({ openedClass: 'glyphicon-chevron-right', closedClass: 'glyphicon-chevron-down' });
+
+</script>
+
+<!-- form number input validation-->
+<script type="text/javascript">
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>  <!-- form number input validation end-->
+
+<script>
+    function showgroupmgmt() {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/ShowGroupmgmt")',
+            success: function (data) {
+                var Setgriddata = $('#divgroupmgmt');
+                jQuery('#divgroupmgmt').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm - 2'>Group Name</th><th class='col-sm-5'>Description</th><th class='col-sm-3'>Group Type</th>" +
+                    "<th class='icon' data-orderable='false'> Users</th> " +
+                    //"<th class='icon' data-orderable='false'> Rights</th> <th class='icon' data-orderable='false'> Edit</th> " +
+                    "<th class='icon' data-orderable='false'> Delete</th></tr></thead> <tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.showgroupmgmt.length; i++) {
+                    if (data.showgroupmgmt[i].group_name == null)
+                        data.showgroupmgmt[i].group_name = '';
+                    if (data.showgroupmgmt[i].description == null)
+                        data.showgroupmgmt[i].description = '';
+                    if (data.showgroupmgmt[i].group_type == null)
+                        data.showgroupmgmt[i].group_type = '';
+                    trdata += "<tr><td class='col-sm-2'>" + data.showgroupmgmt[i].group_name + "</td>";
+                    trdata += "<td class='col-sm-5'>" + data.showgroupmgmt[i].description + "</td>";
+                    trdata += "<td class='col-sm-3'>" + data.showgroupmgmt[i].group_type + "</td>";
+                    trdata += "<td class='icon'><a style='text-decoration: none;color:#74b1f4;' onclick='user_linkup(" + data.showgroupmgmt[i].group_id + ")'  title='User Linkup'>" + data.showgroupmgmt[i].users + "</td>";
+                    @*trdata += "<td class='icon'><i class='manage_icon ' type='button' title='Setting'> <img src='@Url.Content("~/images/user_right.png")' onclick=showgrouprights(" + data.showgroupmgmt[i].group_id + ") /></i>&nbsp;</td>";
+                    trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' onclick='editgroupdata(" + data.showgroupmgmt[i].group_id + ")' title='Edit'></i></td>";*@
+                    if ((data.showgroupmgmt[i].group_name).toUpperCase() == 'DEFAULT')
+                        trdata += "<td class='icon'></td>";
+                    else
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' title='Delete' onclick='deletegroupdata(" + data.showgroupmgmt[i].group_id + ")'></i>&nbsp;  </td>";
+                    trdata += "</tr>";
+                }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_paging();
+                showusermgmt();
+            }
+        });
+     }
+
+    var str;
+    var menuid = "";
+    function addnewgroup() {
+        var Setgriddata = $('#divTreeParent');
+        jQuery('#divTreeParent').html('');
+        var rawdata = "<div id='jstree_add'></div ><input type='hidden' name='selectedItems_add' id='selectedItems_add' />";
+        Setgriddata.append(rawdata);
+        $('#add_new_group').modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/binduserdata")',
+            success: function (data) {
+                var SetUserData = $('#binduser');
+                jQuery('#binduser').html('');
+                var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr><th class='col-sm-1 select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group2' id='chk_user' onclick='fetchdata(this);' /></th><th class='col-sm-11'>User Name</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.binduserdata.length; i++) {
+                    trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.binduserdata[i].user_id + "' /></td>";
+                    trdata += "<td class='col-sm-11'>" + data.binduserdata[i].user_name + "</td></tr>";
+                }
+                SetUserData.append(headdata + trdata + "</tbody></table>");
+                datatable_simple();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        GetCheckmenu1();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+
+                //jstree
+                str = data.node.replace(/\"parent\":\"0\"/g, "\"parent\":\"#\"");
+                var str1 = str.replace("\"[", "[").replace("]\"", "]");
+                var obj = JSON.parse(str1);
+
+                //onload
+                $(function () {
+                    $('#jstree_add').jstree(function (obj)
+                    {
+                        var selectedItems = [];
+                        var u;
+                        for (u = 0; u < obj.length; u++) {
+                            selectedItems.push({
+                                text: obj[u].text,
+                                id: obj[u].active,
+                            });
+                            if (active == "1") {
+                                var selectedNode = $('#jstree_add').jstree('get_selected');
+                            }
+                            else {
+                                var selectedNode = $('#jstree_add').jstree('get_selected');
+                            }
+                        }
+                    }).jstree({
+                        'core': {
+                            'data': obj,
+                            'check_callback': false
+                        },
+                        "checkbox": {
+                            'three_state': false, // to avoid that fact that checking a node also check others
+                            'whole_node': false,  // to avoid checking the box just clicking the node
+                        },
+                        "plugins": ["checkbox"],
+                    });
+                    $('#selectedItems_add').val(JSON.stringify(selectedNode));
+                })
+
+                //onchange
+                $('#jstree_add').on('changed.jstree', function (e, data) {
+                    //debugger;
+                    var i, j;
+                    menuid = "";
+                    var selectedItemsadd = [];
+                    for (i = 0, j = data.selected.length; i < j; i++) {
+                        var id = data.selected[i];
+                        menuid += "," + id;
+
+                        //Add the Node to the JSON Array.
+                        selectedItemsadd.push({
+                            text: data.instance.get_node(data.selected[i]).text,
+                            id: id,
+                            parent: data.node.parents[0]
+                        });
+                    }
+
+                    //Serialize the JSON Array and save in HiddenField.
+                    $('#selectedItems_add').val(JSON.stringify(selectedItemsadd));
+                    //$('#selectedItems_add').html('Selected: ' + selectedItemsadd.text.join(', '));
+                }).jstree({
+                    'core': {
+                        'data': obj,
+                        'check_callback': false
+                    },
+                    "checkbox": {
+                        'three_state': false, // to avoid that fact that checking a node also check others
+                        'whole_node': true,  // to avoid checking the box just clicking the node
+                    },
+                    "plugins": ["checkbox"],
+                    });
+
+                //$('#jstree_add').on('changed.jstree', function (e, data) {
+                //    //debugger;
+                //    var i, j;
+                //    menuid = "";
+                //    var selectedItemsadd = [];
+                //    for (i = 0, j = data.selected.length; i < j; i++) {
+                //        var id = data.selected[i];
+                //        menuid += "," + id;
+
+                //        //Add the Node to the JSON Array.
+                //        selectedItemsadd.push({
+                //            text: data.instance.get_node(data.selected[i]).text,
+                //            id: id,
+                //            parent: data.node.parents[0]
+                //        });
+                //    }
+
+                //    //Serialize the JSON Array and save in HiddenField.
+                //    $('#selectedItems_add').val(JSON.stringify(selectedItemsadd));
+                //    //$('#selectedItems_add').html('Selected: ' + selectedItemsadd.text.join(', '));
+                //}).jstree({
+                //    'core': {
+                //        'data': obj,
+                //        'check_callback': false
+                //    },
+                //    'checkbox': {
+                //        'three_state': false, // to avoid that fact that checking a node also check others
+                //        'whole_node': false,  // to avoid checking the box just clicking the node
+                //        'tie_selection': false // for checking without selecting and selecting without checking
+                //    },
+                //    'plugins': ["checkbox"],
+                //});
+                //$('#jstree_add').on("check_node.jstree uncheck_node.jstree", function (e, data) {
+                //    alert(data.node.id + ' ' + data.node.text +
+                //        (data.node.state.checked ? ' CHECKED' : ' NOT CHECKED'))
+                //});
+
+            }
+        });
+    }
+
+    var chkuserall = "";
+    var chkuserid = "";
+    function fetchdata(source, parentid) {
+        chkuserall = "";
+        var checkboxes = document.querySelectorAll('input[id="' + parentid + '"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    }
+    function GetCheckmenu1() {
+        chkuserall = "";
+        chkuserid = "";
+        var checkboxes = document.querySelectorAll('input[id="chk_user"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkuserid += "," + checkboxes[i].value;
+            }
+            else {}
+        }
+    }
+
+    function addgroup() {
+        GetCheckmenu1();
+        var groupname = document.getElementById("group_name").value;
+        var groupdesc = document.getElementById("description").value;
+        var grouptype = document.getElementById("grouptype").value;
+        var chkuser_id;
+        if (chkuserid == "")
+            chkuser_id = "";
+        else
+            chkuser_id = chkuserid;
+        var menu_id = menuid;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/add_group?groupname=")' + groupname + "&groupdescription=" + groupdesc + "&grouptype=" + grouptype + "&chkuser=" + chkuser_id + "&menuid=" + menu_id,
+            success: function (result) {
+                alert(result);
+                document.getElementById("group_name").value = "";
+                document.getElementById("description").value = "";
+                document.getElementById("grouptype").value = "";
+                $('#add_new_group').modal('hide');
+                showgroupmgmt();
+                showusermgmt();
+            }
+        });
+    }
+
+    var groupid = "";
+    function user_linkup(group_id) {
+        $('#user_linkup_popup').modal('show');
+        groupid = group_id;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/userlinkup?groupid=")' + group_id,
+            success: function (data) {
+                document.getElementById('user_group_name').innerText = 'User Linkup [ Group Name : ' + data.groupnameheader + ' ]';
+
+                var Setgriddata = $('#tbluserlinkup');
+                jQuery('#tbluserlinkup').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm-5'>User Name</th><th class='col-sm-5'>User Type</th><th class='icon' data-orderable='false'> Manage</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.user_linkup.length; i++) {
+                    trdata += "<tr><td class='col-sm-5'>" + data.user_linkup[i].user_name + "</td>";
+                    trdata += "<td class='col-sm-5'>" + data.user_linkup[i].user_type + "</td>";
+                    if ((data.user_linkup[i].user_name).toUpperCase() == 'ADMIN')
+                        trdata += "<td class='icon'></td>";
+                    else
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' title='Delete' onclick='deleteuserlinkupdata(" + data.user_linkup[i].user_id + ", " + data.user_linkup[i].group_id + ")'></i>&nbsp;  </td>";
+                    trdata += "</tr>";
+                }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_paging();
+
+            }
+        });
+    }
+
+    function deleteuserlinkupdata(user_id, group_id) {
+        userid = user_id;
+        groupid = group_id;
+        $('#delete_user_popup').modal('show');
+    }
+    function deleteuserpopup() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Content("~/csat_settings_page/deleteuserpopup?userid=")' + userid + '&groupid=' + groupid,
+            success: function (result) {
+			alert(result);
+                $('#delete_user_popup').modal('hide');
+                var group_id = groupid;
+                user_linkup(group_id);
+                showgroupmgmt();
+                showusermgmt();
+			}
+		});
+    }
+
+    function linkuser() {
+        $('#link_user').modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/linkuser")',
+            success: function (data) {
+                var Setgriddata = $('#tbllinkuser');
+                jQuery('#tbllinkuser').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group3' id='chk_user_link' onclick='checkallitems(this,this.id)' /></th><th class='col-sm-4'>User Name</th><th class='col-sm-3'>User Type</th><th class='col-sm-4'>Linked Group Name</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.link_user.length; i++) {
+                    if (data.link_user[i].group_name == null)
+                        data.link_user[i].group_name = '';
+                    trdata += "<tr><td class='select'><input type='checkbox' class='group3' name='check[]' id='chk_user_link' onchange='getcheckedvalue()' value='" + data.link_user[i].user_id + "' /></td>";
+                    trdata += "<td class='col-sm-4'>" + data.link_user[i].user_name + "</td>";
+                    trdata += "<td class='col-sm-3'>" + data.link_user[i].user_type + "</td>";
+                    trdata += "<td class='col-sm-4'>" + data.link_user[i].group_name + "</td></tr >";
+                }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                if (data.link_user.length > 0)
+                    Setgriddata.append("<input type='submit' class='btn btn-primary' value='Apply' name='apply' onclick='applylinkuser()' style='margin-top:-104px;'/>");
+                datatable_paging();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        getcheckedvalue();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    var checkeduser = "";
+    function checkallitems(source, parentid) {
+        checkeduser = "";
+        var checkboxes = document.querySelectorAll('input[id="' + parentid + '"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+                checkboxes[i].checked = source.checked;
+        }
+    }
+
+    function getcheckedvalue() {
+        checkeduser = "";
+        var checkboxes = document.querySelectorAll('input[id="chk_user_link"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkeduser += "," + checkboxes[i].value;
+            }
+            else {
+            }
+        }
+    }
+
+    function applylinkuser() {
+        var SystemChecked = $('input[id="chk_user_link"]:checked').length > 0;
+          if (SystemChecked == true) {
+            var group_id = groupid;
+            getcheckedvalue();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/apply_link_user?user_ids=")' + checkeduser + '&groupid=' + groupid,
+                success: function (data) {
+                    alert(data);
+                    $('#link_user').modal('hide');
+                    user_linkup(group_id);
+                    showgroupmgmt();
+                    showusermgmt();
+                }
+            });
+        }
+            else {
+                alert("Select any one  User!");
+                return false;
+            }
+    }
+
+    function showgrouprights(group_id) {
+        var groupid = group_id;
+        //debugger;
+        $('#set_user_right').modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/show_group_rights_data?groupid=")' + group_id,
+            success: function (data) {
+                str = data.node.replace(/\"parent\":\"0\"/g, "\"parent\":\"#\"");
+                var str1 = str.replace("\"[", "[").replace("]\"", "]");
+                var obj = JSON.parse(str1);
+                document.getElementById('group_right_name').innerText = 'Group Name : ' + data.rights_group_name;
+
+                //debugger;
+                //$(function () {
+                //    $('#jstree').jstree(function (obj)
+                //    {
+                //        var selectedItems = [];
+                //        var u;
+                //    for (u = 0; u < obj.length; u++) {
+                //    //debugger;
+                //         //var id = obj[u].id;
+                //        selectedItems.push({
+                //            text: obj[u].text,
+                //            id: obj[u].active,
+
+                //        });
+                //        if (active == "1") {
+                //            var selectedNode = $('#jstree').jstree('get_selected');
+                //        }
+                //        else {
+                //            var selectedNode = $('#jstree').jstree('get_selected');
+                //        }
+                //        }
+
+                //    }).jstree({
+                //        "checkbox": {
+                //            "keep_selected_style": false
+                //        },
+                //        "plugins": ["checkbox"],
+                //        'core': {
+                //            'data': obj
+
+                //        }
+                //    });
+                //    debugger;
+                //    $('#selectedItems').val(JSON.stringify(selectedNode));
+                //})
+
+                //onload
+                //debugger;
+                $(function () {
+                    $('#jstree').jstree(function (obj) {
+                        //debugger;
+                        var selectedItems = [];
+                        var u;
+                        for (u = 0; u < obj.length; u++) {
+                            selectedItems.push({
+                                text: obj[u].text,
+                                id: obj[u].active,
+                            });
+                            if (active == "1") {
+                                var selectedNode = $('#jstree').jstree('get_selected');
+                            }
+                            else {
+                                var selectedNode = $('#jstree').jstree('get_selected');
+                            }
+                        }
+                    }).jstree({
+                        'core': {
+                            'data': obj,
+                            'check_callback': false
+                        },
+                        "checkbox": {
+                            'three_state': false, // to avoid that fact that checking a node also check others
+                            'whole_node': false,  // to avoid checking the box just clicking the node
+                        },
+                        "plugins": ["checkbox"],
+                    });
+                    $('#selectedItems').val(JSON.stringify(selectedNode));
+                })
+
+                //onchange
+                $('#jstree').on('changed.jstree', function (e, data) {
+                    //debugger;
+                    var i, j;
+                    menuid = "";
+                    var selectedItems = [];
+                    for (i = 0, j = data.selected.length; i < j; i++) {
+
+                        var id = data.selected[i];
+                        menuid += "," + id;
+
+                        //Add the Node to the JSON Array.
+                        selectedItems.push({
+                            text: data.instance.get_node(data.selected[i]).text,
+                            id: id,
+                            parent: data.node.parents[0]
+                        });
+                    }
+
+                    //Serialize the JSON Array and save in HiddenField.
+                    $('#selectedItems').val(JSON.stringify(selectedItems));
+                }).jstree({
+                    'core': {
+                        'data': obj,
+                        'check_callback': false
+                    },
+                    "checkbox": {
+                        'three_state': false, // to avoid that fact that checking a node also check others
+                        'whole_node': false,  // to avoid checking the box just clicking the node
+                    },
+                    "plugins": ["checkbox"],
+                });
+            }
+        });
+    }
+
+    function apply_user_rights() {
+        //debugger;
+        var group_id = groupid;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/apply_user_rights?groupid=")' + group_id + '&menuid=' + menuid,
+            success: function (data) {
+
+            }
+        });
+    }
+
+    function editgroupdata(group_id) {
+        //debugger;
+        groupid = group_id;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/get_group_data?groupid=")' + group_id,
+            success: function (data) {
+                document.getElementById("group_nameedit").value = data.getgroupdata[0].group_name;
+                document.getElementById("descriptionedit").value = data.getgroupdata[0].description;
+                document.getElementById("grouptypeedit").value = data.getgroupdata[0].group_type;
+                var SetUserData = $('#binduseredit');
+                jQuery('#binduseredit').html('');
+                var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr><th class='col-sm-1 select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group2' id='chk_user' onclick='fetchdata(this);' /></th><th class='col-sm-11'>User Name</th></tr></thead><tbody>";
+                var trdata = "";
+                //debugger;
+                var grp_name = data.getgroupdata[0].group_name;
+                for (var i = 0; i < data.getbinduserdata.length; i++) {
+                    if (grp_name.toUpperCase() == "DEFAULT") {
+                        if (data.getbinduserdata[i].user_name == "Admin") {
+                            if (data.getbinduserdata[i].group_id != 0)
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' checked class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                            else
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                        }
+                        else {
+                            if (data.getbinduserdata[i].group_id != 0)
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' checked class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                            else
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                        }
+                    }
+                    else {
+                        if (data.getbinduserdata[i].user_name == "Admin") {
+                            trdata += "<tr style='display:none'><td class='col-sm-1 select'><input type='checkbox' class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                        }
+                        else {
+                            if (data.getbinduserdata[i].group_id != 0)
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' checked class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                            else
+                                trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='check[]' id='chk_user' onchange='GetCheckmenu1()' value='" + data.getbinduserdata[i].user_id + "' /></td>";
+                        }
+                    }
+                    trdata += "<td class='col-sm-11'>" + data.getbinduserdata[i].user_name + "</td></tr>";
+                }
+                SetUserData.append(headdata + trdata + "</tbody></table>");
+                datatable_simple();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        GetCheckmenu1();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+
+                //str = data.node.replace(/\"parent\":\"0\"/g, "\"parent\":\"#\"");
+                //var str1 = str.replace("\"[", "[").replace("]\"", "]");
+                //var obj = JSON.parse(str1);
+
+                //$('#jstree_edit').on('changed.jstree', function (e, data) {
+                //    //debugger;
+                //    var i, j;
+                //    var selectedItemsedit = [];
+                //    menuid = "";
+                //    for (i = 0, j = data.selected.length; i < j; i++) {
+
+                //        //Fetch the Id.
+                //        var id = data.selected[i];
+                //        menuid += "," + id;
+
+                //        //Add the Node to the JSON Array.
+                //        selectedItemsedit.push({
+                //            text: data.instance.get_node(data.selected[i]).text,
+                //            id: id,
+                //            parent: data.node.parents[0]
+                //        });
+                //    }
+
+                //    //Serialize the JSON Array and save in HiddenField.
+                //    $('#selectedItems_edit').val(JSON.stringify(selectedItemsedit));
+                //}).jstree({
+                //    "checkbox": {
+                //        "keep_selected_style": false
+                //    },
+                //    "plugins": ["checkbox"],
+                //    'core': {
+                //        'data': obj
+
+                //    }
+                //});
+                $('#edit_group').modal('show');
+            }
+        });
+    }
+
+    function editgroup() {
+        GetCheckmenu1();
+        var editgroupname = document.getElementById("group_nameedit").value;
+        var editgroupdesc = document.getElementById("descriptionedit").value;
+        var editgrouptype = document.getElementById("grouptypeedit").value;
+        var editchkuser_id;
+        if (chkuserid == "")
+            editchkuser_id = "";
+        else
+            editchkuser_id = chkuserid;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/editgroup?groupname=")' + editgroupname + "&groupdescription=" + editgroupdesc + "&grouptype=" + editgrouptype + "&chkuser=" + editchkuser_id + "&groupid=" + groupid,
+            success: function (result) {
+                alert(result);
+                document.getElementById("group_nameedit").value = "";
+                document.getElementById("descriptionedit").value = "";
+                document.getElementById("grouptypeedit").value = '-1';
+                $('#edit_group').modal('hide');
+                showgroupmgmt();
+                showusermgmt();
+            }
+        });
+    }
+
+    function deletegroupdata(group_id) {
+        groupid = group_id;
+        $('#delete_group').modal('show');
+    }
+    function deletegroup() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Content("~/csat_settings_page/deletegroupdata?groupid=")' + groupid,
+            success: function (result) {
+			alert(result);
+                $('#delete_group').modal('hide');
+                showusermgmt();
+                showgroupmgmt();
+			}
+			});
+    }
+
+</script>
+
+<script>
+    function showusermgmt() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/ShowUsermgmt")',
+            success: function (data) {
+                var Setgriddata = $('#divusermgmt');
+                jQuery('#divusermgmt').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm - 2'>User Name</th><th class='col-sm-2'>User Type</th><th class='col-sm-2'>Group Name</th><th class='col-sm-2'>Email ID</th>" +
+                    "<th class='col-sm-2'>Contact No.</th><th class='icon' data-orderable='false'> Edit</th><th class='icon form_label' data-orderable='false'>Reset Password</th><th class='icon' data-orderable='false'> Delete</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.showusermgmt.length; i++) {
+                    if (data.showusermgmt[i].user_name == null)
+                        data.showusermgmt[i].user_name = '';
+                    if (data.showusermgmt[i].user_type == null)
+                        data.showusermgmt[i].user_type = '';
+                    if (data.showusermgmt[i].group_name == null)
+                        data.showusermgmt[i].group_name = '';
+                    if (data.showusermgmt[i].emailid == null)
+                        data.showusermgmt[i].emailid = '';
+                    if (data.showusermgmt[i].contact_no == null)
+                        data.showusermgmt[i].contact_no = '';
+                    trdata += "<tr><td class='col-sm-2'>" + data.showusermgmt[i].user_name + "</td>";
+                    trdata += "<td class='col-sm-2'>" + data.showusermgmt[i].user_type + "</td>";
+                    trdata += "<td class='col-sm-2'>" + data.showusermgmt[i].group_name + "</td>";
+                    trdata += "<td class='col-sm-2'>" + data.showusermgmt[i].emailid + "</td>";
+                    trdata += "<td class='col-sm-2'>" + data.showusermgmt[i].contact_no + "</td>";
+                    if ((data.showusermgmt[i].user_name).toUpperCase() == 'ADMIN') {
+                        trdata += "<td class='icon'></td>";
+                        trdata += "<td class='icon'></td>";
+                        trdata += "<td class='icon'></td>";
+                    }
+                    else {
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon' type='button' onclick='edituserdata(" + data.showusermgmt[i].user_id + ")' title='Edit'></i></td>";
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-lock manage_icon' type='button' onclick = 'resetpassword(" + data.showusermgmt[i].user_id + ")' title='Reset Password'></i></td>";
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' onclick='deleteuserdata(" + data.showusermgmt[i].user_id + ")' title='Delete'></i>&nbsp;  </td>";
+                    }
+                    //trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon' type='button' onclick='edituserdata(" + data.showusermgmt[i].user_id + ")' title='Edit'></i></td>";
+                    //trdata += "<td class='icon'><i class=' glyphicon glyphicon-lock manage_icon' type='button' onclick = 'resetpassword(" + data.showusermgmt[i].user_id + ")' title='Reset Password'></i></td>";
+                    trdata += "</tr>";
+                }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_paging();
+
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+    function addnewuser() {
+        document.getElementById('user_name').value = '';
+        document.getElementById("userpassword").value = '';
+        $('#add_new_user').modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/bindgroupdata")',
+            success: function (data) {
+                var SetGroupData = $('#groupname');
+                jQuery('#groupname').html('');
+                var groupdata = "<option value='-1'>Select Group</option>";
+                for (var i = 0; i < data.bindgroupdata.length; i++) {
+                    groupdata += "<option value='" + data.bindgroupdata[i].group_name + "'>" + data.bindgroupdata[i].group_name + "</option>";
+                }
+                SetGroupData.append(groupdata);
+            }
+        });
+    }
+
+    function adduser() {
+        //debugger;
+        var username = document.getElementById("user_name").value;
+        var usertype = document.getElementById("usertype").value;
+        var groupname = document.getElementById("groupname").value;
+        var emailid = document.getElementById("emailid").value;
+        var userpassword = document.getElementById("userpassword").value;
+      //var contactno = document.getElementById("contactno").value;
+       // var contactno = $("#contactno").intlTelInput("getNumber");
+        var intlNumber = $("#contactno").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData = $("#contactno").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode = countryData.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = "+" + countryCode; // convert 1 to +1
+        var contact = intlNumber.replace("+", "");
+        var contactno = contact.replace(countryCode, "(" + countryCode + ")");
+        var securityquestions = document.getElementById("securityquestion").value;
+        var securityanswers = document.getElementById("securityanswer").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/adduser?username=")' + username + "&usertype=" + usertype + "&groupname=" + groupname + "&emailid=" + emailid + "&userpassword=" + userpassword + "&contactno=" + contactno + "&securityquestion=" + securityquestions + "&securityanswer=" + securityanswers,
+            success: function (result) {
+                alert(result);
+                document.getElementById("user_name").value = "";
+                document.getElementById("usertype").value = "";
+                document.getElementById("groupname").value = "";
+                document.getElementById("emailid").value = "";
+                document.getElementById("userpassword").value = "";
+                document.getElementById("contactno").value = "";
+                document.getElementById("securityquestion").value = "";
+                document.getElementById("securityanswer").value = "";
+                $('#add_new_user').modal('hide');
+                showusermgmt();
+                showgroupmgmt();
+            }
+        });
+    }
+
+    var userid = "";
+    function edituserdata(user_id) {
+        //debugger;
+        userid = user_id;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/get_user_data?userid=")' + user_id,
+            success: function (data) {
+                //debugger;
+                document.getElementById("user_nameedit").value = data.getuserdata[0].user_name;
+                document.getElementById("usertypeedit").value = data.getuserdata[0].user_type;
+                document.getElementById("groupnameedit").value = data.getuserdata[0].group_name;
+                document.getElementById("emailidedit").value = data.getuserdata[0].emailid;
+                document.getElementById("userpasswordedit").value = data.getpassword;
+                var contactno = data.getuserdata[0].contact_no;
+                contactno = contactno.split(')');
+                document.getElementById("contactnoedit").value = contactno[1];
+                document.getElementById("securityquestion1").value = data.getuserdata[0].secret_question;
+                document.getElementById("securityanswer1").value = data.getsecretanswer;
+
+                var SetGroupData = $('#groupnameedit');
+                jQuery('#groupnameedit').html('');
+                var groupdata = "<option value='-1'>Select Group</option>";
+                for (var i = 0; i < data.bindgroupdata.length; i++) {
+                    if (data.getuserdata[0].group_name == data.bindgroupdata[i].group_name)
+                        groupdata += "<option value='" + data.bindgroupdata[i].group_name + "'selected>" + data.bindgroupdata[i].group_name + "</option>";
+                    else
+                        groupdata += "<option value='" + data.bindgroupdata[i].group_name + "'>" + data.bindgroupdata[i].group_name + "</option>";
+                }
+                SetGroupData.append(groupdata);
+
+                $('#edit_user').modal('show');
+            }
+        });
+    }
+
+    function edituser() {
+        //debugger;
+        var editusername = document.getElementById("user_nameedit").value;
+        var editusertype = document.getElementById("usertypeedit").value;
+        var editgroupname = document.getElementById("groupnameedit").value;
+        var editemailid = document.getElementById("emailidedit").value;
+        var edituserpassword = document.getElementById("userpasswordedit").value;
+     //  var editcontactno = document.getElementById("contactnoedit").value;
+     //   var editcontactno = $("#contactnoedit").intlTelInput("getNumber");
+        var intlNumber = $("#contactnoedit").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData = $("#contactnoedit").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode = countryData.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = ("+" + countryCode); // convert 1 to +1
+        var editcontact = intlNumber.replace("+", "");
+        var editcontactno = editcontact.replace(countryCode, "(" + countryCode + ")");
+        var editsecurityquestion = document.getElementById("securityquestion1").value;
+        var editsecurityanswer = document.getElementById("securityanswer1").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/edituser?username=")' + editusername + "&usertype=" + editusertype + "&groupname=" + editgroupname + "&emailid=" + editemailid + "&userpassword=" + edituserpassword + "&contactno=" + editcontactno + "&userid=" + userid + "&securityquestion=" + editsecurityquestion + "&securityanswer=" + editsecurityanswer,
+            success: function (result) {
+                alert(result);
+                document.getElementById("user_nameedit").value = "";
+                document.getElementById("usertypeedit").value = "";
+                document.getElementById("groupnameedit").value = "";
+                document.getElementById("emailidedit").value = "";
+                document.getElementById("userpasswordedit").value = "";
+                document.getElementById("contactnoedit").value = "";
+                document.getElementById("securityquestion1").value = "";
+                document.getElementById("securityanswer1").value = "";
+                $('#edit_user').modal('hide');
+                showusermgmt();
+                showgroupmgmt();
+            }
+        });
+    }
+
+    function resetpassword(user_id) {
+        userid = user_id;
+        $('#reset_password').modal('show');
+    }
+    function save_reset_password() {
+        var oldpassword = document.getElementById("oldpassword").value;
+        var newpassword = document.getElementById("newpassword").value;
+        var url = '@Url.Content("~/csat_settings_page/set_reset_password?oldpassword=")' + oldpassword + '&newpassword=' + newpassword + '&userid=' + userid;
+		   $.ajax({
+            type: "POST",
+            url: url,
+               success: function (data) {
+                   alert(data);
+                   if (data == "Password set successfully") {
+                       document.getElementById("oldpassword").value = "";
+                       document.getElementById("newpassword").value = "";
+                       document.getElementById("confirmpassword").value = "";
+                       $('#reset_password').modal("hide");
+                   }
+               }
+		   });
+    }
+
+    function deleteuserdata(user_id) {
+        userid = user_id;
+        $('#delete_user').modal('show');
+    }
+    function deleteuser() {
+        $.ajax({
+            type: "POST",
+            url:'@Url.Content("~/csat_settings_page/deleteuserdata?userid=")' + userid,
+            success: function (result) {
+			    alert(result);
+                $('#delete_user').modal('hide');
+                showusermgmt();
+                showgroupmgmt();
+			}
+        });
+    }
+
+</script>
+
+<script type="text/javascript">
+    function cleardata() {
+
+        $('#delete_user_popup').modal('hide');
+        $('#delete_group').modal('hide');
+        $('#delete_user').modal('hide');
+
+        //group
+        document.getElementById("group_name").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("grouptype").value = "";
+        $('input[type="checkbox"]:checked').prop('checked', false);
+
+        document.getElementById("group_nameedit").value = "";
+        document.getElementById("descriptionedit").value = "";
+        document.getElementById("grouptypeedit").value = '-1';
+
+        $('#jstree_add').jstree('close_all');
+        $("#jstree_add").jstree("refresh", $(".jstree-clicked"));
+        //$("#jstree_add").jstree(true).refresh(true);
+        //$('#jstree_edit').jstree('close_all');
+        //$("#jstree_edit").jstree("refresh", $(".jstree-clicked"));
+        //$("#jstree_edit").jstree(true).refresh(true);
+        //$('#jstree').jstree('close_all');
+        //$("#jstree").jstree("refresh", $(".jstree-clicked"));
+        //$("#jstree").jstree(true).refresh(true);
+
+        //user
+        document.getElementById("user_name").value = "";
+        document.getElementById("usertype").value = "";
+        document.getElementById("groupname").value = "";
+        document.getElementById("emailid").value = "";
+        document.getElementById("userpassword").value = "";
+        document.getElementById("contactno").value = "";
+        document.getElementById("securityquestion").value = "";
+        document.getElementById("securityanswer").value = "";
+        $("#userpassword").popover('hide');
+        $("#userpassword").removeClass('invalid').parent().removeClass('has-error');
+
+        document.getElementById("oldpassword").value = "";
+        document.getElementById("newpassword").value = "";
+        document.getElementById("confirmpassword").value = "";
+        $("#newpassword").popover('hide');
+        $("#newpassword").removeClass('invalid').parent().removeClass('has-error');
+        
+        document.getElementById("user_nameedit").value = "";
+        document.getElementById("usertypeedit").value = "";
+        document.getElementById("groupnameedit").value = "";
+        document.getElementById("emailidedit").value = "";
+        document.getElementById("userpasswordedit").value = "";
+        document.getElementById("contactnoedit").value = "";
+        document.getElementById("securityquestion1").value = "";
+        document.getElementById("securityanswer1").value = "";
+        $("#userpasswordedit").popover('hide');
+        $("#userpasswordedit").removeClass('invalid').parent().removeClass('has-error');
+
+    }
+</script>
+@*<script type="text/javascript">
+            $(function () {
+                $('#jstree').on('changed.jstree', function (e, data) {
+                    debugger;
+                    var i, j;
+                    var selectedItems = [];
+                    for(i = 0, j = data.selected.length; i < j; i++) {
+
+                        //Fetch the Id.
+                        var id = data.selected[i];
+
+                        //Remove the ParentId.
+                        if(id.indexOf('-') != -1){
+                            id = id.split("-")[1];
+                        }
+
+                        //Add the Node to the JSON Array.
+                        selectedItems.push({
+                            text: data.instance.get_node(data.selected[i]).text,
+                            id: id,
+                            parent: data.node.parents[0]
+                        });
+                    }
+
+                    //Serialize the JSON Array and save in HiddenField.
+                    $('#selectedItems').val(JSON.stringify(selectedItems));
+                }).jstree({
+                    "core": {
+                        "themes": {
+                            "variant": "large"
+                        },
+                        "data": @Html.Raw(ViewBag.Json)
+                        },
+                    "checkbox": {
+                        "keep_selected_style": false
+                    },
+                    "plugins": ["wholerow", "checkbox"],
+                });
+            });
+    </script>*@
+
+<script src="~/js/jstree.min.js"></script>

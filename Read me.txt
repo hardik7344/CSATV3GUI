@@ -1,0 +1,114 @@
+20220308
+Captcha image wise code add
+
+20220307,20220304,20220303
+NSG Requirement wise Vulnerabilities Resolved coding add
+
+20220218
+Employee Details Report 
+order by card no, 
+birthdate, joindate and marriage date wise data not show that time blank 
+integer field null that time blank show 
+
+20220217
+Employee Details Report Delete record coding complated as per gacl requirement
+
+20220210
+Employee Details Report Delete record coding complated
+
+20220209
+Employee Details Report(New) Add and coding complated
+
+20220203
+1. DataTable header six fix javascript code add
+
+20200129
+1. GACL requirement wise compliance Management report and pdf formate changes as per mehul bhai said (Serialno, model data add)
+2. Settings --> Agent Released License date wise checked box insert and coding updates 
+3. Agent Information Report PDF and Excel Changes all data display
+
+20220127
+1. NSG requirement wise compliance Management report and pdf formate changes as per matang sir mail (20220124)
+2. Agent Information Report & Port Information Report data display 
+
+20220119
+1. NSG requirement wise compliance Management report and pdf formate changes as per mehul bhai print out
+
+20220108
+1. GACL & NSG requirement wise compliance Management report and pdf formate changes as per mehul bhai mail
+
+20211231
+1. Define Policy --> Create Rules --> Firewall rules --> local port multiple port wise message formate changes
+
+20211229
+1. Define Policy --> Create Rules --> Firewall rules (Sourcrip, local port, destinationip, destination port) rules message formate changes
+
+20211119
+1. Define Policy --> Manage --> ip wise data searching
+2. Define Policy --> Apply policy on (system time) --> ip wise data searching
+
+20211020
+1. NAC Policy message number changes
+2. DCM Policy add group button add and coding add
+
+20210820
+GACL wants below Requirement/Optimization in GUI:
+1.	Need to be client and server time field in Asset management top 10 Notification 
+2.	Need to be AV Install details in Asset management, Summary of software details. Through Service Data of AV.
+3.	Require Audit trail summary report Device / User wise.
+4.	In Asset information report Need to be ‘Virtual name’ Field.
+5.	Need to be Unauthorized IP address Report disable.
+6.	Need to be Agent Connectivity report disable.
+7.	Alert Integration with Email and SMS.
+8.	OwnYITCSAT GUI can be accessible from Selective IPs only.
+9.	Software Authentication Screen data should be distinct.
+10.	Process Authentication Screen data should be distinct.
+11.	Optimize Service Report.
+12.	Optimize Process log Report.
+13.	Optimize Port information report/ Port wise Process report.
+14.	Remove PNP Entity Record from Hardware report
+15.	Optimize network Statistic report.
+16.	Remove updater link from settings.
+17.	Optimize service-setting link from settings.
+18.	Optimize Antivirus details report, need to be In AV report three service details.
+19.	Optimize In Asset management antivirus Not install field.
+
+20. 	Dashbord (Auditor) Software data and process data distinct .
+21.	Dashbord (Audit trail) data not show in 30 days .
+22. 	Audit trail summary Report  not show in data to 10 days select 
+23.	system firrwall status report all data display in show button but user date range selected.
+24. 	software information report software wise report not show in details report
+
+20210812
+Assert management top 10 alert query date wise changes
+Manage branch Unit ou edit and delete time ou not go to root ou coding
+
+20210811
+User Login details report date wise query changes and username NA data not display
+
+20210730
+Administrtor -- Add new ou that time ou list refresh and add new ou in below of list display (not go to root ou)
+Add Branch Unit popup - Link System datatable serch button display  
+
+20210726
+Port Information report changes as per matang sir said
+
+20210724
+NAC Policy screen coding
+Settings - Scan ip range - show details popup changes
+Compliance Management Report & PDF Files formate changes as per matang Sir Said
+
+20210722
+Login Ristriction Plocy Messages changes and updates coding
+
+Policy --> Manage policy apply button work properly
+Removable media linux data properly show in dashboard screen
+Hardware information report count popup coding changes
+Login Restiction Policy windows and linus wise policy message change as per jalpa mail me 
+gui_log report add and their coding add
+usb_history report add and their coding add
+Assert system Information report sp changes and reports field changes
+Administarter --> Organization stucture --> Link System query changes
+
+
+

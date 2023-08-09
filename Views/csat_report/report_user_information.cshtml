@@ -1,0 +1,318 @@
+﻿
+@{
+    ViewData["Title"] = "report_user_information";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li> User Information  </li>
+            </ul>
+        </div>
+    </div>
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_userinfrom_report" id="frm_userinfrom_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou">
+                                        <option value='-1'>Select Branch/ Unit</option>
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpdevice">
+                                        <option value='-1'>Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip" id="drpip">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip">
+                <option value='-1'>Select IP Address</option>
+            </select>*@
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Status</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Status" id="Status">
+                                        <option value="2">Select Status</option>
+                                        <option value="2">All </option>
+                                        <option value="0">Enable</option>
+                                        <option value="-1">Disable</option>
+                                    </select>
+                                </div>
+                                @*<label for="nameField" class="col-xs-2 text-align-right" >Group Name</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Group Name" id="Group Name">
+                                            <option>Select Group Name</option>
+                                            <option value="Admin">Admin </option>
+                                            <option value="Normal User">Normal User</option>
+                                            <option value="Guest User">Guest User </option>
+                                        </select>
+                                    </div>*@
+
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="userdatabind()">
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!--form  content end-->
+        <!--User info report form end-->
+        <!--User info Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divuser_div">
+                <table id="divuser" class="table table-striped table-bordered display nowrap" width="100%">
+                   
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_userinfrom_report");
+    });
+</script>
+<script>
+ $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+       // debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou');
+                jQuery('#drpou').html('');
+
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+$("#drpou").change(function () {
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpdevice');
+        //var SetDataip = $('#drpip');
+
+        jQuery('#drpdevice').html('');
+        //jQuery('#drpip').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+        }
+        });
+
+    });
+	var ouidvalue="";
+    var systemvalue="";
+    var ipvalue = "";
+    $("#drpou").change(function () {
+        ouidvalue = this.value;
+    });
+
+    $("#drpdevice").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#drpip").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+
+    function userdatabind()
+    {
+        var $valid = $('#frm_userinfrom_report').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            //debugger;
+            var ipvalue = document.getElementById("drpip").value;
+            var varstatus = document.getElementById("Status").value;
+            if (ouidvalue == '')
+                ouidvalue = document.getElementById("drpou").value;
+            var systemvalue = document.getElementById('add_systemname').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("drpdevice").value;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_report/GetUserinformation?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&status=' + varstatus,
+                dataType: 'json',
+                success: function (data) {
+                    //debugger;
+                    var dataclear = document.getElementById('divuser_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#divuser_div').append("<table id='divuser' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('divuser');
+                    var data1 = [];
+                    for (var i = 0; i < data.userdata.length; i++) {
+                        data1.push([data.userdata[i].ou_longname,data.userdata[i].systemname, data.userdata[i].ip, data.userdata[i].username, data.userdata[i].status]);
+                    }
+                    var otable = $("#divuser").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "User Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "User Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "Username" }, { title: "Status" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                    //Dynamic Datatable
+                    //$(document).ready(function () {
+                    //    $('#divuser').DataTable({
+                    //        data: data.userdata,
+                    //        columns: [
+                    //            {
+                    //                "data": "systemname",
+                    //                "title": "System Name"
+                    //            },
+                    //            {
+                    //                "data": "ip",
+                    //                "title": "IP Address",
+                    //            },
+                    //            {
+                    //                "data": "username",
+                    //                "title": "Username"
+                    //            },
+                    //            {
+                    //                "data": "status",
+                    //                "title": "Status",
+                    //            },
+                    //            {
+                    //                "data": "ou_longname",
+                    //                "title": "Branch/ Unit"
+                    //            },
+                    //            //{
+                    //            //    "title": "edit",
+                    //            //    mRender: function (data, type, row) {
+
+                    //            //        var linkEdit = '<a href="#" data-toggle="modal" data-target="#EditEntityModal" onclick=showalert(' + row.id + ',"' + encodeURIComponent(row.title) + '")><i class="glyphicon glyphicon-pencil"></i></a>';
+                    //            //        return linkEdit;
+                    //            //    }
+                    //            //},
+                    //            //{
+                    //            //    "title": "delete",
+                    //            //    mRender: function (data, type, row) {
+
+                    //            //        var linkEdit = '<a href="#" onclick=deleteData(' + row.id + ',"' + encodeURIComponent(row.title) + '")><i class="glyphicon glyphicon-trash"></i></a>';
+                    //            //        return linkEdit;
+                    //            //    }
+                    //            //}
+                    //        ]
+                    //    });
+                    //});
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    }
+
+    
+</script>
+
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>

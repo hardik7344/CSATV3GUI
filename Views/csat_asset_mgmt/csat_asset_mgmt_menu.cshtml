@@ -1,0 +1,24 @@
+﻿<div class="category-tree mb30">   
+    <ul class="subcategories">
+        <li class="2  form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "csat_asset_mgmt" ? "active" : "")">@Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")</li>
+        <li class="52 div_none form_label @(ViewContext.RouteData.Values["Action"].ToString() == "asset_system_list" ? "active" : "")">@Html.ActionLink("System List", "asset_system_list", "csat_asset_mgmt")</li>
+        <li class="53 div_none form_label @(ViewContext.RouteData.Values["Action"].ToString() == "asset_hardware_master" ? "active" : "")">@Html.ActionLink("Hardware Master", "asset_hardware_master", "csat_asset_mgmt")</li>
+        <li class="54 div_none form_label @(ViewContext.RouteData.Values["Action"].ToString() == "asset_software_master" ? "active" : "")">@Html.ActionLink("Software Master", "asset_software_master", "csat_asset_mgmt")</li>
+        <li class="55 div_none form_label @(ViewContext.RouteData.Values["Action"].ToString() == "asset_vendor_master" ? "active" : "")">@Html.ActionLink("Vendor Master", "asset_vendor_master", "csat_asset_mgmt")</li>        
+    </ul>
+</div>
+<script>
+    $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('.category-tree').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+</script>

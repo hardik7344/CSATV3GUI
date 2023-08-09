@@ -1,0 +1,1860 @@
+﻿
+@{
+    ViewData["Title"] = "report_data_leakage";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<!--path show in tooltip -->
+<script>
+    $(function () {
+        $('.multiselect-ui').multiselect({
+            includeSelectAllOption: true
+        });
+    });
+    $(document).ready(function () {
+        $("#system_up").click(function () {
+            $("#system_form").toggle();
+
+        });
+    });
+    $(document).ready(function () {
+        $("#count_up").click(function () {
+            $("#count_form").toggle();
+
+        });
+    });
+    $(document).ready(function () {
+        $("#raw_up").click(function () {
+            $("#raw_form").toggle();
+
+        });
+    });
+
+    $(document).ready(function () {
+        $("#printer_up").click(function () {
+            $("#printer_form").toggle();
+
+        });
+    });
+    $(document).ready(function () {
+        $("#media_up").click(function () {
+            $("#media_form").toggle();
+
+        });
+    });
+</script> <!--path show in tooltip end-->
+<!--date-time picker-->
+<script>
+    var startdate = '';
+    var enddate = '';
+    $(function () {
+
+        $('input[name="datefilter"]').daterangepicker({
+            autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+            locale: {
+                format: 'DD/MM/YYYY',
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+            //  debugger;
+            startdate = picker.startDate.format('DD/MM/YYYY');
+            enddate = picker.endDate.format('DD/MM/YYYY');
+            //Datalekage(startdate, enddate);
+            Datalekage();
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+
+        });
+
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(window).bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+        Datalekage();
+    });
+
+</script>
+<!--path show in tooltip -->
+<script>
+    $(document).on('mouseenter', ".path", function () {
+        var $this = $(this);
+        if (this.offsetWidth < this.scrollWidth && !$this.attr('title')) {
+            $this.tooltip({
+                title: $this.text(),
+                placement: "bottom"
+            });
+            $this.tooltip('show');
+        }
+    });
+
+</script> <!--path show in tooltip end-->
+<!--main Content-->
+<body onload="fn_loading(); Datalekage(); ">
+    <div class="row">
+        <!--side menu-->
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="row">
+                    <div class="pull-right form_label btn_top_margin">
+                        <button class="177 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#printer_usages_popup" onclick="printer_usages()">Printer Usage</button>
+                        <button class="176 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#media_usages_popup" onclick="media_usages()">Removable Media Usage</button>
+                        <button class="175 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#row_data_popup" onclick="funrawdata()">Raw Data</button>
+                        <button class="174 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#system_data_popup" onclick="SystemData()">System Data</button>
+                    </div>
+                    <ul class="breadcrumb" style="margin-bottom:0px;">
+                        <li>
+                            @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                            <i class="icon-angle-right"></i>
+                        </li>
+                        <li>Data Leakage </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding" style="padding-right:0px;">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_report_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <!--sub content-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="col-xs-12" style="margin-top: 5px;">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Select Start Date-End Date</label>
+                                        <div class="col-xs-3">
+                                            <input type="text" name="datefilter" class="form-control" placeholder="DD/MM/YYYY  -  DD/MM/YYYY" id="date">
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--report Data Leakage Reports form- ->
+        <!--Data Leakage  chart  content-->
+        <div class="row">
+            <div class="169 div_none col-sm-5 col-md-5 col-lg-5 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        @*<span class="col-xs-1 day glyphicon glyphicon-save chart_save_icon" title="Save Chart" id="save-btn" > </span>*@
+                        <h6>File Status Summary</h6>
+
+                    </div>
+                    <div class="ibox-content">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <canvas id="media_data_leakage" class="data_lekagechart" height="180px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="170 div_none col-sm-5 col-md-5 col-lg-5 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h6>File Type Summary</h6>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <canvas id="filetype_data_leakage" class="data_lekagechart" height="180px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="171 div_none col-sm-5 col-md-5 col-lg-5 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h6>Branch/ Unit Summary</h6>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <canvas id="branch_unit_data_leakage" class="data_lekagechart" height="180px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="172 div_none col-sm-5 col-md-5 col-lg-5 ">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h6>IP Summary</h6>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <canvas id="ip_data_leakage" class="data_lekagechart" height="180px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Data Leakage  chart end content-->
+            <!--Data Leakage Datatable start-->
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <div class="173  div_none ibox float-e-margins ">
+                    <div class="ibox-content" style="padding:8px;">
+                        <div class="table-responsive " id="Topalerttbl">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--End Data Leakage Datatable -->
+        </div>  <!--sub content end-->
+        <div class="space_bottom">&nbsp;</div>
+    </div> <!--main Content end-->
+    <!-- System  Data pop-up model box  Content-->
+    <div class="modal fade" id="system_data_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clerdata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Data Leakage Report
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="system_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#3d93c8;font-size: 12px;"></i>
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="system_form" name="system_form">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                            <div class="col-xs-3" id="ou">
+                                                <select class='form-control col-sm-3 col-lg-3 col-md-3' name='Branch/Unit' id='DrpOU'></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name &nbsp;</label>
+                                            <div class="col-xs-2" id="selectsys">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="Device">
+                                                    <option value="-1">Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2" id="inputsystemname">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label ">IP Address </label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="IP" id="IP">
+                                                @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="IP" id="IP">
+                                                        <option value="-1">Select IP Address</option>
+                                                    </select>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilterSystem" class="form-control" placeholder="DD/MM/YYYY  -  DD/MM/YYYY" id="datasyatemdata">
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <button type="button" class="btn btn-primary" id="btnsystemdata">Show</button>
+
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--device_data Datatable start-->
+
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            @*<div class="pull-right col-xs-1" style="margin-right:8px;">
+                                    <button type="submit" class="btn btn-default" >Archieve</button>
+                                </div>*@
+                            <div class="table-responsive" id="divsystemdata">
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <!--device_data Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="clerdata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End system_data_popup  model box Content -->
+
+    <div class="modal fade" id="dataLeakageDetailsPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clerdata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Data Leakage Details
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="dataLeakageChartDetails">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Count Device Data pop-up model box  Content-->
+    <div class="modal fade" id="count_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Data Leakage Report
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="count_up" class="  pull-right glyphicon glyphicon-chevron-down" style="color:#3d93c8;font-size: 12px;"></i>
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="count_form" name="count_form">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                            <div class="col-xs-4 form_label">
+                                                <b>:</b>
+                                                <label for="nameField" style="text-decoration: underline;white-space:nowrap" id="lblou"></label>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-2">
+                                                <b>:</b>
+                                                <label for="nameField" style="text-decoration: underline" id="lblsystemname"></label>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label ">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <b>:</b>
+                                                <label for='nameField' style="text-decoration: underline" id='lblip'></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1">Status </label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="Media">
+                                                    <option value="-1">Select Status</option>
+                                                    <option value="1">Create</option>
+                                                    <option value="2">Change</option>
+                                                    <option value="3">Rename</option>
+                                                    <option value="4">Delete</option>
+                                                    @*<option value="1">HDD To USB</option>
+                                                        <option value="2">USB To HDD</option>
+                                                        <option value="3">NetworkDrive To Local HDD</option>
+                                                        <option value="4">NetworkDrive To USB</option>
+                                                        <option value="5">HDD To CD-Drive</option>
+                                                        <option value="6">USB To CD</option>
+                                                        <option value="7">NetworkDrive to CD</option>
+                                                        <option value="8">Share To HDD</option>*@
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1">Search</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Search type" id="searchtype">
+                                                    <option value="-1">Select Type</option>
+                                                    @*<option value="convert(varchar,server_time,120)">Time-stamp</option>*@
+                                                    <option value="parsename(source_path,1)">File Type</option>
+                                                    @*<option value="deviceused">Device Used</option>
+                                                        <option value="source_path">Source Path</option>
+                                                        <option value="destination_path">Destination Path</option>*@
+                                                    <option value="size1">Size >=</option>
+                                                    <option value="size2">Size <=</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" id="btnsearch">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--Count Device Data  Datatable start-->
+
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            @*<div class="pull-right col-xs-1" style="margin-right:8px;">
+                                  <button type="submit" class="btn btn-default" >Archieve</button>
+                                </div>*@
+
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="divclear">
+                                <table id="systemdeatilsdatalekage" class="table table-striped table-bordered " width="100%"></table>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <!--Count Device Data  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End  Count Device Data pop-up model box Content -->
+    <!-- row_data_popup pop-up model box  Content-->
+    <div class="modal fade" id="row_data_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clerdata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Data Leakage Report
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="raw_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#3d93c8;font-size: 12px;"></i>
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="raw_form" name="raw_form">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU1"></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-3" id="selectsys1">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="Device1">
+                                                    <option>Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2" id="inputsystemname1">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="IP1" id="IP1">
+                                                @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="IP1">
+                                                        <option>Select IP Address</option>
+                                                    </select>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilterRAWDATA" class="form-control" id="datefilterid" placeholder="DD/MM/YYYY  -  DD/MM/YYYY">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1">Status </label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Media" id="Media1">
+                                                    <option value="-1">Select Status</option>
+                                                    <option value="1">Create</option>
+                                                    <option value="2">Change</option>
+                                                    <option value="3">Rename</option>
+                                                    <option value="4">Delete</option>
+                                                    @*<option value="1">HDD To USB</option>
+                                                        <option value="2">USB To HDD</option>
+                                                        <option value="3">NetworkDrive To Local HDD</option>
+                                                        <option value="4">NetworkDrive To USB</option>
+                                                        <option value="5">HDD To CD-Drive</option>
+                                                        <option value="6">USB To CD</option>
+                                                        <option value="7">NetworkDrive to CD</option>
+                                                        <option value="8">Share To HDD</option>*@
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 ">Search</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type1">
+                                                    <option value="-1">Select Type</option>
+                                                    @*<option value="convert(varchar,server_time,120)">Timestamp</option>*@
+                                                    <option value="parsename(source_path,1)">File Type</option>
+                                                    @*<option value="03">Device Used</option>
+                                                        <option value="source_path">Source Path</option>
+                                                        <option value="destination_path">Destination Path</option>*@
+                                                    <option value="size1">Size >=</option>
+                                                    <option value="size2">Size <=</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" id="serachvalue" name="serachvalue" autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="Button" id="btnRawdataSearch" onclick="DataLeakage();">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnRawdata" onclick="DataLeakage();">
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--row_data Datatable start-->
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="RawDataLeakage_div">
+                            <table id="RawDataLeakage" class="table table-striped table-bordered " width="100%"></table>
+
+                        </div>
+
+                    </div>
+
+                    <!--row_data Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="clerdata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End row_data_popup  model box Content end-->
+    <!-- media_usages_popup model box  Content-->
+    <div class="modal fade" id="media_usages_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clerdata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Removable Media Usage
+                    </h6>
+
+                </div>
+                <div class="modal-body model_body_scroll">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="media_up" class="  pull-right glyphicon glyphicon-chevron-down" style="color:#3d93c8;font-size: 12px;"></i>
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="media_form" name="media_form">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU3"></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-3" id="selectsys2">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device1" id="System3">
+                                                    <option>Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2" id="inputsystemname2">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname2" id="add_systemname2">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <input type="checkbox" class="form-check-input" id="add_system_chk2" name="add_system_chk2" style="width:20px;height:25px;">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="IP3" id="IP3">
+                                                @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="IP" id="IP3">
+                                                        <option>Select IP Address</option>
+                                                    </select>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                            <div class="col-xs-3">
+                                                <input type="text" name="datefilterRemovable" class="form-control" id="dateRemovable" placeholder="DD/MM/YYYY  -  DD/MM/YYYY">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1">Search</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="Searchtype3">
+                                                    <option value="-1">Select Type</option>
+                                                    <option value="e110loginby">Login By</option>
+                                                    <option value="e110deviceused">Device Used</option>
+                                                    <option value="e110activity">Description</option>
+                                                    <option value="ou_node_name">Branch/ Unit</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" name="searchvalue3" id="searchvalue3" autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" id="searchbutton" onclick="Removablemedia()">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnshowremovable" onclick="Removablemedia()">
+                                            </div>
+                                        </div>
+
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--media_usages Datatable start-->
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="divremovable_div">
+                            <table id="divremovable" class="table table-striped table-bordered " width="100%"></table>
+                        </div>
+                    </div>
+
+                    <!--media_usages Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="clerdata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End media_usages_popup  model box Content -->
+    <!-- Printer_usages_popup pop-up model box  Content-->
+    <div class="modal fade" id="printer_usages_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="clerdata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Printer Usage Report
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="printer_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#3d93c8;font-size: 12px;"></i>
+                                <div class="col-xs-11">
+
+                                    <form class="form-horizontal" method="post" id="printer_form" data-toggle="validator" name="printer_form">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/ Unit" id="DrpOU4">
+                                                    @*<option>Root</option>
+                    <option value="01">Root >> Location</option>
+                    <option value="02">Root >> Location >> Department</option>*@
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-3" id="selectsys3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="System4">
+                                                    <option>Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2" id="inputsystemname3">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname3" id="add_systemname3">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <input type="checkbox" class="form-check-input" id="add_system_chk3" name="add_system_chk3" style="width:20px;height:25px;">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="IP4" id="IP4">
+                                                @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="IP4">
+                    <option>Select IP Address</option>
+                </select>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilterPrinterusage" class="form-control" id="DatePrinterusage" placeholder="DD/MM/YYYY hh:mm A  -  DD/MM/YYYY hh:mm A " required>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1">Printer wise</label>
+                                            <div class="col-xs-6">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Printer" id="Printer">
+                                                    <option value="-1">Select Printer</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Search</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="Searchtype4">
+                                                    <option value="-1">Select Type</option>
+                                                    @*<option value="convert(varchar,device_timestamp,120)">Timestamp</option>*@
+                                                    @*<option value="device_timestamp">Timestamp</option>*@
+                                                    <option value="user_name">Username</option>
+                                                    <option value="document_name">Document</option>
+                                                    @*<option value="total_pages">Pages</option>*@
+                                                    @*<option value="location_name">Printer Location</option>*@
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" name="searchvalue4" id="searchvalue4" autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" onclick="FuncPrinterUsage()">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnshowprinterusage" onclick="FuncPrinterUsage()">
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" id="lblTotalPages" class="col-xs-1 form_label"></label>
+                                            </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--row_data Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="divprinterusage_div">
+                            <table id="divprinterusage" class="table table-striped table-bordered " width="100%"></table>
+                        </div>
+                    </div>
+                    <!--row_data Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="clerdata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#system_form");
+        validateSingleForm("#raw_form");
+        validateSingleForm("#media_form");
+        validateSingleForm("#printer_form");
+        validateSingleForm("#count_form");
+        count_form
+    });
+</script>
+
+<!-- End Printer_usages_popup  model box Content end-->
+<script type='text/javascript'>
+    function fn_loading() {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        setTimeout(function () {
+            $("#overlay").fadeOut(300);
+        }, 2000);
+        bindPrinter();
+    }
+    function bindPrinter() {
+        var url = '@Url.Content("~/csat_report/GetPrinterUsageReportPrinter")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#Printer');
+                jQuery('#Printer').html('');
+                var oudata = "<option value='-1'>Select Printer</option>";
+                for (var i = 0; i < data.printerUsageName.length; i++) {
+                    oudata += "<option value='" + data.printerUsageName[i].printer_name + "'>" + data.printerUsageName[i].printer_name + "</option>";
+                }
+                SetData.append(oudata);
+            }
+        })
+    }
+	//function Datalekage(sdate,edate)
+    function Datalekage()
+    {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        sdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY');
+        edate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY');
+		   //debugger;
+         var url = '@Url.Content("~/csat_report/GetDatalekage?startdate=")' + sdate + '&enddate=' + edate ;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+                single_barchart_new_clickable('media_data_leakage', data.media,'FileStatusSummary');
+            //single_barchart('media_data_leakage', data.media);
+                single_barchart_new_clickable('branch_unit_data_leakage', data.branch, 'BranchUnitSummary');
+                //single_barchart_new('branch_unit_data_leakage', data.branch,'#a02c5a');
+                single_barchart_new_clickable('ip_data_leakage', data.ip, 'IPSummary');
+                //single_barchart_new('ip_data_leakage', data.ip,'#0073aa');
+                single_barchart_new_clickable('filetype_data_leakage', data.file, 'FileTypeSummary');
+			    //single_barchart('filetype_data_leakage',data.file);
+		         var SetData = $('#Topalerttbl');
+                 jQuery('#Topalerttbl').html('');
+                var Data = "<table class='table table-striped table-bordered scroll_datatable'  style='width:100%'>";
+                Data += "<thead><tr><th colspan='6' class='table_tital'>Top 10 Alert</th></tr><tr>";
+                if (data.alerts == "0")
+                    Data += "<tbody><tr><td colspan='6'>No Data Exists.</td></tr></tbody>";
+                else
+                    Data += data.alerts;
+                Data += "</table>";
+                         SetData.append(Data);
+
+                    }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+	}
+
+	  var startdate="";
+	  var enddate="";
+	  var vardevice="";
+	  var varip="";
+	  var varou="";
+
+    function SystemData() {
+        var url = '@Url.Content("~/csat_report/GetOU")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU');
+                jQuery('#DrpOU').html('');
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+
+                }
+                SetData.append(oudata);
+            }
+
+        })
+    };
+
+
+    $("#DrpOU").change(function () {
+        //debugger;
+       varou=this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			// debugger;
+				 var SetDatadevice = $('#Device');
+				 //var SetDataip = $('#IP');
+			  jQuery('#Device').html('');
+			   //jQuery('#IP').html('');
+			  var devicedata = "<option value='-1'>Select System Name</option>";
+			   //var ipdata = "<option value='-1'>Select IP Address</option>";
+			    for (var i = 0; i < data.systemip.length; i++) {
+			     devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				  //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            })
+    });
+
+
+	$("#Device").change(function () {
+	   //  debugger;
+		 vardevice=this.value;
+    });
+	//$("#IP").change(function () {
+
+ //       //debugger;
+	//	 varip=this.value;
+ //   });
+	$('input[name="datefilterSystem"]').daterangepicker({
+               autoUpdateInput: true,
+        startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+                locale: {
+				  format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear'
+                }
+            });
+	 $('input[name="datefilterSystem"]').on('apply.daterangepicker', function (ev, picker) {
+			//  debugger;
+			  $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+				 startdate=picker.startDate.format('DD/MM/YYYY');
+			    enddate=picker.endDate.format('DD/MM/YYYY');
+            });
+
+            $('input[name="datefilterSystem"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+
+            $(".model_body_scroll").bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+    var varip = "";
+    $('#btnsystemdata').on('click', function () {
+        var $valid = $('#system_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            //debugger;
+            varip = document.getElementById("IP").value;
+            startdate = $('#datasyatemdata').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#datasyatemdata').data('daterangepicker').endDate.format('DD/MM/YYYY');
+
+            var vardevice = document.getElementById('add_systemname').value;
+            if (vardevice == "") {
+                vardevice = document.getElementById("Device").value;
+            }
+            var url = '@Url.Content("~/csat_report/Get_syatem_Data?startdate=")' + startdate + '&enddate=' + enddate + '&ip=' + varip + '&system=' + vardevice + '&ouid=' + varou;
+            // var Status = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    //debugger;
+                    var SetData = $('#divsystemdata');
+                    jQuery('#divsystemdata').html('');
+                    var datarwa = "";
+                    var devicedata = "";
+                    var tabledata = "";
+                    devicedata = "<table class='table table-striped table-bordered tblpdfexport' style='width:100%'><thead><tr>" +
+                        "<th class='col-sm-4'>Branch/ Unit</th><th class='col-sm-4'>System Name</th><th class='col-sm-3'>IP Address</th><th class='col-sm-1'>Count</th></tr></thead><tbody>";
+                    for (var i = 0; i < data.syatem_data.length; i++) {
+                        datarwa += "<tr class='gradeA'>";
+                        datarwa += "<td class='col-sm-4'>" + data.syatem_data[i].ou_longname + "</td>";
+                        datarwa += "<td class='col-sm-4'>" + data.syatem_data[i].device_name + "</td>";
+                        datarwa += "<td class='col-sm-3'>" + data.syatem_data[i].ip + "</td>";
+                        datarwa += "<td class='col-sm-1'><a href='' data-toggle='modal' data-target='#count_popup' onclick=DatalekageReport(" + startdate + "," + enddate + "," + data.syatem_data[i].device_id + ",'" + encodeURIComponent(data.syatem_data[i].device_name) + "','" + encodeURIComponent(data.syatem_data[i].ip) + "','" + encodeURIComponent(data.syatem_data[i].ou_longname) + "')  >" + data.syatem_data[i].count + "</a></td>";
+                        datarwa += "</tr>";
+
+                    }
+                    tabledata = devicedata + datarwa + "</tbody></table>";
+
+                    //}
+                    SetData.append(tabledata);
+                    reportname = "DataLeakage Report";
+                    datatable_pdfexport(reportname);
+
+                }
+
+            });
+        }
+    });
+
+	var varsdate="";
+	var varedate="";
+	var vardeviceid="";
+	var varsearchtype="";
+	var varmedia="";
+	    function DatalekageReport(sdate,edate,device_id,device_name,ip,ou_longname)
+		{
+		//debugger;
+		 var Setlblou = $('#lblou');
+		   jQuery('#lblou').html('');
+		  Setlblou.append(decodeURI(ou_longname));
+		  var Setlblsystem = $('#lblsystemname');
+		  jQuery('#lblsystemname').html('');
+		  Setlblsystem.append(decodeURI(device_name));
+		  var Setlblip = $('#lblip');
+		   jQuery('#lblip').html('');
+		  Setlblip.append(ip);
+		  varsdate=startdate;
+	     varedate=enddate;
+	     vardeviceid=device_id;
+		    var url = '@Url.Content("~/csat_report/Get_syatem_Device_Data?startdate=")' + startdate + '&enddate=' + enddate + '&deviceid=' + device_id ;
+         $.ajax({
+		     type: "POST",
+            url: url,
+            success: function (data) {
+                var dataclear = document.getElementById('divclear');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divclear').append("<table id='systemdeatilsdatalekage' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('systemdeatilsdatalekage');
+                var data1 = [];
+                for (var i = 0; i < data.datalekage_data.length; i++) {
+                    //data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].source_path, data.datalekage_data[i].destination_path, data.datalekage_data[i].size]);
+                    data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].filepath,  data.datalekage_data[i].size]);
+                }
+                var otable = $("#systemdeatilsdatalekage").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data Leakage_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Dataleakage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Time-Stamp" }, { title: "Status" }, { title: "File Type" }, { title: "File Path" }, { title: "Size(Kb)" }]
+                    //columns: [{ title: "Time-Stamp" }, { title: "Media" }, { title: "File Type" }, { title: "Source Path" }, { title: "Destination Path" }, { title: "Size(Kb)" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+			}
+		});
+}
+
+$("#Media").change(function () {
+	 varmedia=this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatem_Device_Data?startdate=")' + varsdate + '&enddate=' + varedate + '&deviceid=' + vardeviceid + '&media=' + this.value ;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var dataclear = document.getElementById('divclear');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divclear').append("<table id='systemdeatilsdatalekage' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('systemdeatilsdatalekage');
+                var data1 = [];
+                for (var i = 0; i < data.datalekage_data.length; i++) {
+                    //data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].source_path, data.datalekage_data[i].destination_path, data.datalekage_data[i].size]);
+                    data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].source_path, data.datalekage_data[i].size]);
+                }
+                var otable = $("#systemdeatilsdatalekage").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data Leakage_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Dataleakage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Time-Stamp" }, { title: "Status" }, { title: "File Type" }, { title: "File Path" }, { title: "Size(Kb)" }]
+                    //columns: [{ title: "Time-Stamp" }, { title: "Media" }, { title: "File Type" }, { title: "Source Path" }, { title: "Destination Path" }, { title: "Size(Kb)" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+            })
+    });
+
+	$("#searchtype").change(function () {
+	varsearchtype= this.value;
+	});
+
+	//Serch Click Code
+    $('#btnsearch').on('click', function () {
+        var $valid = $('#count_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            // debugger;
+            var Svalue = document.getElementById("searchvalue");
+            var url = '@Url.Content("~/csat_report/Get_syatem_Device_Data?startdate=")' + varsdate + '&enddate=' + varedate + '&deviceid=' + vardeviceid + '&media=' + varmedia + '&searchtype=' + varsearchtype + '&search=' + Svalue.value;
+            document.getElementById('searchvalue').value = ''
+            document.getElementById('searchtype').value = '-1'
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('divclear');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#divclear').append("<table id='systemdeatilsdatalekage' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('systemdeatilsdatalekage');
+                    var data1 = [];
+                    for (var i = 0; i < data.datalekage_data.length; i++) {
+                        //data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].source_path, data.datalekage_data[i].destination_path, data.datalekage_data[i].size]);
+                        data1.push([data.datalekage_data[i].servertime, data.datalekage_data[i].type1, data.datalekage_data[i].filetype, data.datalekage_data[i].source_path, data.datalekage_data[i].size]);
+                    }
+                    var otable = $("#systemdeatilsdatalekage").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data Leakage_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Dataleakage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Time-Stamp" }, { title: "Status" }, { title: "File Type" }, { title: "File Path" }, { title: "Size(Kb)" }]
+                        //columns: [{ title: "Time-Stamp" }, { title: "Media" }, { title: "File Type" }, { title: "Source Path" }, { title: "Destination Path" }, { title: "Size(Kb)" }]
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            })
+        }
+    });
+
+</script>
+<script>
+ 	 var startdate = "";
+    var enddate = "";
+    $('input[name="datefilterRAWDATA"]').val('');
+    $(function () {
+
+        $('input[name="datefilterRAWDATA"]').daterangepicker({
+          autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+                locale: {
+				  format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear'
+                }
+        });
+
+        $('input[name="datefilterRAWDATA"]').on('apply.daterangepicker', function (ev, picker) {
+            //debugger;
+
+
+            //RawDataleakagepopup(startdate, enddate);
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            startdate = picker.startDate.format('DD/MM/YYYY');
+            enddate = picker.endDate.format('DD/MM/YYYY');
+
+        });
+
+        $('input[name="datefilterRAWDATA"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+
+	 // OU Fill
+    var ouid = "";
+    function funrawdata() {
+         var url = '@Url.Content("~/csat_report/GetOU")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU1');
+                jQuery('#DrpOU1').html('');
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+
+                }
+                SetData.append(oudata);
+            }
+        })
+
+    };
+
+    $("#DrpOU1").change(function () {
+
+        ouid = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#Device1');
+				 //var SetDataip = $('#IP1');
+			  jQuery('#Device1').html('');
+			   //jQuery('#IP1').html('');
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+			     devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				  //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+
+    });
+    var ip = "";
+    //$("#IP1").change(function () {
+    //    ip = this.value;
+    // });
+
+    var Device = "";
+    $("#Device1").change(function () {
+        Device = this.value;
+    });
+
+    var Media = "";
+    $("#Media1").change(function () {
+        Media = this.value;
+    });
+
+    var type = "";
+    $("#type1").change(function () {
+        //debugger;
+        type = this.value;
+    });
+
+    var ValueSerach = "";
+    function DataLeakage() {
+        var $valid = $('#raw_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            ip = document.getElementById("IP1").value;
+            startdate = $('#datefilterid').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#datefilterid').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var e = document.getElementById("serachvalue");
+            ValueSerach = e.value;
+            var Device = document.getElementById('add_systemname1').value;
+            if (Device == "") {
+                Device = document.getElementById("Device1").value;
+            }
+            var url = '@Url.Content("~/csat_report/GetRawDataLeakage?startdate=")' + startdate + '&enddate=' + enddate + '&IP=' + ip + '&Device=' + Device + '&Media=' + Media + '&ouid=' + ouid + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+            //   var Status = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('RawDataLeakage_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#RawDataLeakage_div').append("<table id='RawDataLeakage' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('RawDataLeakage');
+                    var data1 = [];
+                    for (var i = 0; i < data.rawdata.length; i++) {
+                        //data1.push([data.rawdata[i].timeStamp, data.rawdata[i].systemName, data.rawdata[i].ip, data.rawdata[i].filetype, data.rawdata[i].media, data.rawdata[i].source_path, data.rawdata[i].destination_path, data.rawdata[i].size, data.rawdata[i].ou_longname]);
+                        data1.push([data.rawdata[i].ou_longname,data.rawdata[i].timeStamp, data.rawdata[i].systemName, data.rawdata[i].ip, data.rawdata[i].filetype, data.rawdata[i].type1, data.rawdata[i].filepath, data.rawdata[i].size]);
+                    }
+                    var otable = $("#RawDataLeakage").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data Leakage_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "DataLeakage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "Time-Stamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Type" }, { title: "Status" }, { title: "File Path" }, { title: "Size(Kb)" }]
+                        //columns: [{ title: "Time-Stamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Type" }, { title: "Status" }, { title: "File Path" }, { title: "Size(Kb)" }, { title: "Branch/ Unit" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    };
+
+    function ShowDataLeakageDetails(chartType, labels) {
+        Bind_DataLeakageDetails(chartType, labels);
+    }
+    function Bind_DataLeakageDetails(chartType, labels) {
+        //alert(startdate);
+        if (startdate == null || startdate == "" || startdate.length <= 0) {
+            //alert(111);
+            startdate = $('#datefilterid').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#datefilterid').data('daterangepicker').endDate.format('DD/MM/YYYY');
+        }
+        //alert(picker.startDate.format('DD/MM/YYYY'));
+        //alert(startdate);
+        $('#dataLeakageDetailsPopup').modal('show');
+            var url = '@Url.Content("~/csat_report/GetDataLeakageChartDetails?startdate=")' + startdate + '&enddate=' + enddate + '&ChartType=' + chartType + '&ChartClickValue=' + labels;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('dataLeakageChartDetails');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#dataLeakageChartDetails').append("<table id='DataLeakageChartDetailsTable' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('DataLeakageChartDetailsTable');
+                    var data1 = [];
+                    for (var i = 0; i < data.chartDetailsdata.length; i++) {
+                        data1.push([data.chartDetailsdata[i].ou_longname,data.chartDetailsdata[i].timeStamp, data.chartDetailsdata[i].systemName, data.chartDetailsdata[i].ip, data.chartDetailsdata[i].filetype, data.chartDetailsdata[i].type1, data.chartDetailsdata[i].filepath, data.chartDetailsdata[i].size]);
+                        //data1.push([data.chartDetailsdata[i].timeStamp, data.chartDetailsdata[i].systemName, data.chartDetailsdata[i].ip, data.chartDetailsdata[i].filetype, data.chartDetailsdata[i].type1, data.chartDetailsdata[i].filepath, data.chartDetailsdata[i].size, data.chartDetailsdata[i].ou_longname]);
+                    }
+                    var otable = $("#DataLeakageChartDetailsTable").DataTable({
+                        data: data1, scrollX: !0,dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data Leakage_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "DataLeakage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Type" }, { title: "Status" }, { title: "File Path" }, { title: "Size(Kb)" }]
+                        //columns: [{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Type" }, { title: "Status" }, { title: "File Path" }, { title: "Size(Kb)" }, { title: "Branch/ Unit" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+    }
+</script>
+<script>
+ 	 var startdate = "";
+    var enddate = "";
+    $('input[name="datefilterRemovable"]').val('');
+    $(function () {
+
+        $('input[name="datefilterRemovable"]').daterangepicker({
+           autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+                locale: {
+				  format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear'
+                }
+        });
+
+        $('input[name="datefilterRemovable"]').on('apply.daterangepicker', function (ev, picker) {
+            //debugger;
+
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            startdate = picker.startDate.format('DD/MM/YYYY');
+            enddate = picker.endDate.format('DD/MM/YYYY');
+
+        });
+
+        $('input[name="datefilterRemovable"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+
+	 // OU Fill
+    var ouid = "";
+    function media_usages() {
+		//debugger;
+		var url = '@Url.Content("~/csat_report/GetOU")';
+        $.ajax({
+		     type: "POST",
+            url: url,
+            success: function (data) {
+			  var SetData = $('#DrpOU3');
+			  jQuery('#DrpOU3').html('');
+			  var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+
+			    for (var i = 0; i < data.ou.length; i++) {
+			     oudata+="<option value='"+ data.ou[i].ouid +"'>"+ data.ou[i].ouname +"</option>";
+
+											}
+                SetData.append(oudata);
+			}
+
+        });
+
+    };
+
+ $("#DrpOU3").change(function () {
+
+        ouid = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#System3');
+				 //var SetDataip = $('#IP3');
+			  jQuery('#System3').html('');
+			   //jQuery('#IP3').html('');
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+     		    for (var i = 0; i < data.systemip.length; i++) {
+			     devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				  //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+				  }
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+
+    });
+    //var ip = "";
+    //$("#IP3").change(function () {
+    //    ip = this.value;
+    // });
+
+    var Device = "";
+    $("#System3").change(function () {
+        Device = this.value;
+    });
+
+    var type = "";
+    $("#Searchtype3").change(function () {
+        //debugger;
+        type = this.value;
+    });
+    var ValueSerach = "";
+    function Removablemedia() {
+        //debugger;
+        var $valid = $('#media_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            ip = document.getElementById("IP3").value;
+            startdate = $('#dateRemovable').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#dateRemovable').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var e = document.getElementById("searchvalue3");
+            ValueSerach = e.value;
+            var Device = document.getElementById('add_systemname2').value;
+            if (Device == "") {
+                Device = document.getElementById("System3").value;
+            }
+
+            var url = '@Url.Content("~/csat_report/GetRemovablemedia?startdate=")' + startdate + '&enddate=' + enddate + '&IP=' + ip + '&Device=' + Device + '&ouid=' + ouid + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('divremovable_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#divremovable_div').append("<table id='divremovable' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('divremovable');
+                    var data1 = [];
+                    for (var i = 0; i < data.removabledata.length; i++) {
+                        data1.push([data.removabledata[i].ou_longname, data.removabledata[i].device_name, data.removabledata[i].ip, data.removabledata[i].login_user, data.removabledata[i].e110deviceused, data.removabledata[i].e110activity, data.removabledata[i].e110starttime, data.removabledata[i].e110endtime, data.removabledata[i].duration]);
+                    }
+                    var otable = $("#divremovable").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data_Leakage", orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Removable Media  Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "Login By" }, { title: "Device Used" }, { title: "Description" }, { title: "Start Time" }, { title: "End Time" }, { title: "Duration (HH:MM:SS)" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    };
+
+</script>
+<script>
+    $(function () {
+        $('input[name="datetime"]').daterangepicker({
+            autoUpdateInput: false,
+            timePicker: true,
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        });
+
+        $('input[name="datetime"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY hh:mm A') + ' - ' + picker.endDate.format('DD/MM/YYYY hh:mm A'));
+        });
+
+        $('input[name="datetime"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+    });
+</script>
+<script>
+ 	 var startdate = "";
+    var enddate = "";
+    $('input[name="datefilterPrinterusage"]').val('');
+
+    $(function () {
+        $('input[name="datefilterPrinterusage"]').daterangepicker({
+            autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+            timePicker: true,
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        });
+
+        $('input[name="datefilterPrinterusage"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY hh:mm A') + ' - ' + picker.endDate.format('DD/MM/YYYY hh:mm A'));
+            startdate = picker.startDate.format('DD/MM/YYYY hh:mm A');
+            enddate = picker.endDate.format('DD/MM/YYYY hh:mm A');
+        });
+
+        $('input[name="datefilterPrinterusage"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+
+
+	 // OU Fill
+    var ouid = "";
+    function printer_usages () {
+		//debugger;
+		var url = '@Url.Content("~/csat_report/GetOU")';
+			//debugger;
+            document.getElementById("searchvalue4").value = "";
+            var SetDatadevice = $('#System4');
+            //var SetDataip = $('#IP4');
+            jQuery('#System4').html('');
+            //jQuery('#IP4').html('');
+            var devicedata = "<option value='-1'>Select System Name</option>";
+            //var ipdata = "<option value='-1'>Select IP Address</option>";
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+            ip = "";
+            Device = "";
+            startdate = "";
+            enddate = "";
+            Printer = "";
+            document.getElementById("IP4").value = '';
+            document.getElementById("Printer").value = '-1';
+            document.getElementById("Searchtype4").value = '-1';
+            jQuery('#divprinterusage').html('');
+        $.ajax({
+		     type: "POST",
+            url: url,
+            success: function (data) {
+			  var SetData = $('#DrpOU4');
+			  jQuery('#DrpOU4').html('');
+			  var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+
+			    for (var i = 0; i < data.ou.length; i++) {
+			     oudata+="<option value='"+ data.ou[i].ouid +"'>"+ data.ou[i].ouname +"</option>";
+
+                }
+                SetData.append(oudata);
+                //var SetPrinterData = $('#Printer');
+                //jQuery('#Printer').html('');
+                //var Printerdata = "<option value='-1'>Select Printer</option>";
+                //              for (var i = 0; i < data.printer.length; i++) {
+                //    Printerdata += "<option>" + data.printer[i].printer + "</option>";
+
+                //}
+
+                //SetPrinterData.append(Printerdata);
+
+			}
+
+        });
+
+    };
+
+ $("#DrpOU4").change(function () {
+
+        ouid = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#System4');
+				 //var SetDataip = $('#IP4');
+			  jQuery('#System4').html('');
+			   //jQuery('#IP4').html('');
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+     		    for (var i = 0; i < data.systemip.length; i++) {
+			     devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				  //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+				  }
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+
+    });
+
+
+
+    //var ip = "";
+    //$("#IP4").change(function () {
+    //    ip = this.value;
+    // });
+
+    var Device = "";
+    $("#System4").change(function () {
+        Device = this.value;
+    });
+    var Printer = "";
+    $("#Printer").change(function () {
+        Printer = this.value;
+    });
+
+
+    // Search Field
+    var showfield = "";
+    var showfieldHeader = "";
+    $('#printerfill').change(function () {
+       // debugger;
+        var $this = $(this);
+        if ($this.length) {
+            showfieldHeader = $("#printerfill option:selected").map(function () {
+                return $(this).text();
+            }).get().join(',');
+            showfield = $(this).val();
+        }
+    });
+
+    // Sort Field
+    var printersort = "";
+    $("#sortingprinter").change(function () {
+        //debugger;
+        printersort = this.value;
+    });
+
+
+
+    var type = "";
+    $("#Searchtype4").change(function () {
+        //debugger;
+        type = this.value;
+    });
+    var ValueSerach = "";
+    function FuncPrinterUsage() {
+        // debugger;
+        //alert("test")
+        var $valid = $('#printer_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //alert("test2")
+            ip = document.getElementById("IP4").value;
+            startdate = $('#DatePrinterusage').data('daterangepicker').startDate.format('DD/MM/YYYY hh:mm A');
+            enddate = $('#DatePrinterusage').data('daterangepicker').endDate.format('DD/MM/YYYY hh:mm A');
+            var e = document.getElementById("searchvalue4");
+            ValueSerach = e.value;
+            var Device = document.getElementById('add_systemname3').value;
+            //alert('Device :' + Device);
+            if (Device == "") {
+                Device = document.getElementById("System4").value;
+            }
+            if (Printer == "")
+            {
+                Printer = document.getElementById("Printer").value;
+            }
+            //alert("DIVESH NAME:" + Device);
+            var url = '@Url.Content("~/csat_report/GetPrinterUsageReport?startdate=")' + startdate + '&enddate=' + enddate + '&IP=' + ip + '&Device=' + Device + '&Printer=' + Printer + '&ouid=' + ouid + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    document.getElementById("lblTotalPages").innerHTML = "Total Pages : " + data.totalPages;
+                    var dataclear = document.getElementById('divprinterusage_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#divprinterusage_div').append("<table id='divprinterusage' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('divprinterusage');
+                    var data1 = [];
+                    for (var i = 0; i < data.printerUsageData.length; i++) {
+                        data1.push([data.printerUsageData[i].ou_longname, data.printerUsageData[i].device_timestamp, data.printerUsageData[i].device_name, data.printerUsageData[i].print_device,  data.printerUsageData[i].ip, data.printerUsageData[i].user_name, data.printerUsageData[i].printer_name, data.printerUsageData[i].doc, data.printerUsageData[i].total_pages]);
+                    }
+                    var otable = $("#divprinterusage").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data_Leakage", orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Printer Usage Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" }, { title: "Time-Stamp" }, { title: "System Name" }, { title: "Print System Name" }, { title: "IP Address" }, { title: "Username" }, { title: "Printer Name" }, { title: "Document" }, { title: "Pages Printed" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    };
+
+</script>
+<script>
+    function clerdata() {
+        $('#divsystemdata').html('');
+        $('#RawDataLeakage_div').html('');
+        $('#divremovable_div').html('');
+        $('#divprinterusage_div').html('');
+        //$('#divremovable_div').DataTable().fnDestroy();
+
+        var SetDatadevice = $('#Device');
+        //var SetDataip = $('#IP');
+        jQuery('#Device').html('');
+        //jQuery('#IP').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        document.getElementById("IP").value = '';
+        document.getElementById("Device").value = '-1';
+        document.getElementById("DrpOU").value = '-1';
+
+        var SetDatadevice = $('#Device1');
+        //var SetDataip = $('#IP1');
+        jQuery('#Device1').html('');
+        //jQuery('#IP1').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        document.getElementById("IP1").value = '';
+        document.getElementById("Device1").value = '-1';
+        document.getElementById("DrpOU1").value = '-1';
+        document.getElementById("Media1").value = '-1';
+        document.getElementById("type1").value = '-1';
+        document.getElementById("serachvalue").value = '';
+
+        var SetDatadevice = $('#System3');
+        //var SetDataip = $('#IP3');
+        jQuery('#System3').html('');
+        //jQuery('#IP3').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        document.getElementById("Searchtype3").value = '-1';
+        document.getElementById("IP3").value = '';
+        document.getElementById("System3").value = '-1';
+        document.getElementById("DrpOU3").value = '-1';
+        document.getElementById("searchvalue3").value = '';
+
+        var SetDatadevice = $('#System4');
+        var SetDataip = $('#IP4');
+        jQuery('#System4').html('');
+        jQuery('#IP4').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        SetDataip.append(ipdata);
+        document.getElementById("Printer").value = '-1';
+        document.getElementById("IP4").value = '-1';
+        document.getElementById("System4").value = '-1';
+        document.getElementById("DrpOU4").value = '-1';
+        document.getElementById("Searchtype4").value = '-1';
+        document.getElementById("searchvalue4").value = '';
+    }
+    function cleardata() {
+        document.getElementById('searchvalue').value = '';
+        document.getElementById('searchtype').value = '-1';
+        document.getElementById('Media').value = '-1';
+        $('systemdeatilsdatalekage').html('');
+    }
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname2').hide();
+    $('#add_system_chk2').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys2').hide();
+            $('#inputsystemname2').show();
+        }
+        else {
+            $('#selectsys2').show();
+            $('#inputsystemname2').hide();
+            document.getElementById('add_systemname2').value = "";
+        }
+    });
+</script>
+
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname3').hide();
+    $('#add_system_chk3').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys3').hide();
+            $('#inputsystemname3').show();
+        }
+        else {
+            $('#selectsys3').show();
+            $('#inputsystemname3').hide();
+            document.getElementById('add_systemname3').value = "";
+        }
+    });
+</script>

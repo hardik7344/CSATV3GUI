@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "License Expire";
+    Layout = "~/Views/csat_login/login_main_page.cshtml";
+}
+
+<div class="custom-login-panel">
+    <div class="row" style="margin-top:100px">
+        <div class="col-xs-1 col-sm-2 col-md-1 col-lg-3">
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="panel panel-primary loginbox">
+                
+                <div class="panel-body">
+                    <div class="alert alert-danger text-center" role="alert">
+                        <span style="font-size:18px"><img src="~/images/Setting/license_expire.png" style="margin-right:10px;height:40px;width:40px;" />The product license has expired.</span>                      
+                    </div>
+                    <div class="alert alert-light text-center" role="alert">
+                        <h6 style="font-size:16px;"> Please contact to :-  <u style="color:indianred">Tectona SoftSolutions (P) Ltd.</u></h6>
+                    </div>
+                    <div class="alert alert-light" role="alert">
+                        <h6 class="pull-left" style="font-size:14px;"> Contact no :- 9099983013</h6>
+                        <h6 class="pull-right" style="font-size:14px;"> Email :- support@tectonas.in</h6>
+                    </div>
+                    <br />
+                    <div class="alert alert-light text-center" role="alert">
+                        @Html.ActionLink("Go to Dashboard", "csat_main_dashboard", "csat_main_dashboard", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-0 col-sm-3 col-md-3 col-lg-3">
+        </div>
+    </div>
+</div>
+

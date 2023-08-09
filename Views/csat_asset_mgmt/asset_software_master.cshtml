@@ -1,0 +1,1263 @@
+﻿
+@{
+    ViewData["Title"] = "Asset_software_master";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script type="text/javascript">
+
+    function Check1() {
+        if (document.getElementById('subscription').checked) {
+            document.getElementById('subscription_user').style.display = 'block';
+            document.getElementById('perpetual_user').style.display = 'none';
+        }
+
+        if (document.getElementById('perpetual').checked) {
+            document.getElementById('perpetual_user').style.display = 'block';
+            document.getElementById('subscription_user').style.display = 'none';
+
+        }
+        if (document.getElementById('subscriptionreport').checked) {
+            document.getElementById('subscription_report').style.display = 'block';
+            document.getElementById('perpetual_report').style.display = 'none';
+        }
+
+        if (document.getElementById('perpetualreport').checked) {
+            document.getElementById('perpetual_report').style.display = 'block';
+            document.getElementById('subscription_report').style.display = 'none';
+
+        }
+
+    }
+    function Check2() {
+        if (document.getElementById('editsubscription').checked) {
+            document.getElementById('subscription_user1').style.display = 'block';
+            document.getElementById('perpetual_user1').style.display = 'none';
+        }
+
+        if (document.getElementById('editperpetual').checked) {
+            document.getElementById('perpetual_user1').style.display = 'block';
+            document.getElementById('subscription_user1').style.display = 'none';
+
+        }
+
+
+    }
+
+</script>
+<body onload="bindsoftdata();">
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button type="button" data-toggle="modal" id="btnsoftware" class="btn btn-primary btn-md day">Add New <b style="font-weight:bolder;">+</b></button>
+                    <button type="button" data-toggle="modal" id="btnsoftreport" class="btn btn-primary btn-md day" onclick="return reportsoftpopup();">Software Master Report </button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Software Master</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!--main Content-->
+    <div class="row">
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding" style="padding-right:0px;">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu" style="padding-bottom: 30px;">
+                    @{
+                        @Html.Partial("csat_asset_mgmt_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <!--sub content-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+
+            <!--asset software form-->
+            <!--form  content-->
+
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <!--asset software Master Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="divgridsoft_div">
+                            <table id="divgridsoft" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+                    <!--asset software  Master Datatable end-->
+                </div>
+            </div>
+        </div>  <!--sub content end-->
+
+        <div class="space_bottom">&nbsp;</div>
+
+    </div> <!--main Content end-->
+    <!--add new software form content-->
+    <div class="modal fade" id="software_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Add New Software</h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" id="frm_sw_add" name="frm_sw_add">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Software Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="software_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Software Name" id="softwarename">
+                                                        
+                                                    </select>
+                                                </div>
+                                                <div id="software_text">
+                                                    <input type="text" class="form-control" id="txtsoftName" name="txtsoftName" placeholder="Software Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="software_check"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Product Description</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="proddesc" name="proddesc" placeholder="Product Description" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Key Number</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="key_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Key Number" id="keynumber">
+                                                        
+                                                    </select>
+                                                </div>
+                                                <div id="key_text">
+                                                    <input type="text" class="form-control" id="txtkey" name="txtkey" placeholder="Key Number" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="key_check"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="vendor_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Vendor Name" id="vendorname">
+                                                        
+                                                    </select>
+                                                </div>
+                                                <div id="vendor_text">
+                                                    <input type="text" class="form-control" id="txtvendorname" name="txtvendorname" placeholder="Vendor Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="vendor_check"></label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Purchase Date</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="startdate" id="purchasedate" class="form-control" placeholder="DD/MM/YYYY " readonly>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">PO No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="pono" name="pono" placeholder="PO No." />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">License Type</label>
+                                            <div class="col-xs-4">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="License Type" id="licensetype">
+                                                    
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">No of License</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="nooflicense" name="nooflicense" placeholder="No of License" onkeypress="return isNumberKey(event)" maxlength="10" />
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Software Type</label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="type" id="subscription" value="subscription" checked onclick="javascript: Check1();"> Subscription </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="type" id="perpetual" value="perpetual" onclick="javascript: Check1();"> Perpetual </label>
+                                                </div>
+                                            </div>
+
+                                            <div id="subscription_user">
+                                                <label for="nameField" class="col-xs-2">Expires on</label>
+                                                <div class="col-xs-4">
+                                                    <input type="text" name="startdate" class="form-control" placeholder="DD/MM/YYYY" id="txtexpdate" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div id="perpetual_user" style="display:none;">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Invoice Number</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="invoicenumber" name="invoicenumber" placeholder="Invoice Number" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Invoice Amount</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="invoiceamount" name="invoiceamount" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Save" name="add" id="btnsavesoftware" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="cancel" id="btncancel" onclick="cleardata()" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div> <!--add new software form content End-->
+    <!--delete software device model  content-->
+    <div class="modal fade " id="delete_software" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Conformation </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-12">
+                                                <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                                <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-4"></label>
+                                            <div class="col-xs-6">
+                                                <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                                <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete software device model  content End-->
+    <!--edit new software form content start-->
+    <div class="modal fade" id="edit_software_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Edit Software Master </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" id="frm_sw_edit" name="frm_sw_edit">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Software Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="software_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Software Name" id="drpSoftwareName">
+                                                        @*<option>Software Name</option>
+                                                            <option value="01" selected>Microsoft Office Professional Plus 2010</option>
+                                                            <option value="02">Google Chrome</option>
+                                                            <option value="03">WinSCP 5.9.1</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="software_text1">
+                                                    <input type="text" class="form-control" id="editSoftwareName" name="editSoftwareName"placeholder="Software Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="software_check1" name="software_check1"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Product Description</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editprodesc" name="editprodesc" placeholder="Product Description" value="Microsoft Office Professional Plus 2010" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Key Number</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="key_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3"  id="drpkeynumber" >
+                                                        @*<option>Key Number</option>
+                                                            <option value="01" selected>2QTVZ-3CMPP-FQBYK-8DRJU</option>
+                                                            <option value="02">4FOFV-DMFID-8DRJU-3CMPP</option>
+                                                            <option value="03">FQBYK-2QTVZ-DMFID-8DRJU</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="key_text1">
+                                                    <input type="text" class="form-control" id="editkey" name="editkey" placeholder="Key Number" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="key_check1" name="key_check1"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="vendor_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Vendor Name" id="drpvendorname" >
+                                                        @*<option>Vendor Name</option>
+                                                            <option value="01" selected>Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="vendor_text1">
+                                                    <input type="text" class="form-control" id="editvendorname" name="editvendorname" placeholder="Vendor Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="vendor_check1" name="vendor_check1"></label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Purchase Date</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="startdate" id="editpurchasedate"  class="form-control" placeholder="DD/MM/YYYY " readonly>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">PO No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editpo" name="editpo" placeholder="PO No." value="5467" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">License Type</label>
+                                            <div class="col-xs-4">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="License Type" id="drplicensetype">
+                                                    @*<option>Select License Type </option>
+                                                        <option value="01" selected>Trail</option>
+                                                        <option value="02">Interprise</option>
+                                                        <option value="03">Gold</option>*@
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">No of License</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editlicenseno" nmae="editlicenseno" placeholder="No of License" onkeypress="return isNumberKey(event)" maxlength="10" value="5" />
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Software Type</label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="type1" id="editsubscription"  value="subscription" onclick="javascript: Check2();"> Subscription </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="type1" id="editperpetual" value="perpetual" onclick="javascript: Check2();"> Perpetual </label>
+                                                </div>
+                                            </div>
+
+                                            <div id="subscription_user1">
+                                                <label for="nameField" class="col-xs-2">Expires on</label>
+                                                <div class="col-xs-4">
+                                                    <input type="text" name="startdate" id="editexpdate"  class="form-control" placeholder="DD/MM/YYYY" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div id="perpetual_user1" style="display:none;">
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Invoice Number</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editinvoicenumber" name="editinvoicenumber" placeholder="Invoice Number" value="46575756768" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Invoice Amount</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editinvoiceamount" name="editinvoiceamount" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="12" value="3000" />
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group model-button">
+
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Save" name="add" id="btnupdatesoftdata" />
+                                                <input type="submit" class="btn btn-default" value="Cancel" name="cancel" id="btnupdatecancle" onclick="cleardata()" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--edit new software form content End-->
+    <!-- software_report  Data pop-up model box  Content-->
+
+    <div class="modal fade" id="software_master_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#fff;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        <ul class="mbreadcrumb" style="margin-bottom: 0px;padding: 4px;">
+                            <li>
+                                <a href="#">Assest Managment</a> <i class="icon-angle-right"></i>
+                            </li>
+                            <li><a href="#"> Software Master </a> <i class="icon-angle-right"></i></li>
+                            <li>    Software Master Report</li>
+                        </ul>
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <!--form  content-->
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="frm_swReport" name="frm_swReport">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1">Type</label>
+                                            <div class="col-xs-3" style="margin-left: 15px;">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="searchtype" id="searchtype">
+                                                    <option value="-1">Select Type</option>
+                                                    <option value="software_name">Software Name</option>
+                                                    <option value="vendor_name">Vendor Name</option>
+                                                    <option value="no_of_licenses">No of Licenses</option>
+                                                    <option value="invoice_number">Invoice Number</option>
+                                                    <option value="invoice_amount">Invoice Amount</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue" autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" onclick="swreport()">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">License Type</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="licensetype1" id="licensetype1">
+                                                    @*<option value="-1">Select License Type</option>
+                                                        <option value="Trial">Trial</option>
+                                                        <option value="Gold">Gold</option>*@
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Software Type</label>
+                                            <div class="col-xs-1" style="margin-left:20px;margin-right:20px;">
+                                                <div class="radio">
+                                                    <label class="form_label"><input type="radio" name="radiotype" id="subscriptionreport" value="subscription" checked onclick="javascript: Check1();"> Subscription </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-1 form_label" style="margin-left:20px;">
+                                                <div class="radio">
+                                                    <label class="form_label"> <input type="radio" name="radiotype" id="perpetualreport" value="perpetual" onclick="javascript: Check1();"> Perpetual </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Selection</label>
+                                            <div id="subscription_report">
+                                                <div class="col-xs-2" style="margin-left: 15px;">
+                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="datetype" id="datetype">
+                                                        <option value="-1">Select Date Type</option>
+                                                        <option value="Purchase">Purchase Date</option>
+                                                        <option value="Expiry">Expiry Date</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div id="perpetual_report" style="display:none;">
+                                                <div class="col-xs-2" style="margin-left: 15px;">
+                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="datetype" id="datetype">
+                                                        <option value="-1">Select Date Type</option>
+                                                        <option value="Purchase">Purchase Date</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <input type="text" name="datetime1" class="form-control" placeholder="DD/MM/YYYY - DD/MM/YYYY " id="datetime1" readonly>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" onclick="swreport()">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--End form  content-->
+                        </div>
+                    </div>
+                    <!--software_datatable  Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="tblswreport_div">
+                            <table id="tblswreport" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+
+                    <!--software_datatable  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End software_report pop-up model box Content -->
+</body>
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_swReport");
+        validateSingleForm("#frm_sw_edit");
+        validateSingleForm("#frm_sw_add");        
+    });
+</script>
+
+<script src="~/js/moment.min.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+    var startdate = '';
+    var enddate = '';
+    $(function () {
+        //debugger;
+        $('input[name="datetime1"]').daterangepicker({
+            autoUpdateInput: false,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+            locale: {
+                format: 'DD/MM/YYYY',
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="datetime1"]').on('apply.daterangepicker', function (ev, picker) {
+            //  debugger;
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+
+        });
+
+        $('input[name="datetime1"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+
+    $(function () {
+        $('input[name="startdate"]').daterangepicker({
+            autoUpdateInput: false,
+            startDate: moment().startOf('hour'),
+            // endDate: moment().startOf('hour').add(48, 'hour'),
+            singleDatePicker: true,
+            minYear: 1901,
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY'
+            }
+        });
+
+        $('input[name="startdate"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+        });
+
+        //$('input[name="date"]').on('cancel.daterangepicker', function (ev, picker) {
+        //    $(this).val('');
+        //});
+
+    });
+
+
+    $('#software_text').hide();
+
+    $('#software_check').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#software_select').hide();
+            $('#software_text').show();
+        }
+        else {
+            $('#software_select').show();
+            $('#software_text').hide();
+        }
+    });
+
+    $('#key_text').hide();
+
+    $('#key_check').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#key_select').hide();
+            $('#key_text').show();
+        }
+        else {
+            $('#key_select').show();
+            $('#key_text').hide();
+        }
+    });
+
+    $('#vendor_text').hide();
+
+    $('#vendor_check').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#vendor_select').hide();
+            $('#vendor_text').show();
+        }
+        else {
+            $('#vendor_select').show();
+            $('#vendor_text').hide();
+        }
+    });
+
+    $('#software_text1').hide();
+
+    $('#software_check1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#software_select1').hide();
+            $('#software_text1').show();
+        }
+        else {
+            $('#software_select1').show();
+            $('#software_text1').hide();
+        }
+    });
+
+    $('#key_text1').hide();
+
+    $('#key_check1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#key_select1').hide();
+            $('#key_text1').show();
+        }
+        else {
+            $('#key_select1').show();
+            $('#key_text1').hide();
+        }
+    });
+
+    $('#vendor_text1').hide();
+
+    $('#vendor_check1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#vendor_select1').hide();
+            $('#vendor_text1').show();
+        }
+        else {
+            $('#vendor_select1').show();
+            $('#vendor_text1').hide();
+        }
+    });
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+
+    function bindsoftdata()
+    {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);　
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/get_offline_software_data/")',
+            success: function (data) {
+                var dataclear = document.getElementById('divgridsoft_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divgridsoft_div').append("<table id='divgridsoft' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divgridsoft');
+                var data1 = [];
+                var sw_type = "";
+                for (var i = 0; i < data.softdata.length; i++) {
+                    if (data.softdata[i].purchase_date == '01-01-1900') { data.softdata[i].purchase_date = ''; } if (data.softdata[i].expiry_date == '01-01-1900') { data.softdata[i].expiry_date = ''; }
+                    if (data.softdata[i].software_type == "Subscription")
+                        sw_type = data.softdata[i].expiry_date;
+                    else
+                        sw_type = "";
+                    var sw_edit = "<div class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick='editsoftdata(" + data.softdata[i].software_id +")'   title='Edit'></i></div>";
+                    var deleteedit = "<div class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  title='Delete' onclick='deletesoftdata(" + data.softdata[i].software_id +")' ></i></div>";
+                    data1.push([data.softdata[i].software_name, data.softdata[i].key_number, data.softdata[i].licenses_type, data.softdata[i].no_of_licenses, data.softdata[i].vendor, data.softdata[i].purchase_date, sw_type, sw_edit, deleteedit]);
+                }
+                var otable = $("#divgridsoft").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                    columns: [{ title: "Software", width: '200px' }, { title: "Key Number", width: '80px' }, { title: "Type of Licenses", width: '70px' }, { title: "No of Licenses", width: '70px' }, { title: "Vendor", width: '50px' }, { title: "Purchase Date", width: '70px' }, { title: "Expiry Date", width: '10px' },{ title: "Edit", width: '20px', orderable: false }, { title: "Delete", width: '15px', orderable: false }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+        }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+   }
+    // Get Software  dropdown data
+    function getdrpvalue() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/get_offline_software_dropdowndata/")',
+            success: function (data) {
+                // Bind Software
+                var Setsoftdata = $('#softwarename');
+                jQuery('#softwarename').html('');
+                var softdata = "<option value='-1'>Software Name</option>";
+                for (var i = 0; i < data.software.length; i++) {
+                    softdata += "<option value='" + data.software[i].software_name + "'>" + data.software[i].software_name + "</option>";
+                }
+                Setsoftdata.append(softdata);
+                // Bind Key number
+                var Setkeydata = $('#keynumber');
+                jQuery('#keynumber').html('');
+                var keydata = "<option value='-1'>Key Number</option>";
+                for (var i = 0; i < data.key.length; i++) {
+                    keydata += "<option value='" + data.key[i].key_number + "'>" + data.key[i].key_number + "</option>";
+                }
+                Setkeydata.append(keydata);
+                // Bind Vendor
+                var Setvendordata = $('#vendorname');
+                jQuery('#vendorname').html('');
+                var vendordata = "<option value='-1'>Vendor Name</option>";
+                for (var i = 0; i < data.vendor.length; i++) {
+                    vendordata += "<option value='" + data.vendor[i].vendor_id + "'>" + data.vendor[i].vendor_name + "</option>";
+                }
+                Setvendordata.append(vendordata);
+                // Bind License Type
+                var Setlicensetypedata = $('#licensetype');
+                jQuery('#licensetype').html('');
+                var licensetypedata = "<option value='-1'>Select License Type</option>";
+                for (var i = 0; i < data.licensetype.length; i++) {
+                    licensetypedata += "<option value='" + data.licensetype[i].license_name + "'>" + data.licensetype[i].license_name + "</option>";
+                }
+                Setlicensetypedata.append(licensetypedata);
+
+            }
+        });
+    }
+    $('#btnsoftware').on('click', function () {
+        getdrpvalue();
+        document.getElementById('subscription').checked = true;
+        $('#software_master').modal('show');
+    });
+    var softtype = "";
+    //debugger;
+    $('input[type=radio]').change(function () {
+        softtype = this.value;
+    });
+
+    // Add Software data
+
+    $('#btnsavesoftware').on('click', function () {
+        var $valid = $('#frm_sw_add').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            //debugger;
+            var softname = "";
+            var varkeynumber = "";
+            var varexpdate = "";
+            var varvendername = 0;
+            var vartextvendername = "";
+
+            var chekboxsoft = document.getElementById("software_check");
+            if ($("#txtsoftName").val() == "" && $("#softwarename").val() == "-1") {
+                alert('please enter Software Detail !');
+                return false;
+            }
+            if (chekboxsoft.checked) {
+                if ($("#txtsoftName").val() == "") {
+                    alert('Please enter software name !');
+                    return false;
+                }
+                else {
+                    softname = document.getElementById("txtsoftName").value;
+                }
+            }
+            else {
+                if ($("#softwarename").val() == "-1") {
+                    alert('please select Software name !');
+                    return false;
+                }
+                else {
+                    softname = document.getElementById("softwarename").value;
+                    if (softname == '-1')
+                        softname = "";
+                }
+            }
+
+            var chekboxkeynumber = document.getElementById("key_check");
+            if (chekboxkeynumber.checked) {
+                varkeynumber = document.getElementById("txtkey").value;
+            }
+            else {
+                varkeynumber = document.getElementById("keynumber").value;
+                if (varkeynumber == '-1')
+                    varkeynumber = "";
+            }
+
+
+            var chekboxvendor = document.getElementById("vendor_check");
+            if (chekboxvendor.checked) {
+                vartextvendername = document.getElementById("txtvendorname").value;
+            }
+            else {
+                varvendername = document.getElementById("vendorname").value;
+
+                if (varvendername == '-1')
+                    varvendername = 0;
+            }
+
+            if (document.getElementById('subscription').checked) {
+                varexpdate = document.getElementById('txtexpdate').value;
+                softtype = "Subscription";
+            }
+            else
+                softtype = "Perpetual";
+            var varprodesc = document.getElementById("proddesc").value;
+            var varpurchasedate = document.getElementById("purchasedate").value;
+            var varpo = document.getElementById("pono").value;
+            varlicensetype = document.getElementById('licensetype').value;
+            if (varlicensetype == '-1')
+                varlicensetype = "";
+            var varnooflicense = document.getElementById("nooflicense").value;
+            var varinvoicenumber = document.getElementById("invoicenumber").value;
+            var varinvoiceamt = document.getElementById("invoiceamount").value;
+            var url = '@Url.Content("~/csat_asset_mgmt/store_sofwaredata?soft_name=")' + softname + '&prodesc=' + varprodesc + '&key=' + varkeynumber + '&textvendor=' + vartextvendername + '&vendor=' + varvendername + '&p_date=' + varpurchasedate + '&po_no=' + varpo + '&licensetype=' + varlicensetype + '&licenseno=' + varnooflicense + '&softtype=' + softtype + '&expdate=' + varexpdate + '&invoiceno=' + varinvoicenumber + '&invoiceamt=' + varinvoiceamt;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (result) {
+                    //debugger;
+                    alert(result);
+                    document.getElementById("softwarename").value = '-1';
+                    document.getElementById("txtsoftName").value = '';
+                    document.getElementById("software_check").checked = false;
+                    document.getElementById("proddesc").value = '';
+                    document.getElementById("key_check").checked = false;
+                    document.getElementById("keynumber").value = '-1';
+                    document.getElementById("txtkey").value = '';
+                    document.getElementById("vendor_check").checked = false;
+                    document.getElementById("txtvendorname").value = '';
+                    document.getElementById("vendorname").value = '-1';
+                    document.getElementById("pono").value = '';
+                    document.getElementById('licensetype').value = '-1';
+                    document.getElementById("nooflicense").value = '';
+                    document.getElementById('subscription').checked = true;
+                    document.getElementById('txtexpdate').value = '';
+                    document.getElementById("invoicenumber").value = '';
+                    document.getElementById("invoiceamount").value = '';
+                    $('#software_master').modal('show');
+                    bindsoftdata();
+                }
+            });
+
+        }
+    });
+     var softid="";
+   function deletesoftdata(id)
+   {
+   //debugger;
+       softid=id;
+       $('#delete_software').modal('show');
+   }
+    $('#btndelete').on('click',function(){
+     //   debugger;
+        var url1 = '@Url.Content("~/csat_asset_mgmt/delete_softdata?softid=")' + softid;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_software').modal('hide');
+                bindsoftdata();
+			}
+			});
+    });
+    $('#btndeletecancle').on('click', function () {
+        $('#delete_software').modal('hide');
+    });
+    var softid = "";
+    function editsoftdata(id) {
+        softid = id;
+        var url1= '@Url.Content("~/csat_asset_mgmt/get_show_offline_software_data?softid=")'+id;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+         success: function (data) {
+           //  debugger;
+             var setsoftname = $('#drpSoftwareName');
+             jQuery('#drpSoftwareName').html('');
+             var softdata = "<option value='-1'>Software Name</option>";
+             for (var i = 0; i < data.software.length; i++) {
+                 if (data.softdatasoftwise[0].software_name == data.software[i].software_name)
+                     softdata += "<option value='" + data.software[i].software_name + "' selected>" + data.software[i].software_name + "</option>";
+                 else
+                     softdata += "<option value='" + data.software[i].software_name + "'>" + data.software[i].software_name + "</option>";
+             }
+             setsoftname.append(softdata);
+             document.getElementById("editprodesc").value = data.softdatasoftwise[0].product_desc;
+        var setkeyname = $('#drpkeynumber');
+        jQuery('#drpkeynumber').html('');
+        var keydata = "<option value='-1'>key Number</option>";
+             for (var i = 0; i < data.key.length; i++) {
+            if (data.softdatasoftwise[0].key_number == data.key[i].key_number)
+                keydata += "<option value='" + data.key[i].key_number + "' selected>" + data.key[i].key_number + "</option>";
+            else
+                keydata += "<option value='" + data.key[i].key_number + "'>" + data.key[i].key_number + "</option>";
+        }
+             setkeyname.append(keydata);
+
+             var setvedorname = $('#drpvendorname');
+             jQuery('#drpvendorname').html('');
+             var vendordata = "<option value='-1'>Vendor Name</option>";
+             for (var i = 0; i < data.vendor.length; i++) {
+                 if (data.softdatasoftwise[0].vendor == data.vendor[i].vendor_name)
+                     vendordata += "<option value='" + data.vendor[i].vendor_id + "' selected>" + data.vendor[i].vendor_name + "</option>";
+                 else
+                     vendordata += "<option value='" + data.vendor[i].vendor_id + "'>" + data.vendor[i].vendor_name + "</option>";
+             }
+             setvedorname.append(vendordata);
+
+
+             document.getElementById("editpurchasedate").value = data.softdatasoftwise[0].purchase_date;
+             document.getElementById("editpo").value = data.softdatasoftwise[0].po_no;
+
+             var setlicensetype = $('#drplicensetype');
+             jQuery('#drplicensetype').html('');
+             var licesedata = "<option value='-1'>Select License Type</option>";
+             for (var i = 0; i < data.licensetype.length; i++) {
+                 if (data.softdatasoftwise[0].licenses_type == data.licensetype[i].license_name)
+                     licesedata += "<option value='" + data.licensetype[i].license_name + "' selected>" + data.licensetype[i].license_name + "</option>";
+                 else
+                     licesedata += "<option value='" + data.licensetype[i].license_name + "'>" + data.licensetype[i].license_name + "</option>";
+             }
+             setlicensetype.append(licesedata);
+             document.getElementById("editlicenseno").value = data.softdatasoftwise[0].no_of_licenses;
+             document.getElementsByName("type1").value = data.softdatasoftwise[0].software_type;
+             if (data.softdatasoftwise[0].software_type == "Subscription") {
+                 document.getElementById('editsubscription').checked = true;
+                 document.getElementById("editexpdate").value = data.softdatasoftwise[0].expiry_date;
+                 document.getElementById('perpetual_user1').style.display = 'none';
+                 document.getElementById('subscription_user1').style.display = 'block';
+             }
+             else {
+                 document.getElementById('editperpetual').checked = true;
+                 document.getElementById("editexpdate").value = "";
+                 document.getElementById('perpetual_user1').style.display = 'block';
+                 document.getElementById('subscription_user1').style.display = 'none';
+             }
+             document.getElementById("editinvoicenumber").value = data.softdatasoftwise[0].invoice_number;
+             document.getElementById("editinvoiceamount").value = data.softdatasoftwise[0].invoice_amount;
+            }
+        });
+        $('#edit_software_master').modal('show');
+    }
+
+    // Update Data
+    $('#btnupdatesoftdata').on('click', function () {
+       // debugger;
+        var $valid = $('#frm_sw_edit').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            var softname = "";
+            var varkeynumber = "";
+            var varexpdate = "";
+            var varvendername = 0;
+            var vartextvendername = "";
+
+            var chekboxsoft = document.getElementById("software_check1");
+            if (chekboxsoft.checked) {
+                softname = document.getElementById("editSoftwareName").value;
+            }
+            else {
+                softname = document.getElementById("drpSoftwareName").value;
+                if (softname == '-1')
+                    softname = "";
+            }
+            var chekboxkeynumber = document.getElementById("key_check1");
+            if (chekboxkeynumber.checked) {
+                varkeynumber = document.getElementById("editkey").value;
+            }
+            else {
+                varkeynumber = document.getElementById("drpkeynumber").value;
+                if (varkeynumber == '-1')
+                    varkeynumber = "";
+            }
+            var chekboxvendor = document.getElementById("vendor_check1");
+            if (chekboxvendor.checked) {
+                vartextvendername = document.getElementById("editvendorname").value;
+            }
+            else {
+                varvendername = document.getElementById("drpvendorname").value;
+
+                if (varvendername == '-1')
+                    varvendername = 0;
+            }
+            if (document.getElementById('editsubscription').checked) {
+                varexpdate = document.getElementById('editexpdate').value;
+                softtype = "Subscription";
+            }
+            else
+                softtype = "Perpetual";
+            var varprodesc = document.getElementById("editprodesc").value;
+            var varpurchasedate = document.getElementById("editpurchasedate").value;
+            var varpo = document.getElementById("editpo").value;
+            varlicensetype = document.getElementById('drplicensetype').value;
+            if (varlicensetype == '-1')
+                varlicensetype = "";
+            var varnooflicense = document.getElementById("editlicenseno").value;
+            var varinvoicenumber = document.getElementById("editinvoicenumber").value;
+            var varinvoiceamt = document.getElementById("editinvoiceamount").value;
+            var url = '@Url.Content("~/csat_asset_mgmt/Edit_offlinesoftwaredata?soft_id=")' + softid + '&soft_name=' + softname + '&prodesc=' + varprodesc + '&key=' + varkeynumber + '&textvendor=' + vartextvendername + '&vendor=' + varvendername + '&p_date=' + varpurchasedate + '&pono=' + varpo + '&licensetype=' + varlicensetype + '&nolicense=' + varnooflicense + '&softtype=' + softtype + '&expdate=' + varexpdate + '&invnumber=' + varinvoicenumber + '&invamt=' + varinvoiceamt;
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                success: function (result) {
+                    //   debugger;
+                    alert(result);
+                    $('#edit_software_master').modal('show');
+                    bindsoftdata();
+                }
+            });
+        }
+    });
+</script>
+<script>
+    function getreportvalue() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/get_offline_software_dropdowndata_report/")',
+            success: function (data) {
+                // Bind License Type
+                var Setlicensetypedata1 = $('#licensetype1');
+                jQuery('#licensetype1').html('');
+                var licensetypedata = "<option value='-1'>Select License Type</option>";
+                for (var i = 0; i < data.licensetype.length; i++) {
+                    licensetypedata += "<option value='" + data.licensetype[i].license_name + "'>" + data.licensetype[i].license_name + "</option>";
+                }
+                Setlicensetypedata1.append(licensetypedata);
+            }
+        });
+    }
+    function reportsoftpopup() {
+        getreportvalue();
+        $('#software_master_report').modal('show');
+    }
+    var softtypevalue = "";
+    $('input[type=radio]').change(function () {
+        softtypevalue = this.value;
+    });
+
+    $("#datetype").change(function () {
+        document.getElementById("datetime1").value = '';
+    })
+    function swreport() {
+        //debugger;
+
+        var $valid = $('#frm_swReport').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+
+            startdate = $('#datetime1').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#datetime1').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var serchtype = document.getElementById('searchtype').value;
+            var searchval = document.getElementById('searchvalue').value;
+            var licensetype1 = document.getElementById('licensetype1').value;
+            var dateduration = document.getElementById('datetype').value;
+            if (softtypevalue == '')
+                softtypevalue = 'Subscription';
+
+            var url = '@Url.Content("~/csat_asset_mgmt/Asset_swreport?serchtype=")' + serchtype + '&searchval=' + searchval + '&licensetype1=' + licensetype1 + '&startdate=' + startdate + '&enddate=' + enddate + '&dateduration=' + dateduration + '&softtypevalue=' + softtypevalue;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblswreport_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblswreport_div').append("<table id='tblswreport' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblswreport');
+                    var data1 = [];
+                    for (var i = 0; i < data.swreportdata.length; i++) {
+                        if (data.swreportdata[i].purchase_date == '01-01-1900') { data.swreportdata[i].purchase_date = ''; } if (data.swreportdata[i].expiry_date == '01-01-1900') { data.swreportdata[i].expiry_date = ''; }
+                        data1.push([data.swreportdata[i].software_name, data.swreportdata[i].product_desc, data.swreportdata[i].key_number, data.swreportdata[i].vendor_name, data.swreportdata[i].purchase_date, data.swreportdata[i].po_no, data.swreportdata[i].licenses_type, data.swreportdata[i].no_of_licenses, data.swreportdata[i].software_type, data.swreportdata[i].expiry_date, data.swreportdata[i].invoice_number, data.swreportdata[i].invoice_amount]);
+                    }
+                    var otable = $("#tblswreport").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Software Master Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Software Master Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Software Name" }, { title: "Product Description" }, { title: "Key Number" }, { title: "Vendor Name" }, { title: "Purchase Date" }, { title: "PO No." }, { title: "License Type" }, { title: "No of Licenses" }, { title: "Software Type" }, { title: "Expiry Date" }, { title: "Invoice Number" }, { title: "Invoice Amount" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    }
+    function cleardata() {
+        document.getElementById("softwarename").value = '-1';
+        document.getElementById("txtsoftName").value = '';
+        $('#software_text').hide();
+        $('#software_select').show();
+        document.getElementById('software_check').checked = false;
+        document.getElementById("proddesc").value = '';
+        document.getElementById("keynumber").value = '-1';
+        document.getElementById("txtkey").value = '';
+        $('#key_text').hide();
+        $('#key_select').show();
+        document.getElementById('key_check').checked = false;
+        document.getElementById("vendorname").value = '-1';
+        document.getElementById("txtvendorname").value = '';
+        $('#vendor_text').hide();
+        $('#vendor_select').show();
+        document.getElementById('vendor_check').checked = false;
+        document.getElementById("purchasedate").value = '';
+        document.getElementById("pono").value = '';
+        document.getElementById("licensetype").value = '-1';
+        document.getElementById("nooflicense").value = '';
+        document.getElementById("subscription").checked = true;
+        $('#subscription_user').show();
+        document.getElementById("txtexpdate").value = '';
+        document.getElementById("invoicenumber").value = '';
+        document.getElementById("invoiceamount").value = '';
+        //edit
+        document.getElementById("drpSoftwareName").value = '-1';
+        document.getElementById("editSoftwareName").value = '';
+        $('#software_text1').hide();
+        $('#software_select1').show();
+        document.getElementById('software_check1').checked = false;
+        document.getElementById("editprodesc").value = '';
+        document.getElementById("drpkeynumber").value = '-1';
+        document.getElementById("editkey").value = '';
+        $('#key_text1').hide();
+        $('#key_select1').show();
+        document.getElementById('key_check1').checked = false;
+        document.getElementById("drpvendorname").value = '-1';
+        document.getElementById("editvendorname").value = '';
+        $('#vendor_text1').hide();
+        $('#vendor_select1').show();
+        document.getElementById('vendor_check1').checked = false;
+        document.getElementById("editpurchasedate").value = '';
+        document.getElementById("editpo").value = '';
+        document.getElementById("drplicensetype").value = '-1';
+        document.getElementById("editlicenseno").value = '';
+        document.getElementById("editsubscription").checked = true;
+        $('#subscription_user1').show();
+        document.getElementById("editinvoicenumber").value = '';
+        document.getElementById("editinvoiceamount").value = '';
+        document.getElementById("searchtype").value = '-1';
+        document.getElementById("searchvalue").value = '';
+        document.getElementById("licensetype1").value = '-1';
+        document.getElementById('subscriptionreport').checked = true;
+        document.getElementById('perpetualreport').checked = false;
+        document.getElementById("datetype").value = '-1';
+        document.getElementById("datetime1").value = '';
+    }
+</script>

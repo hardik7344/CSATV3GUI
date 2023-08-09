@@ -1,0 +1,670 @@
+﻿@using OwnYITCSAT.Controllers;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using OwnYITCSAT.DataAccessLayer;
+@{
+    ViewData["Title"] = "csat_asset_mgmt";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<body onload="alerttblfilldata();">
+    <div class="row">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <!--asset management main content -->
+    <div class="row">
+
+        <!--asset management side menu -->
+        <div class="col-sm-2 col-md-2 col-lg-2" style="padding-right:0px;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content " style="padding-bottom: 30px;">
+                    @{
+                        @Html.Partial("csat_asset_mgmt_menu");
+                    }
+                </div>
+            </div>
+
+        </div>  <!--asset management side menu end-->
+        <!--asset management content-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <!--asset management  chart end content-->
+            <!--asset management  table  content-->
+            <div class="row ibox">
+                <div class="43 div_none  col-sm-12 col-md-12 col-lg-12 ibox-content">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content">*@
+                    <div class="table-responsive" id="Topalerttbl">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!-- End of Top Alert Content-->
+            </div>
+
+            <div class="row ibox">
+                <!--OS Summary Content-->
+                <div class="44 div_none col-sm-6 col-md-6 col-lg-6">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="os">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!--End of OS Summary Content -->
+                <!--Processor Detail Content-->
+
+                <div class="45 div_none col-sm-6 col-md-6 col-lg-6">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="processors">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!-- End  of Processor Detail Content -->
+                <!--Disk Content-->
+                <div class="48 div_none col-sm-6 col-md-6 col-lg-6 ">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="Disk">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!-- End of Disk Content-->
+                <!--RAM Content-->
+                <div class="49 div_none col-sm-6 col-md-6 col-lg-6">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="ram">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!--End of RAM Content-->
+                <!--Hardware Content-->
+                <div class="46 div_none col-sm-6 col-md-6 col-lg-6 ">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="hardware">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!--End of Hardware Content-->
+                <!--Software Content-->
+                <div class="47 div_none col-sm-6 col-md-6 col-lg-6">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="software">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!--End of Software Content-->
+                <!--User Summary Content-->
+                <div class="50 div_none col-sm-6 col-md-6 col-lg-6 ">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="User">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                </div>
+                <!--End of User Summary Content-->
+                <!--User Summary Content-->
+                <div class="51 div_none col-sm-6 col-md-6 col-lg-6 ">
+                    @*<div class="ibox float-e-margins">
+                        <div class="ibox-content asset_tab_height">*@
+                    <div class="table-responsive" id="domain">
+
+                    </div>
+                    &nbsp;
+                    @*</div>
+                        </div>*@
+                    @*End of USB Violation Content*@
+                </div>
+                <!--End of User Summary Content-->
+            </div>
+            &nbsp;
+            <!--asset management  table  content end-->
+        </div>
+        <!-- asset management content end-->
+
+    </div>
+    <div class="modal fade" id="popup_modal_details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title" id="popupHeading">
+                        Asset Data Details 
+                    </h6>
+                    <h6 id="lblHeadingDetails" style="display:none" />
+                </div>                
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="div_popup_modal_details">
+                                <table id="tblAssetSummaryDetails" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</body>
+<script type="text/javascript">
+
+    function alerttblfilldata() {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);　
+       $.ajax({
+            type: "POST",
+            url:  '@Url.Content("~/csat_asset_mgmt/GetAssetMgtTables")',
+            success: function (data) {
+                //ALerts
+                $('#Topalerttbl').html('');
+                var SetData = $('#Topalerttbl');
+                var Data = "<table class='table  table-bordered nowrap tblscrolly' style='width:100%'><thead><tr><th colspan='7' class='table_tital'>Top 10 notifications</th></tr>" +
+                    "<tr><th class='col-sm-2'>Client Time</th><th class='col-sm-2'>Server Time</th><th class='col-sm-2'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Type</th><th class='col-sm-1'>Status</th><th class='col-sm-3'>Message</th></tr>"+
+                    "</thead><tbody>";
+                for (var i = 0; i < data.topalert.length; i++) {
+                    Data += "<tr><td class='col-sm-2'>" + data.topalert[i].date_time + "</td><td class='col-sm-2'>" + data.topalert[i].server_time + "</td><td class='col-sm-2' > " + data.topalert[i].systemname + "</td >" +
+                        "<td class='col-sm-1'>" + data.topalert[i].ipaddress + "</td><td class='col-sm-1' > " + data.topalert[i].category + "</td >" +
+                        "<td class='col-sm-1'>" + data.topalert[i].status + "</td><td class='col-sm-5' > " + data.topalert[i].message + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_scrolly();
+                //OS
+                var detailsType = 'OS_SUMMARY';
+                $('#os').html('');
+                var SetData = $('#os');
+                var Data = "<table class='table table-bordered nowrap tblscrolly'  style='width:100%'><thead><tr><th colspan='3' class='table_tital'>Summary of operating systems details</th></tr>" +
+                    "<tr><th class='col-sm-10'>Name</th><th class='col-sm-1'>Type </th><th class='col-sm-1' >Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.osdata.length; i++) {
+                    Data += "<tr><td class='col-sm-10'>" + data.osdata[i].osname + "</td>"+
+                        "<td class='col-sm-1' > " + data.osdata[i].os_type + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.osdata[i].osname) + "','" + encodeURI(data.osdata[i].os_type) + "');><a href='#'>" + data.osdata[i].counts + "</a></td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_scrolly();
+                //Processors
+                detailsType = 'PROCESSOR_SUMMARY';
+                $('#processors').html('');
+                var SetData = $('#processors');
+                var Data = "<table class='table  table-bordered nowrap tblscrolly'  style='width:100%'><thead><tr><th colspan='2' class='table_tital'>Summary of processor details </th></tr>" +
+                    "<tr><th class='col-sm-11'> Name</th><th class='col-sm-1' >Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.processordata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.processordata[i].processorname + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.processordata[i].processorname) + "','');><a href='#'>" + data.processordata[i].count + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.processordata[i].count + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_scrolly();
+                //User
+                detailsType = 'USER_SUMMARY';
+                $('#User').html('');
+                var SetData = $('#User');
+                var Data = "<table class='table  table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of system user details</th><th class='col-sm-1' data-orderable='false'>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.userdata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.userdata[i].userSummary + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.userdata[i].userSummary) + "','');><a href='#'>" + data.userdata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.userdata[i].counts + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+             //Domain
+                detailsType = 'DOMAIN_SUMMARY';
+                $('#domain').html('');
+                var SetData = $('#domain');
+                var Data = "<table class='table table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of workgroup/ domain details</th><th class='col-sm-1' data-orderable='false'>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.domaindata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.domaindata[i].domainName + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.domaindata[i].domainName) + "','');><a href='#'>" + data.domaindata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.domaindata[i].counts + "</td></tr>";
+                }
+                Data += "<tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+                //Disk
+                detailsType = 'DISK_SUMMARY';
+                $('#Disk').html('');
+                var SetData = $('#Disk');
+                var Data = "<table class='table  table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of hard disk details</th><th class='col-sm-1' data-orderable='false's>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.diskdata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.diskdata[i].diskutilization + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.diskdata[i].diskutilization) + "','');><a href='#'>" + data.diskdata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.diskdata[i].counts + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+                //RAM
+                detailsType = 'RAM_SUMMARY';
+                $('#ram').html('');
+                var SetData = $('#ram');
+                var Data = "<table class='table  table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of RAM details</th><th class='col-sm-1' data-orderable='false'>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.ramdata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.ramdata[i].ramdetails + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.ramdata[i].ramdetails) + "','');><a href='#'>" + data.ramdata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.ramdata[i].counts + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+                //Hardware
+                detailsType = 'HARDWARE_SUMMARY';
+                $('#hardware').html('');
+                var SetData = $('#hardware');
+                var Data = "<table class='table  table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of system details</th><th class='col-sm-1' data-orderable='false'>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.hardwaredata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.hardwaredata[i].hardwareDetails + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.hardwaredata[i].hardwareDetails) + "','');><a href='#'>" + data.hardwaredata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.hardwaredata[i].counts + "</td></tr>";
+                }
+                Data += "</tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+                //Software
+                detailsType = 'SOFTWARE_SUMMARY';
+                $('#software').html('');
+                var SetData = $('#software');
+                var Data = "<table class='table table-bordered nowrap tblsimple'  style='width:100%'><thead>" +
+                    "<tr><th class='col-sm-11' data-orderable='false'>Summary of software details</th><th class='col-sm-1'data-orderable='false'>Counts</th></tr>" +
+                    "</thead><tbody>";
+                for (var i = 0; i < data.softwaredata.length; i++) {
+                    Data += "<tr><td class='col-sm-11'>" + data.softwaredata[i].softwareDetails + "</td>" +
+                        "<td class='col-sm-1' onclick=bind_popup_details('" + detailsType + "','" + encodeURI(data.softwaredata[i].softwareDetails) + "','');><a href='#'>" + data.softwaredata[i].counts + "</a></td></tr>";
+                        //"<td class='col-sm-1'>" + data.softwaredata[i].counts + "</td></tr>";
+                }
+                Data += "<tr><td><td>&nbsp;</td></tr><tr><td><td>&nbsp;</td></tr><tr><td><td>&nbsp;</td></tr></tbody></table>";
+                SetData.append(Data);
+                datatable_simple();
+            }
+       }).done(function () {
+           setTimeout(function () {
+               $("#overlay").fadeOut(300);
+           }, 500);
+       });
+    }
+</script>
+<script>
+    function bind_popup_details(popup_type, popup_value1, popup_value2) {
+        if (popup_type == "OS_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details [ OS :  ' + decodeURIComponent(popup_value1) + ' - ' + decodeURIComponent(popup_value2) + ' ]';
+            bing_asset_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2),"OS Name");
+        }
+        else if (popup_type == "PROCESSOR_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details [ Processor Name :  ' + decodeURIComponent(popup_value1) + ' ]';
+            bing_asset_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2), "Processor Name");
+        }
+        else if (popup_type == "DISK_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details [ Disk Size :  ' + decodeURIComponent(popup_value1) + ' ]';
+            bing_asset_disk_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+        }
+        else if (popup_type == "RAM_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details [ RAM Size :  ' + decodeURIComponent(popup_value1) + ' ]';
+            bing_asset_disk_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+        }
+        else if (popup_type == "HARDWARE_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details';
+            if (decodeURIComponent(popup_value1) == "Multiple LAN Card on PC") {
+                bing_asset_multiple_lan_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Printer") {
+                bing_asset_printer_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "WiFi on PC") {
+                bing_asset_wi_fi_on_pc_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Total Shared Resources") {
+                bing_asset_shared_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Firewall Service ON/OFF") {
+                bing_asset_firewall_on_off_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+        }
+        else if (popup_type == "SOFTWARE_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details';
+            if (decodeURIComponent(popup_value1) == "Unauthorised Software") {
+                bing_asset_unauthorise_software_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Antivirus Not Installed") {
+                bing_asset_antivirus_not_installed_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+        }
+        else if (popup_type == "USER_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details';
+            if (decodeURIComponent(popup_value1) == "Administrator") {
+                bing_asset_user_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Guest") {
+                bing_asset_user_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+            else if (decodeURIComponent(popup_value1) == "Local Users") {
+                bing_asset_user_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+            }
+        }
+        else if (popup_type == "DOMAIN_SUMMARY") {
+            document.getElementById('popupHeading').innerText = 'Asset Data Details';
+            bing_asset_domain_summary_details(popup_type, decodeURIComponent(popup_value1), decodeURIComponent(popup_value2));
+        }
+        
+        
+    }
+    function bing_asset_summary_details(popup_type, popup_value1, popup_value2,displayvalue) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    if (popup_type == "OS_SUMMARY") {
+                        data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, popup_value1 + ' - ' + popup_value2]);
+                    }
+                    else {
+                        data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].mac_address, popup_value1]);
+                        //data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, popup_value1]);
+                    }
+                }
+                popup_value1
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: displayvalue }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_disk_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].gb]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Size (GB)" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_multiple_lan_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].name]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Lan Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_printer_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].printername]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Printer Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_wi_fi_on_pc_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].name, data.asset_summary_details[i].service_name]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Wi-Fi Name" }, { title: "Service Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_firewall_on_off_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].firewallstatus]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Firewall Status" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_shared_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].share_name, data.asset_summary_details[i].path]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Share Name" }, { title: "Share Path" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_unauthorise_software_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname, data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].software]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Software Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_antivirus_not_installed_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_user_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].username]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0,dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "User Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function bing_asset_domain_summary_details(popup_type, popup_value1, popup_value2) {
+        $("#popup_modal_details").modal("show");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/Get_Asset_summary_details?SummaryType=")' + popup_type + '&ParameterValue1=' + popup_value1 + '&ParameterValue2=' + popup_value2,
+            success: function (data) {
+                
+                var dataclear = document.getElementById('div_popup_modal_details');
+                dataclear.innerHTML = '&nbsp;';
+                $('#div_popup_modal_details').append("<table id='tblAssetSummaryDetails' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblAssetSummaryDetails');
+                var data1 = [];
+                for (var i = 0; i < data.asset_summary_details.length; i++) {
+                    data1.push([data.asset_summary_details[i].ou_longname,data.asset_summary_details[i].device_name, data.asset_summary_details[i].ip, data.asset_summary_details[i].device_mac, data.asset_summary_details[i].data1]);
+                }
+                var otable = $("#tblAssetSummaryDetails").DataTable({
+                    data: data1, scrollX: !0, dom: "<'top'fB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Domain/Workgroup Name" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+</script>

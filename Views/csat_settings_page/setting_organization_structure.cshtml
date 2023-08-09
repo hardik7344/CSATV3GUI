@@ -1,0 +1,1947 @@
+﻿@using Microsoft.AspNetCore.Http
+@using OwnYITCSAT.DataAccessLayer;
+@using OwnYITCSAT.Controllers;
+
+@{
+    ViewData["Title"] = "setting_organization_structure";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script src="~/js/main.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#unlink_up").click(function () {
+            $("#unlink_form").toggle();
+
+        });
+    });
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear() + "-" + (month) + "-" + (day);
+</script>
+
+<body>
+    @*<div class="row">
+            <div class="headerbar">
+                <a href="#" style="padding-left:10px;">Settings</a>
+            </div>
+        </div>*@
+    <div class="row">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" id="unlink_popup">Unlink Agent From Branch/ Unit</button>
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" id="managebranchpopup" onclick="openManageBranchUnit(0)">Manage Branch/ Unit</button>
+                </div>
+
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Administrator", "setting_organization_structure", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Organization Structure</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("admin_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <button class=" pull-right btn btn-primary btn-md day" data-toggle="modal" id="btncreatelevel" title="Create Level" style="margin-bottom:5px;padding:0px 4px;">Add New <b style="font-weight:bolder;">+</b></button>
+                            <h6> View Level</h6>
+                            <div class="table-responsive" id="div_oulevel">
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+    </div>
+    <!-- new_level_popup model box  Content-->
+
+    <div class="modal fade" id="new_level_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closelevalpopup()">&times;</button>
+                    <h6 class=" modal-title">
+                        New Level Create
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_addlevel" name="frm_addlevel">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Level ID</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="id" placeholder="Level ID" id="txtlevelid" disabled />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Level Name</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="txtlevelname" placeholder="Enter Level Name" id="txtlevelname" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" id="btnlevelsave" />
+                                        <input type="button" class="btn btn-primary" name="close" value="Close" onclick="closelevalpopup()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  new_level_popup  pop-up model box Content end-->
+    <!-- edit_level_popup model box Content-->
+
+    <div class="modal fade" id="edit_level_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="editpopupclose()">&times;</button>
+                    <h6 class=" modal-title">
+                        Edit Level Information
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_editlevel" name="frm_editlevel">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Level ID</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="id" id="etxtid" disabled />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Level Name</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="etxtleave" id="etxtleave" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" id="btneditleavel" />
+                                        <input type="button" class="btn btn-primary" name="close" value="Close" onclick="editpopupclose()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  edit_level_popup  pop-up model box Content end-->
+    <!-- set_property_popup model box  Content-->
+
+    <div class="modal fade" id="set_property_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closelevalPropertypopup()">&times;</button>
+                    <h6 class=" modal-title">
+                        Set Branch/ Unit Property
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="div_level_rights">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" id="btnsaveproperty" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Close" onclick="closelevalPropertypopup()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  set_property_popup  pop-up model box Content end-->
+    <!-- manage_branch_Unit_popup  model box Content-->
+
+    <div class="modal fade" id="manage_branch_Unit_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Manage Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="div_manage_branch_unit_data">
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- parent level-->
+    <!-- Add new branch/unit main node popup model box  Content-->
+
+    <div class="modal fade" id="add_branch_unit_parant" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Add Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-11" style="color:#999;">Root</label>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3 form_label">Branch/ Unit</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="add_branch_unit" placeholder="Enter Branch/ Unit" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                        <input type="button" class="btn btn-primary" data-dismiss="modal" name="close" value="Cancel" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End Add branch/unit  node pop-up model box Content end-->
+    <!-- Add new branch/unit main node popup model box  Content-->
+
+    <div class="modal fade" id="add_branch_unit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Add Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_addbranchunit" name="frm_addbranchunit">
+                                <div class="form-group" id="div_ouname_add_branch_unit">
+                                    <label for="nameField" class="col-xs-11" style="color:#999;" id="lbl_ouname_add_branch_unit"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3 form_label">Branch/ Unit</label>
+                                    <input type="hidden" id="hdn_ouid_add_branch_unit" value="" />
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="txt_ouname_add_branch_unit" id="txt_ouname_add_branch_unit" placeholder="Enter Branch/Unit" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" onclick="addNewOU_BranchUnit();" />
+                                        <input type="button" class="btn btn-primary" data-dismiss="modal" name="close" value="Cancel" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End Add new main  node pop-up model box Content end-->
+    <!--Start  parent level system link-->
+    <div class="modal fade" id="system_link" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Link System
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <input type="hidden" id="hdn_link_device_ouid" value="" />
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="div_link_new_systems">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="closeunlinkpopup()">Close</button>*@
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="system_unlink" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        System List
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="div_system_linked_unlink">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="closeunlinkpopup()">Close</button>*@
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--End parent level system link-->
+    <!-- Add User-->
+    <div class="modal fade" id="user_link" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-sm" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Link User
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <input type="hidden" id="hdn_user_link_with_ou_id" value="" />
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="div_link_user_with_ou">
+                            <ul class="breadcrumb" style="margin-bottom:0px;">
+                                <li>Root >> Ahmedabad </li>
+                            </ul>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered simple_datatable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="select noExport" data-orderable="false"><input type="checkbox" class="parent" data-group=".group3" /></th>
+                                            <th class="col-sm-11">User Name</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-11">upendra</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-11">Ajay</td>
+
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-5">
+                                    &nbsp;
+                                    <input type="button" class="btn btn-primary" name="Add" value="Add" />
+                                    <input type="button" class="btn btn-primary" data-dismiss="modal" name="close" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="closeunlinkpopup()">Close</button>*@
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End manage_branch_Unit_popup model box Content -->
+    <!-- unlink agent popup model box  Content-->
+
+    <div class="modal fade" id="unlink_agent_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closeunlinkpopup()">&times;</button>
+                    <h6 class=" modal-title">
+                        Unlink Agent From Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <!--form  content-->
+                            <div class="row">
+                                <i id="unlink_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" id="unlink_form" name="unlink_form">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                            <div class="col-xs-4">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpUou">
+                                                    <option value='-1'>Select Branch/ Unit</option>
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-2">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpUDevice">
+                                                    <option value='-1'>Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label ">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpUip" id="drpUip">
+                                                @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpUip">
+                                                        <option value='-1'>Select IP Address</option>
+                                                    </select>*@
+                                            </div>
+                                            <div class="pull-left col-xs-1 form_label">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnUshow">
+                                                <input type="button" class="btn btn-primary" value="Unlink" id="btnunlink">
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--End form  content-->
+
+                        </div>
+                    </div>
+
+                    <!--Count System  Data   Datatable start-->
+
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="table-responsive" id="div_linkagedevice">
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <!--Count System  Data  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="closeunlinkpopup()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End unlink agent popup model box Content -->
+    <!-- Add new node popup model box  Content-->
+
+    <div class="modal fade" id="add_node" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Add Child Node
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Parent </label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="id" placeholder="Parent" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Level Name</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="Level Name" placeholder="Level Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Child Name</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="Child Name" placeholder="Child Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Category Inheritable</label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="checkbox" name="type" id="category" value="category">  </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                        <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End Add new node pop-up model box Content end-->
+    <!-- Link Admin model box  Content-->
+
+    <div class="modal fade" id="admin_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Select Admin User
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered system_datatable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="select noExport" data-orderable="false"><input type="checkbox" class="parent" data-group=".group11" /></th>
+                                            <th class="col-sm-10">User Name</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Upendra Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Ajay Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Pankti Shah</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Mittal Panchal</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Bhoomi Patel </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group11" name="check[]" /></td>
+                                            <td class="col-sm-10">Heena Shah</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  Link Admin model  pop-up model box Content end-->
+    <!-- Link Engineer model box  Content-->
+
+    <div class="modal fade" id="engineer_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Select Engineer User
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered system_datatable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="select noExport" data-orderable="false"><input type="checkbox" class="parent" data-group=".group2" /></th>
+                                            <th class="col-sm-10">User Name</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Upendra Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Ajay Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Pankti Shah</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Mittal Panchal</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Bhoomi Patel </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group2" name="check[]" /></td>
+                                            <td class="col-sm-10">Heena Shah</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  Link Engineer  pop-up model box Content end-->
+    <!-- Link User model box  Content-->
+
+    <div class="modal fade" id="simple_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Select User
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered system_datatable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="select noExport" data-orderable="false"><input type="checkbox" class="parent" data-group=".group3" /></th>
+                                            <th class="col-sm-10">User Name</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Upendra Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Ajay Patel</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Pankti Shah</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Mittal Panchal</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Bhoomi Patel </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="select"><input type="checkbox" class="group3" name="check[]" /></td>
+                                            <td class="col-sm-10">Heena Shah</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  Link User  model  pop-up model box Content end-->
+    <!-- Link system user model box  Content-->
+
+    <div class="modal fade" id="system_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Select System
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="div_system">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" id="btnlinksystem" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End  Link User  model  pop-up model box Content end-->
+    <!-- rename Branch/unit popup model box  Content-->
+    <input type="hidden" runat="server" id="hiddenouid" />
+    <div class="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Rename Branch/ unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3 form_label">Branch/ Unit </label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" name="branch/unit" id="ouname" placeholder="Branch/Unit" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" id="btupdateouname" />
+                                        <input type="button" class="btn btn-primary" name="close" value="Cancel" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End rename Branch/unit pop-up model box Content end-->
+    <!-- delete Branch/unit popup model box  Content-->
+
+    <div class="modal fade" id="delete_node" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Delete Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this Branch/ Unit?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End delete Branch/unit pop-up model box Content end-->
+    <!-- Edit  branch/unit main node popup model box  Content-->
+
+    <div class="modal fade" id="edit_branch_unit_parant" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Edit Branch/ Unit
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_editbranchunit" name="frm_editbranchunit">
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3">Branch/ Unit</label>
+                                    <div class="col-xs-8">
+                                        <input class="form-control" type="text" id="editbranch1" name="editbranch1" placeholder="Enter Branch/Unit" value='root' />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="save" value="Save" id="btnedit" />
+                                        <input type="button" class="btn btn-primary" data-dismiss="modal" name="close" value="Cancel" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- End editbranch/unit  node pop-up model box Content end-->
+    <!--delete_branch/unit device model  content-->
+    <div class="modal fade " id="delete_branch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Conformation </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+
+                                            <label for="nameField" class="col-xs-12">
+                                                <i class="glyphicon glyphicon-exclamation-sign  delete_msg"></i>
+                                                <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                            </label>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-4"></label>
+                                            <div class="col-xs-6">
+                                                <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                                <input type="button" class="btn btn-default" data-dismiss="modal" name="no" value="No" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- delete_branch/unit main node popup model box  Content-->
+</body>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_addlevel");
+        validateSingleForm("#frm_editlevel");
+        validateSingleForm("#frm_addbranchunit");
+        validateSingleForm("#frm_editbranchunit");
+        validateSingleForm("#unlink_form");
+    });
+</script>
+<script>
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+    $('.tree-toggle').click(function () {
+        $(this).parent().children('ul.tree').toggle(200);
+    });
+    $(function () {
+        $('.tree-toggle').parent().children('ul.tree').toggle(200);
+    })
+
+
+</script>
+<script src="~/js/jstree.min.js"></script>
+<link href="~/css/jsTree/style.css" rel="stylesheet" />
+<script>
+
+	 $.get(null, null, DataLevelbind);
+    function DataLevelbind() {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+	    var url1='@Url.Content("~/csat_settings_page/Getleveldata/")';
+	   $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (data) {
+      //debugger;
+        var Setgriddata = $('#div_oulevel');
+			  jQuery('#div_oulevel').html('');
+            var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr><th class='icon' data-orderable='false'>Property</th>"+
+                             "<th class='col-sm-5'>Level</th><th class='col-sm-6'>Level Name</th><th class='icon' data-orderable='false'>Edit</th></tr></thead><tbody>";
+			   var trdata="";
+			   for (var i = 0; i < data.level.length; i++) {
+			   trdata+="<tr>";
+			   trdata+="<td class='icon'><i class='manage_icon ' type='button' data-toggle='modal' onclick=show_property_popup("+data.level[i].levelid+") title='Setting'><img src='@Url.Content("~/images/status.png")'  /></i>&nbsp;</td>";
+			   trdata+="<td class='col-sm-5'>"+data.level[i].levelid+"</td>";
+                   trdata += "<td class='col-sm-5'>" + data.level[i].levelname + "</td>";
+                   trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick=Editleveldetail('" + data.level[i].levelid + "','" + encodeURIComponent( data.level[i].levelname) + "') title='Edit'></i></td>";
+			   trdata+="</tr>";
+               }
+            Setgriddata.append(headdata + trdata + "</tbody></table>");
+            datatable_simple();
+        }
+       }).done(function () {
+           setTimeout(function () {
+               $("#overlay").fadeOut(300);
+           }, 500);
+       });
+    }
+	$('#btncreatelevel').on('click',function()
+		{
+        //debugger;
+        var url1 = '@Url.Content("~/csat_settings_page/Getlevelid/")';
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                document.getElementById("txtlevelid").value = data.level_id[0].levelid;
+            }
+        });
+        $('#new_level_popup').modal('show');
+    });
+
+		$('#btnlevelsave').on('click',function()
+		{
+		  // debugger;
+		     var varlevelid= document.getElementById("txtlevelid").value;
+            var varlevelbname = document.getElementById("txtlevelname").value;
+            //if ($('#txtlevelname').val() == "") {
+            //    alert('Please enter level name!');
+            //    return false;
+            //}
+            var $valid = $('#frm_addlevel').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            }
+            else {
+                var url1 = '@Url.Content("~/csat_settings_page/Addlevel?id=")' + varlevelid + '&level=' + varlevelbname;
+                $.ajax({
+                    type: "POST",
+                    url: url1,
+                    success: function (result) {
+                        alert(result);
+                        document.getElementById("txtlevelid").value = '';
+                        document.getElementById("txtlevelname").value = '';
+                        $('#new_level_popup').modal('hide');
+                        DataLevelbind();
+                    }
+                });
+            }
+
+		});
+		function closelevalpopup()
+		{
+			document.getElementById("txtlevelid").value = '';
+			document.getElementById("txtlevelname").value = '';
+			$('#new_level_popup').modal('hide');
+		}
+		var varlevelidvalue="";
+		function show_property_popup(levelid)
+		{
+		varlevelidvalue=levelid;
+
+		  var varchkststus="";
+		   var url1='@Url.Content("~/csat_settings_page/BindlevelProperty?id=")'+levelid;
+
+	   $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (data) {
+     // debugger;
+        var Setgriddata = $('#div_level_rights');
+			  jQuery('#div_level_rights').html('');
+			  var chkcount="";
+			  var varheadchek="";
+			   for (var i = 0; i < data.levelproperty.length; i++)
+			   {
+                   if (data.levelproperty[i].status == "1")
+                       chkcount = Number(chkcount) + Number(1);
+			   }
+			   if(chkcount == "6")
+			       varheadchek="checked='checked'";
+			   else
+				   varheadchek="";
+
+            var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group1' id='chklevelhead' "+varheadchek+"/></th>"+
+                             "<th class='col-sm-5'>Program Name</th><th class='col-sm-4'>Type of Property</th></tr></thead><tbody>";
+			   var trdata="";
+
+			   for (var i = 0; i < data.levelproperty.length; i++) {
+			   if(data.levelproperty[i].status=="1")
+			      varchkststus="checked='checked'";
+               else
+			      varchkststus="";
+
+			   trdata+="<tr>";
+			   trdata+="<td class='select'><input type='checkbox' class='group1' name='check[]' "+varchkststus+" value='" + data.levelproperty[i].propertyname +"' id='chkrawlevel' onchange='UncheckMain2()' /></td>";
+			   trdata+="<td class='col-sm-6'>"+data.levelproperty[i].ou_levelrights_propertyname+"</td>";
+			   trdata+="<td class='col-sm-5'>"+data.levelproperty[i].type+"</td>";
+			   trdata+="</tr>";
+               }
+                Setgriddata.append(headdata+trdata+"</tbody></table>");
+
+				$(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        UncheckMain2();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+                 datatable_simple();
+
+
+
+				}
+				});
+
+		   $('#set_property_popup').modal('show');
+		}
+
+		var varpropertyname = "";
+    function UncheckMain2() {
+        //    debugger;
+           varpropertyname = "";
+	    //	varchkcount1="";
+        var checkboxes = document.querySelectorAll('input[id="chkrawlevel"]');
+         for (var i = 0; i < checkboxes.length; i++) {
+             if (checkboxes[i].checked == true) {
+			     varpropertyname+=","+checkboxes[i].value;
+                //varchkcount1=i+1;
+             }
+             else {
+			  }
+         }
+          // if(varchkcount1 == "6")
+		  //   document.getElementById("chklevelhead").checked=true;
+		  // else
+	     //document.getElementById("chklevelhead").checked=false;
+    }
+
+
+	   $('#btnsaveproperty').on('click',function()
+		{
+		   //debugger;
+		     var url1='@Url.Content("~/csat_settings_page/Updatelevelrights?levelid=")' + varlevelidvalue+'&propertyname='+varpropertyname;
+		     $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+		alert(result);
+		 $('#set_property_popup').modal('hide');
+		 DataLevelbind();
+		}
+
+		});
+		});
+		function closelevalPropertypopup()
+		{
+		 $('#set_property_popup').modal('hide');
+		}
+		function Editleveldetail(id,level)
+		{
+		  //debugger;
+            document.getElementById("etxtid").value = id;
+            document.getElementById("etxtleave").value = decodeURIComponent( level);
+		  $('#edit_level_popup').modal('show');
+		}
+
+		 $('#btneditleavel').on('click',function()
+         {
+             var $valid = $('#frm_editlevel').valid();
+             if (!$valid) {
+                 $validatorform.focusInvalid();
+                 return false;
+             }
+             else {
+                 //debugger;
+                 var varlevelidvalue = document.getElementById("etxtid").value;
+                 var varpropertyname = document.getElementById("etxtleave").value;
+
+                 var url1 = '@Url.Content("~/csat_settings_page/Editlevel?levelid=")' + varlevelidvalue + '&propertyname=' + varpropertyname;
+                 $.ajax({
+                     type: "POST",
+                     url: url1,
+                     success: function (result) {
+                         alert(result);
+                         $('#edit_level_popup').modal('hide');
+                         DataLevelbind();
+                     }
+
+                 });
+             }
+		});
+		function editpopupclose()
+		{
+		$('#edit_level_popup').modal('hide');
+		}
+
+		 $('#unlink_popup').on('click',function()
+		{
+		   //debugger;
+		 $.get('@Url.Content("~/csat_report/GetOU/")', null, UDataBind)
+		 $('#unlink_agent_popup').modal('show');
+
+		});
+
+    function UDataBind(data) {
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpUou');
+                jQuery('#drpUou').html('');
+
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+            }
+        });
+    }
+    var ouidvalue = "";
+	$("#drpUou").change(function () {
+
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpUDevice');
+        //var SetDataip = $('#drpUip');
+
+        jQuery('#drpUDevice').html('');
+        //jQuery('#drpUip').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+        }
+
+        });
+
+    });
+
+    var systemvalue="";
+    var ipvalue = "";
+    //$("#drpUou").change(function () {
+    //    ouidvalue = this.value;
+    //});
+
+    $("#drpUDevice").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#drpUip").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+	function bindulinkdevicedata()
+    {
+        var ipvalue = document.getElementById('drpUip').value;
+        var systemvalue = document.getElementById('drpUDevice').value;
+        // debugger;
+		  var url1 = '@Url.Content("~/csat_settings_page/BindLinkDevices?ouid=")' + ouidvalue+'&ip='+ipvalue+'&device='+systemvalue;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (data) {
+		// debugger;
+		    var Setgriddata = $('#div_linkagedevice');
+                $('#div_linkagedevice').html('');
+
+            var headdata = "<table class='table table-striped table-bordered tblpdfexport' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group1' /></th>"+
+                             "<th class='col-sm-5'>Branch/ Unit Name</th><th class='col-sm-4'>System Name </th><th class='col-sm-3'>IP Address</th></tr></thead><tbody>";
+			   var trdata="";
+
+			   for (var i = 0; i < data.linkagedata.length; i++) {
+			    trdata+="<tr>";
+			   trdata+=" <td class='select'><input type='checkbox' class='group1' name='"+ data.linkagedata[i].device_id + "'  value='" + data.linkagedata[i].ou_id +"'  id='chkrawouid' onchange='UncheckMain3()' /></td>";
+			   trdata+="<td class='col-sm-5'>"+data.linkagedata[i].ou_longname+"</td>";
+			   trdata+="<td class='col-sm-4'>"+data.linkagedata[i].device_name+"</td>";
+			   trdata+=" <td class='col-sm-3'>"+data.linkagedata[i].ip+"</td>";
+			   trdata+="</tr>";
+               }
+                Setgriddata.append(headdata+trdata+"</tbody></table>");
+            ouidvalue = "";
+            reportname = 'Unlink Agent From Branch/ Unit';
+            datatable_pdfexport(reportname)
+				$(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        UncheckMain3();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+
+		}
+		});
+
+	}
+	$('#btnUshow').on('click',function()
+    {
+        var $valid = $('#unlink_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            bindulinkdevicedata();
+        }
+	});
+
+
+			var vardeviceid = "";
+			var varouid = "";
+    function UncheckMain3() {
+        vardeviceid = "";
+		varouid = "";
+        var checkboxes = document.querySelectorAll('input[id="chkrawouid"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+
+			   vardeviceid+=","+checkboxes[i].name;
+                varouid  +=","+checkboxes[i].value;
+            }
+            else {
+			    }
+            }
+
+
+    }
+	 $('#btnunlink').on('click',function()
+		{
+		    if(vardeviceid =="")
+			{
+			   alert("Please select at least on system.")
+			   return;
+			}
+			else if(varouid=="")
+			{
+			   alert("Please select at least on system.")
+			   return;
+			}
+		  var url1 = '@Url.Content("~/csat_settings_page/Unlinksystem?deviceid=")' + vardeviceid+'&ouid='+varouid;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+	     alert(result);
+		   bindulinkdevicedata();
+		 }
+		 });
+		});
+		function closeunlinkpopup()
+		{
+		  vardeviceid = "";
+            varouid = "";
+            $('#div_linkagedevice').html('');
+            var SetDatadevice = $('#drpUDevice');
+            var SetDataip = $('#drpUip');
+            jQuery('#drpUDevice').html('');
+            jQuery('#drpUip').html('');
+            var devicedata = "<option value='-1'>Select System Name</option>";
+            var ipdata = "<option value='-1'>Select IP Address</option>";
+            SetDatadevice.append(devicedata);
+            SetDataip.append(ipdata);
+            document.getElementById("drpUip").value = "";
+            document.getElementById("drpUDevice").value = '-1';
+            document.getElementById("drpUou").value = '-1';
+		}
+</script>
+
+<script type="text/javascript">
+
+    //var deviceid = "";
+    //function UncheckMain2() {
+    //    //debugger;
+    //    deviceid = "";
+    //    var checkboxes = document.querySelectorAll('input[id="gridrawcheckp1"]');
+    //    for (var i = 0; i < checkboxes.length; i++) {
+    //        if (checkboxes[i].checked == true) {
+    //            deviceid += "," + checkboxes[i].value;
+    //        }
+    //        else {
+
+    //        }
+
+    //    }
+    // alert(deviceid);
+    //  }
+
+</script>
+<script type="text/javascript">
+      $('#btupdateouname').on('click',function()
+		{
+		//debugger;
+			var varouname= document.getElementById('ouname').value;
+			var varouidd= document.getElementById('hiddenouid').value;
+			var url1 = '@Url.Content("~/csat_settings_page/Updateoudetails?ouid=")' + varouidd+'&ouname='+varouname;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+	     alert(result);
+		 document.getElementById('ouname').value='';
+		 document.getElementById('hiddenouid').value='';
+		 $('#rename').modal('show');
+		 }
+		 });
+		});
+   $('#btnlinksystem').on('click',function()
+		{
+		   if(deviceid == null || levelid == null)
+		   {
+		     alert('Please select system.');
+			 return;
+		   }
+		//alert('ajay');
+		//alert(deviceid);
+		//alert(levelid);
+		});
+
+
+</script>
+<script>
+  var levelid="";
+ 	function bindTreeActionOption(id)
+	{
+	    levelid=id;
+	     var url1='@Url.Content("~/csat_settings_page/BindlevelPropertytoSetTree?id=")'+id;
+	                     $.ajax({
+                         type: "POST",
+                         url: url1,
+                         success: function (data) {
+						  // debugger;
+						}
+						 });
+
+	}
+  function clearActionOption()
+	{
+	     var url1='@Url.Content("~/csat_settings_page/clearaction/")';
+	                     $.ajax({
+                         type: "POST",
+                         url: url1,
+                         success: function (data) {
+						}
+						 });
+
+    }
+    var show_ouid = "";
+    function openManageBranchUnit(ou_id) {
+       // alert(ou_id);
+        $('#manage_branch_Unit_popup').modal('show');
+        show_ouid = ou_id;
+        var url1 = '@Url.Content("~/csat_settings_page/get_OU_Data_child?ou_id=")' + ou_id;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+
+                var avalues = data.ou_data_self[0].ou_nodelinkage_longname.split('>>');
+
+                var Setgriddata = $('#div_manage_branch_unit_data');
+                jQuery('#div_manage_branch_unit_data').html('');
+                var rawdata = "";
+                var headdata = "<button class=' pull-right btn btn-primary btn-md day' data-toggle='modal'  title='Create Level' style='margin-bottom:5px;padding:0px 4px;' onclick='openAddBranchUnit(" + ou_id + ")'>Add<b style='font-weight:bolder;'>+</b></button>";
+                //alert(data.ou_data_parent.length);
+                var oudata = "";
+                for (var i = data.ou_data_parent.length - 1; i >= 0; i--) {
+                    var avaluesarr = data.ou_data_parent[i].ouidouname.split(',');
+                    if (i == 0)
+                        oudata += "<label ><a style='text-decoration:none;' onclick='return openManageBranchUnit(" + avaluesarr[0] + ")'>" + avaluesarr[1] + "</a></label>";
+                    else
+                        oudata += "<label style='color:#74b1f4;'><a style='text-decoration:none;' onclick='return openManageBranchUnit(" + avaluesarr[0] + ")'>" + avaluesarr[1] + "</a></label><label >&nbsp; >> &nbsp; </label>";
+                }
+
+                headdata += oudata;
+                //for (var i = 0; i < avalues.length; i++) {
+                //    if (avalues.length < 2)
+                //        headdata += "<h6><lable><a onclick='return openManageBranchUnit(" + ou_id + ")'>" + avalues[i] + "</a></lable></h6>";
+                //    else
+                //        headdata += "<h6><lable><a onclick='return openManageBranchUnit(" + ou_id + ")'>" + avalues[i] + ">></a></lable></h6>";
+                //}
+                headdata += "<div class='table-responsive'>" +
+                    "<table class='table table-striped table-bordered tbldemo' style='width:100%'>" +
+                    "<thead><tr>" +
+                    "<th class='col-sm-5'>Branch/ Unit</th><th class='col-sm-1 form_label'>Child Node</th><th class='col-sm-1 form_label'>System Count</th>" +
+                    "<th class='col-sm-1 form_label' data-orderable='false'>Add Branch/ Unit</th><th class='col-sm-1 form_label' data-orderable='false'>Link System</th><th class='col-sm-1 form_label' data-orderable='false'>Link User</th>" +
+                    "<th class='col-sm-1 form_label' data-orderable='false'>Edit</th> <th class='col-sm-1 form_label' data-orderable='false'>Delete</th></tr></thead><tbody>";
+                //debugger;
+                for (var i = 0; i < data.ou_data_child.length; i++) {
+                    if (data.ou_data_child[i].devicelinked == null)
+                        data.ou_data_child[i].devicelinked = 0;
+                    //rawdata += "<tr> <td class='select'><input type='checkbox' class='group4' name='check[]' value='" + data.devicelist[i].device_id + "' id='gridrawcheckp1' onchange='UncheckMain2()'  /></td>";
+                    if (data.ou_data_child[i].childou == "0")
+                        rawdata += "<tr><td class='col-sm-5 manage_icon'><a style='text-decoration: none;font-size:12px;'>" + data.ou_data_child[i].ou_nodelinkage_nodename + "</a></td>";
+                    else
+                        rawdata += "<tr><td class='col-sm-5  manage_icon '><a style='text-decoration: underline;font-size:12px;' data-toggle='modal'   onclick='openManageBranchUnit(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")' data-target='#manage_branch_Unit_popup' title='Branch Unit'>" + data.ou_data_child[i].ou_nodelinkage_nodename + "</a></td>";
+
+                    rawdata += "<td class='col-sm-1 icon'>" + data.ou_data_child[i].childou + "</td>";
+                    if (data.ou_data_child[i].devicelinked == "0")
+                        rawdata += "<td class='col-sm-1 manage_icon icon'>" + data.ou_data_child[i].devicelinked + "</td>";
+                    else
+                        rawdata += "<td class='col-sm-1 manage_icon icon'><a style='text-decoration: underline;font-size:12px;' data-toggle='modal' onclick='openLinkedDevice(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")'  title='System Unlink'>" + data.ou_data_child[i].devicelinked + "</a></td>";
+                    rawdata += "<td class='icon'><i class=' glyphicon glyphicon-edit manage_icon ' type='button' data-toggle='modal' data-target='#add_branch_unit' title='Add Branch' onclick='openAddBranchUnit(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")'></i></td>";
+                    rawdata += "<td class='icon'><i style='padding-top:2px;' type='button' data-toggle='modal'  title='Link System' onclick='openunLinkedDevice(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")' ><img src='../images/desktop.png' /></i></td>";
+                    rawdata += "<td class='icon'><i class=' glyphicon glyphicon-user manage_icon ' type='button' data-toggle='modal'  onclick='openLinkUser(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")' title='Link User'></i></td>";
+                    rawdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick=editoudata(" + data.ou_data_child[i].ou_nodelinkage_ouid + ",'" + data.ou_data_child[i].ou_nodelinkage_nodename + "') title='Edit'></i></td>";
+                    rawdata += "<td class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal' onclick='deleteoudata(" + data.ou_data_child[i].ou_nodelinkage_ouid + ")' title='Delete'></i></td></tr > ";
+                }
+
+                Setgriddata.append(headdata + rawdata + "</tbody></table></div>");
+                //alert(data);
+                datatable_simple();
+
+            }
+        });
+        //$("#manage_branch_Unit_popup").modal('show');
+    }
+
+    function openAddBranchUnit(ou_id) {
+        //alert(ou_id);
+        //debugger;
+        $('#add_branch_unit').modal('show');
+
+        var url1 = '@Url.Content("~/csat_settings_page/Add_Branch_Unit_ou_data?ou_id=")' + ou_id;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+               //debugger;
+                //hdn_ouid_add_branch_unit
+                //lbl_ouname_add_branch_unit
+                document.getElementById("hdn_ouid_add_branch_unit").value = data.ou_data_linked_self_add[0].ou_nodelinkage_ouid;
+                var Setgriddata = $('#div_ouname_add_branch_unit');
+                jQuery('#div_ouname_add_branch_unit').html('');
+                Setgriddata.append("<label for='nameField' class='col - xs - 11' style='color: #999; '>" + data.ou_data_linked_self_add[0].ou_nodelinkage_longname+"</label>");
+                //document.getElementById("lbl_ouname_add_branch_unit").value = data.ou_data_linked_self_add[0].ou_nodelinkage_longname;
+                //div_ouname_add_branch_unit
+			}
+        });
+    }
+
+    function addNewOU_BranchUnit() {
+     //  debugger;
+        var ou_id = "";
+        var ou_name = "";
+        ou_id = document.getElementById("hdn_ouid_add_branch_unit").value;
+        ou_name = document.getElementById("txt_ouname_add_branch_unit").value;
+        //if ($('#txt_ouname_add_branch_unit').val() == "") {
+        //    alert('Please enter branch/ unit name!');
+        //    return false;
+        //}
+        var $valid = $('#frm_addbranchunit').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            var url1 = '@Url.Content("~/csat_settings_page/add_new_ou_branch_unit?ou_id=")' + ou_id + '&ou_name=' + ou_name;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (data) {
+                    //debugger;
+                    alert(data);
+                    document.getElementById('txt_ouname_add_branch_unit').value = '';
+                    //openManageBranchUnit(0);
+                    openManageBranchUnit(ou_id);
+                    $("#add_branch_unit").modal('hide');
+                }
+            });
+        }
+    }
+
+    function openLinkedDevice(ou_id) {
+        //alert(ou_id);
+        $('#system_unlink').modal('show');
+
+        var url1 = '@Url.Content("~/csat_settings_page/get_OU_linked_devices?ou_id=")' + ou_id;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+                //div_manage_branch_unit_data
+                var Setgriddata = $('#div_system_linked_unlink');
+                jQuery('#div_system_linked_unlink').html('');
+                var rawdata = "";
+                var headdata = "<ul class='breadcrumb' style='margin-bottom:0px;'><li>" + data.ou_data_linked_self[0].ou_nodelinkage_longname + "</li></ul>" +
+                    "<div class='table-responsive'>" +
+                    "<table class='table table-striped table-bordered tblpaging' style='width:100%'>" +
+                    "<thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group2' id='chkpopupdeviceid_header' /></th><th class='col-sm-6'>System Name</th><th class='col-sm-5'>IP Address</th></tr></thead><tbody>";
+                for (var i = 0; i < data.ou_data_linked_device.length; i++) {
+                    rawdata += "<tr><td class='select'><input type='checkbox' class='group2' name='check[]' id='chkpopupdeviceid' value='" + data.ou_data_linked_device[i].device_id + "' onchange='getcheckeddevice()' /></td><td class='col-sm-6'>" + data.ou_data_linked_device[i].device_name + "</td><td class='col-sm-5'>" + data.ou_data_linked_device[i].ip + "</td></tr>";
+                }
+                Setgriddata.append(headdata + rawdata + "</tbody></table></div><div class='form-group'><div class='col-xs-5'><input type='button' class='btn btn-primary' name='Add' value='Unlink' onclick='unlinkdevice()' /> &nbsp;<input type='button' class='btn btn-primary' data-dismiss='modal' name='close' value='Cancel' /></div></div>");
+                datatable_paging();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        getcheckeddevice();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+                //alert(data);
+			}
+		});
+        //$("#manage_branch_Unit_popup").modal('show');
+    }
+
+    var checkeddevice = "";
+    function getcheckeddevice() {
+        //debugger;
+        checkeddevice = "";
+        var checkboxes = document.querySelectorAll('input[id="chkpopupdeviceid"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkeddevice += "," + checkboxes[i].value;
+            }
+            else {
+            }
+        }
+    }
+
+    function unlinkdevice() {
+        var SystemChecked = $('input[id="chkpopupdeviceid"]:checked').length > 0;
+        if (SystemChecked == true) {
+        //alert(ou_id);
+        //getcheckeddevice();
+        var url1 = '@Url.Content("~/csat_settings_page/ou_unlink_devices?device_id=")' + checkeddevice;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+                alert(data);
+                $('#system_unlink').modal('hide');
+                //openManageBranchUnit(0);
+                openManageBranchUnit(show_ouid);
+                var checkboxes = document.querySelectorAll('input[id="chkpopupdeviceid"]');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = false;
+                }
+			}
+            });
+        }
+        else {
+            alert("Select any one System Name !");
+            return false;
+        }
+        //$("#manage_branch_Unit_popup").modal('show');
+
+    }
+
+    function openunLinkedDevice(ou_id) {
+        //alert(ou_id);
+        $('#system_link').modal('show');
+        document.getElementById("hdn_link_device_ouid").value = ou_id;
+        var url1 = '@Url.Content("~/csat_settings_page/get_OU_unlinked_devices?ou_id=")' + ou_id;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+             //   debugger;
+                //div_manage_branch_unit_data
+                var Setgriddata = $('#div_link_new_systems');
+                jQuery('#div_link_new_systems').html('');
+                var rawdata = "";
+                var headdata = "<ul class='breadcrumb' style='margin-bottom:0px;'><li>" + data.ou_data_unlinked_self[0].ou_nodelinkage_longname + "</li></ul><div class='table-responsive'>" +
+                    "<table class='table table-striped table-bordered tbl_paging_searching' style='width:100%'><thead>" +
+                    "<tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group1' name='check[]' id='chkpopupdeviceidlink_withou_header' /></th><th class='col-sm-4'>System Name</th><th class='col-sm-4'>IP Address</th><th class='col-sm-3'>MAC Address</th></tr></thead><tbody>";
+                for (var i = 0; i < data.ou_data_unlinked_device.length; i++) {
+                    rawdata += "<tr><td class='select'><input type='checkbox' class='group1' name='check[]' id='chkpopupdeviceidlink_withou' value='" + data.ou_data_unlinked_device[i].device_id + "' onchange='getcheckeddevice_withou()' /></td><td class='col-sm-4'>" + data.ou_data_unlinked_device[i].device_name + "</td><td class='col-sm-4'>" + data.ou_data_unlinked_device[i].ip + "</td><td class='col-sm-3'>" + data.ou_data_unlinked_device[i].mac + "</td></tr>";
+                }
+                Setgriddata.append(headdata + rawdata + "</tbody></table></div><div class='form-group'><div class='col-xs-5'><input type='button' class='btn btn-primary' onclick='linkdeviecswithou()' name='Add' value='Apply' /> &nbsp;<input type='button' class='btn btn-primary' data-dismiss='modal' name='close' value='Cancel' /></div></div>");
+                //datatable_paging();
+                datatable_paging_searching();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        getcheckeddevice_withou();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+            }
+		});
+    }
+
+    var checkeddevicelinkwithou = "";
+    function getcheckeddevice_withou() {
+        checkeddevicelinkwithou = "";
+        var checkboxes = document.querySelectorAll('input[id="chkpopupdeviceidlink_withou"]');
+        // var checkboxes = document.querySelectorAll('input[name = "check[]"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkeddevicelinkwithou += "," + checkboxes[i].value;
+            }
+            else {
+            }
+        }
+    }
+
+    function linkdeviecswithou() {
+      //  debugger;
+        var SystemChecked = $('input[id="chkpopupdeviceidlink_withou"]:checked').length > 0;
+        if (SystemChecked == true) {
+        //getcheckeddevice_withou();
+        var ou_id_link = document.getElementById("hdn_link_device_ouid").value;
+        var url1 = '@Url.Content("~/csat_settings_page/link_ou_branch_unit?ou_id=")' + ou_id_link + '&device_ids=' + checkeddevicelinkwithou;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+                alert(data);
+                //openManageBranchUnit(0);
+                openManageBranchUnit(show_ouid);
+                $('#system_link').modal('hide');
+                Uncheckcount(chkpopupdeviceidlink_withou_header, chkpopupdeviceidlink_withou);
+			}
+            });
+        }
+        else {
+            alert("Select any one System Name !");
+            return false;
+        }
+    }
+
+    function openLinkUser(ou_id) {
+        //alert(ou_id);
+        //debugger;
+        $('#user_link').modal('show');
+        //document.getElementById("hdn_link_device_ouid").value = ou_id;
+        var url1 = '@Url.Content("~/csat_settings_page/get_OU_unlinked_users?ou_id=")' + ou_id;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+                //div_manage_branch_unit_data
+                document.getElementById("hdn_user_link_with_ou_id").value = ou_id;
+                var Setgriddata = $('#div_link_user_with_ou');
+                jQuery('#div_link_user_with_ou').html('');
+                var rawdata = "";
+
+                var headdata = "<ul class='breadcrumb' style='margin-bottom:0px;'><li>" + data.ou_data_ou_self[0].ou_nodelinkage_longname + "</li></ul><div class='table-responsive'><table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group3' id='chk_user_link_with_ou_header' /></th><th class='col-sm-11'>User Name</th></tr></thead><tbody>";
+
+                for (var i = 0; i < data.ou_data_unlinked_user.length; i++) {
+                    rawdata += "<tr><td class='select'><input type='checkbox' class='group3' name='check[]' id='chk_user_link_with_ou'  value='" + data.ou_data_unlinked_user[i].user_id + "' onchange='getcheckeduser()' /></td><td class='col-sm-11'>" + data.ou_data_unlinked_user[i].user_name + "</td></tr>";
+                }
+                Setgriddata.append(headdata + rawdata + "</tbody></table></div><div class='form-group'><div class='col-xs-5'>&nbsp;<input type='button' class='btn btn-primary' name='Add' value='Apply' onclick='link_user_with_BranchUnit()' />&nbsp;<input type='button' class='btn btn-primary' data-dismiss='modal' name='close' value='Cancel' /></div></div>");
+                datatable_paging();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+
+                    parent.change(function () {  //"select all" change
+                        $(group).prop('checked', parent.prop("checked"));
+                        getcheckeduser();
+                    });
+                    $(group).change(function () {
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+            }
+		});
+    }
+
+    var checkeduser = "";
+    function getcheckeduser() {
+        // debugger;
+        checkeduser = "";
+        var checkboxes = document.querySelectorAll('input[id="chk_user_link_with_ou"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkeduser += "," + checkboxes[i].value;
+            }
+            else {
+            }
+        }
+    }
+    function link_user_with_BranchUnit() {
+        //debugger;
+        var ou_id = "";
+        ou_id = document.getElementById("hdn_user_link_with_ou_id").value;
+        var SystemChecked = $('input[id="chk_user_link_with_ou"]:checked').length > 0;
+        if (SystemChecked == true) {
+        //getcheckeduser();
+        var url1 = '@Url.Content("~/csat_settings_page/link_user_with_ou_branch_unit?ou_id=")' + ou_id + '&user_ids=' + checkeduser;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                //debugger;
+                alert(data);
+                $('#user_link').modal('hide');
+                Uncheckcount(chk_user_link_with_ou_header, chk_user_link_with_ou);
+            }
+            });
+        }
+        else {
+            alert("Select any one Username !");
+            return false;
+        }
+    }
+    @*function apply_link_devices() {
+       // debugger;
+        var ou_id = "";
+        var ou_name = "";
+        ou_id = document.getElementById("hdn_ouid_add_branch_unit").value;
+        ou_name = document.getElementById("txt_ouname_add_branch_unit").value;
+
+        var url1 = '@Url.Content("~/csat_settings_page/link_user_with_ou_branch_unit?ou_id=")' + ou_id + '&user_ids=' + checkeduser;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                //debugger;
+                alert(data);
+            }
+        });
+    }*@
+
+    var ouid = "";
+    var ou_name = "";
+    function editoudata(id, ou_nodelinkage_nodename) {
+       // debugger;
+        ouid = id;
+        document.getElementById("editbranch1").value = ou_nodelinkage_nodename;
+     //   ou_name = ou_nodelinkage_nodename;
+        //ou_id = document.getElementById("hdn_ouid_add_branch_unit").value;
+
+        $('#edit_branch_unit_parant').modal('show');
+    }
+
+    $('#btnedit').on('click', function () {
+      //  debugger;
+        var $valid = $('#frm_editbranchunit').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            ou_name = document.getElementById("editbranch1").value;
+            var url1 = '@Url.Content("~/csat_settings_page/Updateoudetails?ouid=")' + ouid + '&ouname=' + ou_name;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+                    alert(result);
+                    document.getElementById('editbranch1').value = '';
+                    document.getElementById('hiddenouid').value = '';
+                    $('#edit_branch_unit_parant').modal('hide');
+                    //openManageBranchUnit(0);
+                    openManageBranchUnit(show_ouid);
+                }
+            });
+        }
+    });
+
+    function deleteoudata(id) {
+        //debugger;
+        ouid = id;
+        $('#delete_branch').modal('show');
+    }
+
+     $('#btndelete').on('click',function(){
+         var url1 = '@Url.Content("~/csat_settings_page/DeleteOU?ouid=")'  + ouid;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+            alert(result);
+            $('#delete_branch').modal('hide');
+            //openManageBranchUnit(0);
+            openManageBranchUnit(show_ouid);
+            ouid = "";
+		 }
+		 });
+
+	});
+
+    function cleardata() {
+        document.getElementById('txt_ouname_add_branch_unit').value = '';
+    }
+
+    function Uncheckcount(headid, rawid) {
+        // debugger;
+        headid.checked = false;
+
+        for (var i = 0; i < rawid.length; i++) {
+            if (rawid[i].checked == true) {
+                rawid[i].checked = false;
+            }
+            else {
+            }
+        }
+    }
+</script>

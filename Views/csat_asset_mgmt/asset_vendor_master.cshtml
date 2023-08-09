@@ -1,0 +1,698 @@
+﻿
+@{
+    ViewData["Title"] = "Asset_vendor_master";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script>
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+</script>
+<body onload="bindvendordata();">
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button type="button" data-toggle="modal" data-target="#vender_master" class="btn btn-primary  btn-md day">Add New <b style="font-weight:bolder;">+</b></button>
+                    <button type="button" data-toggle="modal" data-target="#vendor_master_report" class="btn btn-primary btn-md day">Vendor Master Report </button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Vendor Master</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--main Content-->
+    <div class="row">
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding" style="padding-right:0px;">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu" style="padding-bottom: 30px;">
+                    @{
+                        @Html.Partial("csat_asset_mgmt_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <!--sub content-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+
+            <!--asset device form-->
+            <!--form  content-->
+
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <!--asset Vender Master Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="divvendor_div">
+                            <table id="divvendor" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+                    <!--asset Vender Master Datatable end-->
+
+                </div>
+            </div>
+
+
+        </div>  <!--sub content end-->
+
+        <div class="space_bottom">&nbsp;</div>
+
+    </div> <!--main Content end-->
+    <!--add new Vender Master form content-->
+    <div class="modal fade" id="vender_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Add New Vender</h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_insert_vendor_master" id="frm_insert_vendor_master">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Name <b class="loginmsg">*</b> </label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="vendorName" name="vendorName" placeholder="Name" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Type of Supplier </label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="SupplierName" name="SupplierName" placeholder="Supplier Name" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Address</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Address" name="Address" placeholder="Address" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">City</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="City" name="City" placeholder="City" />
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Contact Person</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="ContactPerson" name="ContactPerson" placeholder="Contact Person" />
+                                            </div>
+
+                                            <label for="nameField" class="col-xs-2">E-mail Address</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="E-mail Address" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Fax No</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="FaxNo"  name="FaxNo" placeholder="Fax No" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Pin No</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="PinNo" name="PinNo" placeholder="Pin No" onkeypress="return isNumberKey(event)" maxlength="6" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label for="nameField" class="col-xs-2">Phone 1</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Phone1" name="Phone1" placeholder="Phone 1" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Phone 2</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Phone2" name="Phone2" placeholder="Phone 2" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Mobile 1</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Mobile1" name="Mobile1" placeholder="Mobile 1" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Mobile 2</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Mobile2" name="Mobile2" placeholder="Mobile 2" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">GST</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="GST" name="GST" placeholder="GST" maxlength="15" style="text-transform: uppercase;" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Save" id="vendorsubmit" name="insert" />
+                                                <input type="button" class="btn btn-default" value="Cancel" id="vendorcancel" name="cancel" data-dismiss="modal" onclick="cleardata()" />
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div> <!--add new Vender Master form content End-->
+    <!--edit  new Vender Master form content-->
+    <div class="modal fade" id="edit_vender_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Edit Vender Master </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_add_vendor_master" id="frm_add_vendor_master">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Name</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EvendorName" name="EvendorName" placeholder="Name" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Type of Supplier </label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="ESupplierName" name="ESupplierName" placeholder="Supplier Name" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Address</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EAddress" name="EAddress" placeholder="Address" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">City</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="ECity" name= "ECity" placeholder="City" />
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Contact Person</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EContactPerson" name="EContactPerson" placeholder="Contact Person" />
+                                            </div>
+
+                                            <label for="nameField" class="col-xs-2">E-mail Address</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EEmailAddress" name="EEmailAddress" placeholder="E-mail Address" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Fax No</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EFaxNo" name="EFaxNo" placeholder="Fax No" onkeypress="return isNumberKey(event)" maxlength="12" value="124" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Pin No</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EPinNo" name="EPinNo" placeholder="Pin No" onkeypress="return isNumberKey(event)" maxlength="6" value="380013" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Phone 1</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EPhone1" name="EPhone1" placeholder="Phone 1" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Phone 2</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EPhone2" name="EPhone2" placeholder="Phone 2" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label for="nameField" class="col-xs-2">Mobile 1</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EMobile1" name="EMobile1" placeholder="Mobile" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Mobile 2</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EMobile2" name="EMobile2" placeholder="Mobile # 1" onkeypress="return isNumberKey(event)" maxlength="12" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">GST</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="EGST" name="EGST" placeholder="GST" maxlength="15" style="text-transform: uppercase;" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Save" id="vendorupdate" name="Edit" />
+                                                <input type="button" class="btn btn-default" value="Cancel" id="vendorEditcancel" name="cancel" data-dismiss="modal" />
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--edit new Vender Master form content End-->
+    <!--delete_assetmaster device model  content-->
+    <div class="modal fade" id="delete_vender_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" id="btnyes" value="Yes" />
+                                        <input type="button" class="btn btn-default" name="no" id="btnno" value="No" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_assetmaster device model  content-->
+    <!-- vendor_report  Data pop-up model box  Content-->
+    <div class="modal fade" id="vendor_master_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#fff;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        <ul class="mbreadcrumb" style="margin-bottom: 0px;padding: 4px;">
+                            <li>
+                                <a href="#">Assest Managment</a> <i class="icon-angle-right"></i>
+                            </li>
+                            <li><a href="#">  Vendor Master </a> <i class="icon-angle-right"></i></li>
+                            <li>   Vendor Master Report</li>
+                        </ul>
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <!--form  content-->
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" name="frm_vendor_master" id="frm_vendor_master">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1">Filter</label>
+                                            <div class="col-xs-3" style="margin-left: 15px;">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="searchtype">
+                                                    <option value="-1">Select Type</option>
+                                                    <option value="vendor_name">Vendor Name</option>
+                                                    <option value="supplier">Type of Supplier</option>
+                                                    <option value="address">Address</option>
+                                                    <option value="city">City</option>
+                                                    <option value="contact_person">Contact Person</option>
+                                                    <option value="email_address">E-mail Address</option>
+                                                    <option value="fax_no">Fax No</option>
+                                                    <option value="pin_no">Pin No</option>
+                                                    <option value="phone_no1">Phone 1</option>
+                                                    <option value="phone_no2">Phone 2</option>
+                                                    <option value="mobile_no1">Mobile 1</option>
+                                                    <option value="mobile_no2">Mobile 2</option>
+                                                    <option value="gst">GST</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue" autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" onclick="vendorreport()">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnshowreport" onclick="vendorreport()">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--End form  content-->
+                        </div>
+                    </div>
+                    <!--vendor_report  Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="tblvendorreport_div">
+                            <table id="tblvendorreport" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+                    <!--vendor_report  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End vendor_report pop-up model box Content -->
+</body>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_vendor_master");
+        validateSingleForm("#frm_add_vendor_master");
+        validateSingleForm("#frm_insert_vendor_master");
+        
+    });
+</script>
+
+<script>
+
+   function bindvendordata()
+   {
+       $("#overlay").show();
+       $("#overlay").fadeIn(300);　
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_asset_mgmt/get_Vendor_data/")',
+            success: function (data) {
+                var dataclear = document.getElementById('divvendor_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divvendor_div').append("<table id='divvendor' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divvendor');
+                var data1 = [];
+                var deleteedit = "";
+                for (var i = 0; i < data.vendordata.length; i++) {
+                    var vd_edit = "<div class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal'  onclick='editvendordata(" + data.vendordata[i].vendor_id + ")'  title='Edit'></i></div>";
+                    if ((data.vendordata[i].vendor_name).toUpperCase() == 'SELF') {
+                        deleteedit = "";
+                    }
+                    else {
+                        deleteedit = "<div class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  onclick='deletevendordata(" + data.vendordata[i].vendor_id + ")' title='Delete'></i></div>";
+                    }
+                    data1.push([data.vendordata[i].vendor_name, data.vendordata[i].contact_person, data.vendordata[i].city, data.vendordata[i].mobile, data.vendordata[i].email_address, vd_edit, deleteedit]);
+                }
+                var otable = $("#divvendor").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                    columns: [{ title: "Name", width: '80px' }, { title: "Contact Person", width: '80px' }, { title: "City", width: '70px' }, { title: "Mobile", width: '70px' }, { title: "E-Mail-ID", width: '50px' },{ title: "Edit", width: '20px', orderable: false }, { title: "Delete", width: '15px', orderable: false }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+     //        var Setgriddata = $('#divvendor');
+			  //jQuery('#divvendor').html('');
+     //           var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm-2'>Name</th><th class='col-sm-2'>Contact Person</th><th class='col-sm-2'>City</th>"+
+     //                        "<th class='col-sm-1'>Mobile</th><th class='col-sm-3'>E-Mail-ID</th><th class='icon' data-orderable='false'> Edit</th><th class='icon' data-orderable='false'> Delete</th></tr></thead><tbody>";
+			  // var trdata="";
+     //           for (var i = 0; i < data.vendordata.length; i++) {
+     //               if (data.vendordata[i].contact_person == null)
+     //                   data.vendordata[i].contact_person = ''
+     //               if (data.vendordata[i].city == null)
+     //                   data.vendordata[i].city = ''
+     //               if (data.vendordata[i].mobile == null)
+     //                   data.vendordata[i].mobile = ''
+     //               if (data.vendordata[i].email_address == null)
+     //                   data.vendordata[i].email_address = ''
+			  // trdata+="<tr class='gradeA'>";
+     //               trdata +="<td class='col-sm-2'>"+ data.vendordata[i].vendor_name  +"</td>";
+     //               trdata +="<td class='col-sm-2'>"+ data.vendordata[i].contact_person  +"</td>";
+     //               trdata +="<td class='col-sm-2'>"+ data.vendordata[i].city  +"</td>";
+     //               trdata +="<td class='col-sm-1'>"+ data.vendordata[i].mobile  +"</td>";
+     //               trdata +="<td class='col-sm-3'>"+ data.vendordata[i].email_address  +"</td>";
+     //               trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal'  onclick='editvendordata(" + data.vendordata[i].vendor_id + ")'  title='Edit'></i></td>";
+     //               if ((data.vendordata[i].vendor_name).toUpperCase() == 'SELF')
+     //                   trdata += "<td class='icon'></td>";
+     //               else
+     //                   trdata += "<td class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  onclick='deletevendordata(" + data.vendordata[i].vendor_id + ")' title='Delete'></i>&nbsp;</td>";
+     //               trdata+="</tr>";
+     //          }
+     //           Setgriddata.append(headdata+trdata+"</tbody></table>");
+     //           datatable_paging();
+        }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+   }
+    $('#vendorsubmit').on('click', function () {
+
+	 var vendorname=document.getElementById("vendorName").value;
+	 var sname=document.getElementById("SupplierName").value;
+	 var aname=document.getElementById("Address").value;
+	 var city=document.getElementById("City").value;
+	 var cp=document.getElementById("ContactPerson").value;
+	 var email=document.getElementById("EmailAddress").value;
+	 var fno=document.getElementById("FaxNo").value;
+	 var pno=document.getElementById("PinNo").value;
+	 var ph1=document.getElementById("Phone1").value;
+	 var ph2=document.getElementById("Phone2").value;
+	 var m1=document.getElementById("Mobile1").value;
+	 var m2=document.getElementById("Mobile2").value;
+         var gst = document.getElementById("GST").value;
+         //if ($("#vendorName").val() == "") {
+         //    alert('please enter vendor name !');
+         //    return false;
+         //}
+        var $valid = $('#frm_insert_vendor_master').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+
+         else {
+	         var url1= '@Url.Content("~/csat_asset_mgmt/insert_Vendordata?vname=")'+vendorname+'&supplier='+sname+'&address='+aname+'&city='+city+'&c_person='+cp+'&p_no1='+ph1+'&p_no2='+ph2+'&m_no1='+m1+'&m_no2='+m2+'&fax_no='+fno+'&emailid='+email+'&gst='+gst+'&pin_no='+pno;
+	         $.ajax({
+                type: "POST",
+                url:url1,
+                success: function (result) {
+			    alert(result);
+			     document.getElementById("vendorName").value='';document.getElementById("SupplierName").value='';document.getElementById("Address").value='';document.getElementById("City").value='';document.getElementById("ContactPerson").value='';document.getElementById("EmailAddress").value='';document.getElementById("FaxNo").value='';document.getElementById("PinNo").value='';document.getElementById("Phone1").value='';document.getElementById("Phone2").value='';document.getElementById("Mobile1").value='';document.getElementById("Mobile2").value='';document.getElementById("GST").value='';
+	             $('#vender_master').modal('hide');
+			     bindvendordata();
+			        }
+			    });
+         }
+      });
+   var vendorid="";
+   function deletevendordata(id)
+   {
+      vendorid=id;
+      $('#delete_vender_master').modal('show');
+   }
+   $('#btnyes').on('click',function(){
+	//debugger;
+	var url1= '@Url.Content("~/csat_asset_mgmt/delete_Vendordata?vendorid=")'+vendorid;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+			 $('#delete_vender_master').modal('hide');
+			 bindvendordata();
+			}
+			});
+	});
+	$('#btnno').on('click',function(){
+	  $('#delete_vender_master').modal('hide');
+	});
+	var varvid="";
+	function editvendordata(id)
+   {
+   varvid=id;
+   // debugger;
+   var url1= '@Url.Content("~/csat_asset_mgmt/get_Vendor_master_details?vendorid=")'+id;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (data) {
+			//debugger;
+             document.getElementById("EvendorName").value= data.vendordata[0].vendor_name;
+	         document.getElementById("ESupplierName").value=data.vendordata[0].supplier;
+	         document.getElementById("EAddress").value=data.vendordata[0].address;
+	         document.getElementById("ECity").value=data.vendordata[0].city;
+	         document.getElementById("EContactPerson").value=data.vendordata[0].contact_person;
+	         document.getElementById("EEmailAddress").value=data.vendordata[0].email_address;
+	         document.getElementById("EFaxNo").value=data.vendordata[0].fax_no;
+	         document.getElementById("EPinNo").value=data.vendordata[0].pin_no;
+	         document.getElementById("EPhone1").value=data.vendordata[0].phone_no1;
+	         document.getElementById("EPhone2").value=data.vendordata[0].phone_no2;
+	         document.getElementById("EMobile1").value=data.vendordata[0].mobile_no1;
+	         document.getElementById("EMobile2").value=data.vendordata[0].mobile_no2;
+	         document.getElementById("EGST").value=data.vendordata[0].gst;
+		    $('#edit_vender_master').modal('show');
+			}
+			});
+
+   }
+    $('#vendorupdate').on('click', function () {
+        var $valid = $('#frm_add_vendor_master').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            var vendorname = document.getElementById("EvendorName").value;
+            var sname = document.getElementById("ESupplierName").value;
+            var aname = document.getElementById("EAddress").value;
+            var city = document.getElementById("ECity").value;
+            var cp = document.getElementById("EContactPerson").value;
+            var email = document.getElementById("EEmailAddress").value;
+            var fno = document.getElementById("EFaxNo").value;
+            var pno = document.getElementById("EPinNo").value;
+            var ph1 = document.getElementById("EPhone1").value;
+            var ph2 = document.getElementById("EPhone2").value;
+            var m1 = document.getElementById("EMobile1").value;
+            var m2 = document.getElementById("EMobile2").value;
+            var gst = document.getElementById("EGST").value;
+            var url1 = '@Url.Content("~/csat_asset_mgmt/Update_Vendordata?vname=")' + vendorname + '&supplier=' + sname + '&address=' + aname + '&city=' + city + '&c_person=' + cp + '&p_no1=' + ph1 + '&p_no2=' + ph2 + '&m_no1=' + m1 + '&m_no2=' + m2 + '&fax_no=' + fno + '&emailid=' + email + '&gst=' + gst + '&pin_no=' + pno + '&vendorid=' + varvid;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+                    alert(result);
+                    document.getElementById("EvendorName").value = '';
+                    document.getElementById("ESupplierName").value = '';
+                    document.getElementById("EAddress").value = '';
+                    document.getElementById("ECity").value = '';
+                    document.getElementById("EContactPerson").value = '';
+                    document.getElementById("EEmailAddress").value = '';
+                    document.getElementById("EFaxNo").value = '';
+                    document.getElementById("EPinNo").value = '';
+                    document.getElementById("EPhone1").value = '';
+                    document.getElementById("EPhone2").value = '';
+                    document.getElementById("EMobile1").value = '';
+                    document.getElementById("EMobile2").value = '';
+                    document.getElementById("EGST").value = '';
+                    $('#edit_vender_master').modal('hide');
+                    bindvendordata();
+                }
+            });
+        }
+        });
+    
+</script>
+<script>
+    function vendorreport() {
+        var serchtype = document.getElementById('searchtype').value;
+        var searchval = document.getElementById('searchvalue').value;
+        var $valid = $('#frm_vendor_master').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+
+
+            var url = '@Url.Content("~/csat_asset_mgmt/Asset_vendorreport?serchtype=")' + serchtype + '&searchval=' + searchval;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblvendorreport_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblvendorreport_div').append("<table id='tblvendorreport' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblvendorreport');
+                    var data1 = [];
+                    for (var i = 0; i < data.vendorreportdata.length; i++) {
+                        data1.push([data.vendorreportdata[i].vendor_name, data.vendorreportdata[i].supplier, data.vendorreportdata[i].address, data.vendorreportdata[i].city, data.vendorreportdata[i].contact_person, data.vendorreportdata[i].email_address, data.vendorreportdata[i].fax_no, data.vendorreportdata[i].pin_no, data.vendorreportdata[i].phone_no1, data.vendorreportdata[i].phone_no2, data.vendorreportdata[i].mobile_no1, data.vendorreportdata[i].mobile_no2, data.vendorreportdata[i].gst]);
+                    }
+                    var otable = $("#tblvendorreport").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Vendor Master Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Vendor Master Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Vendor Name" }, { title: "Type of Supplier" }, { title: "Address" }, { title: "City" }, { title: "Contact Person" }, { title: "E-mail Address" }, { title: "Fax No" }, { title: "Pin No" }, { title: "Phone No1" }, { title: "Phone No2" }, { title: "Mobile No1" }, { title: "Mobile No2" }, { title: "GST" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    }
+
+    function cleardata() {
+        document.getElementById("vendorName").value = '';
+        document.getElementById("SupplierName").value = '';
+        document.getElementById("Address").value = '';
+        document.getElementById("City").value = '';
+        document.getElementById("ContactPerson").value = '';
+        document.getElementById("EmailAddress").value = '';
+        document.getElementById("FaxNo").value = '';
+        document.getElementById("PinNo").value = '';
+        document.getElementById("Phone1").value = '';
+        document.getElementById("Phone2").value = '';
+        document.getElementById("Mobile1").value = '';
+        document.getElementById("Mobile2").value = '';
+        document.getElementById("GST").value = '';
+        document.getElementById("searchtype").value = '-1';
+        document.getElementById("searchvalue").value = '';
+    }
+</script>

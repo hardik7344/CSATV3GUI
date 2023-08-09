@@ -1,0 +1,339 @@
+﻿@using OwnYITCSAT.DataAccessLayer;
+
+<div class="category-tree mb30">
+
+    <ul class="subcategories">
+        <li class="143 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_agent_information" ? "active" : "")">@Html.ActionLink("Agent Information", "report_agent_information", "csat_report")</li>
+        <li class="144 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_data_leakage" ? "active" : "")">@Html.ActionLink("Data Leakage", "report_data_leakage", "csat_report")</li>
+        <li class="145 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_modem_usage" ? "active" : "")">@Html.ActionLink("Internet Modem Usage", "report_modem_usage", "csat_report")</li>
+        <li class="146 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_audit_trail" ? "active" : "")">@Html.ActionLink("Audit Trail Summary", "report_audit_trail", "csat_report")</li>
+        <li class="181 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_event_monitoring" ? "active" : "")">@Html.ActionLink("Event Monitoring", "report_event_monitoring", "csat_report")</li>
+        <li class="147 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_asset_information" ? "active" : "")">@Html.ActionLink("Asset Information", "report_asset_information", "csat_report")</li>
+        <li class="148 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_system_firewall_status" ? "active" : "")">@Html.ActionLink("System Firewall Status", "report_system_firewall_status", "csat_report")</li>
+        <li class="149 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_software_information" ? "active" : "")">@Html.ActionLink("Software Information", "report_software_information", "csat_report")</li>
+        <li class="150 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_user_information" ? "active" : "")">@Html.ActionLink("User Information", "report_user_information", "csat_report")</li>
+        <li class="151 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_shared_Resources" ? "active" : "")">@Html.ActionLink("Shared Information", "report_shared_Resources", "csat_report")</li>
+        <li class="152 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_service_details" ? "active" : "")">@Html.ActionLink("Service Details", "report_service_details", "csat_report")</li>
+        <li class="153 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_port_information" ? "active" : "")">@Html.ActionLink("Port Information", "report_port_information", "csat_report")</li>
+        <li class="154 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_login_logoff_timetrack" ? "active" : "")">@Html.ActionLink("User Login Details", "report_login_logoff_timetrack", "csat_report")</li>
+        <li class="155 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_password_change" ? "active" : "")">@Html.ActionLink("Password Change Details", "report_password_change", "csat_report")</li>
+        <li class="156 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_dcm" ? "active" : "")">@Html.ActionLink("DCM Report", "report_dcm", "csat_report")</li>
+        <li class="157 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_network_statistics" ? "active" : "")">@Html.ActionLink("Network Statistics", "report_network_statistics", "csat_report")</li>
+        <li class="158 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_enumerate_files" ? "active" : "")">@Html.ActionLink("Enumerate Files", "report_enumerate_files", "csat_report")</li>
+        <li class="159 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_autopower_off_status" ? "active" : "")">@Html.ActionLink("Auto Power Off Report", "report_autopower_off_status", "csat_report")</li>
+        <li class="160 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_policy_apply" ? "active" : "")">@Html.ActionLink("Policy Enforcement", "report_policy_apply", "csat_report")</li>
+        <li class="162 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_offnetwork_activity" ? "active" : "")">@Html.ActionLink("Off Network Activity Report", "report_offnetwork_activity", "csat_report")</li>
+        <li class="163 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_antivirus_update" ? "active" : "")">@Html.ActionLink("Antivirus Update Report", "report_antivirus_update", "csat_report")</li>
+        <li class="164 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_manage_agent_registry" ? "active" : "")">@Html.ActionLink("Manage Agent-Registry", "report_manage_agent_registry", "csat_report")</li>
+        <li class="165 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_process_log" ? "active" : "")">@Html.ActionLink("Process Log", "report_process_log", "csat_report")</li>
+        <li class="166 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_unauthorise_ip_log" ? "active" : "")">@Html.ActionLink("Unauthorise IP Log", "report_unauthorise_ip_log", "csat_report")</li>
+        <li class="167 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_agent_connectivity" ? "active" : "")">@Html.ActionLink("Agent Connectivity", "report_agent_connectivity", "csat_report")</li>
+        <li class="168 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_hardware_information" ? "active" : "")">@Html.ActionLink("Hardware Information", "report_hardware_information", "csat_report")</li>
+        <li class="186 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_usb_history" ? "active" : "")">@Html.ActionLink("USB History", "report_usb_history", "csat_report")</li>
+        <li class="187 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_gui_log" ? "active" : "")">@Html.ActionLink("GUI Log", "report_gui_log", "csat_report")</li>
+        <li class="191 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_employee_details" ? "active" : "")">@Html.ActionLink("Employee Details", "report_employee_details", "csat_report")</li>
+        <li class="192 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_summary_compliance_management" ? "active" : "")">@Html.ActionLink("Summary of Compliance Management", "report_summary_compliance_management", "csat_report")</li>
+        <li class="193 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_active_directory_data" ? "active" : "")">@Html.ActionLink("Active Directory Data ", "report_active_directory_data", "csat_report")</li>
+    </ul>
+</div>
+<script>
+    $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('.category-tree').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+    $(document).ready(function () {
+
+        $('.list-group-item').click(function (e) {
+            e.preventDefault();
+            $('.list-group-item').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>
+@*<nav id="main-nav" class="main-nav">
+        <ul class="main-menu">
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-ios7-speedometer"></i><span class="text">Dashboards</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li>
+                        <a href="#">
+                            <span class="text">Dashboard v1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Dashboard v2</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-submenu active">
+                <a href="#" class="submenu-toggle"><i class="icon ion-android-note"></i><span class="text">Forms</span></a>
+                <ul class="list-unstyled sub-menu collapse in">
+                    <li>
+                        <a href="#">
+                            <span class="text">Fancy Elements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">In-place Editing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Bootstrap Elements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Form Layouts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Validation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">File Upload</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Text Editor</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Wizards</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-android-mixer"></i><span class="text">UI Elements</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li>
+                        <a href="#">
+                            <span class="text">General</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Buttons</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Tabs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Tour</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Icons</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="widgets.html"><i class="icon ion-pizza"></i><span class="text">Widgets </span></a>
+            </li>
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-ios7-copy"></i><span class="text">Pages</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li>
+                        <a href="page-projects.html">
+                            <span class="text">Projects</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-project-detail.html">
+                            <span class="text">Project Detail</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-user-profile.html">
+                            <span class="text">Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-search-result.html">
+                            <span class="text">Search Result</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-inbox.html">
+                            <span class="text">Inbox</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-view-message.html">
+                            <span class="text">View Message</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-new-message.html">
+                            <span class="text">New Message</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-knowledgebase.html">
+                            <span class="text">Knowledge Base</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-submit-ticket.html">
+                            <span class="text">Submit Ticket</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-faq.html">
+                            <span class="text">FAQ</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-pricing-tables.html">
+                            <span class="text">Pricing Tables</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-invoice.html">
+                            <span class="text">Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-register.html">
+                            <span class="text">Register</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-login.html">
+                            <span class="text">Login</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-login-alt.html">
+                            <span class="text">Login Alt.</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-404.html">
+                            <span class="text">Not Found 404</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-505.html">
+                            <span class="text">Error 505</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="page-blank.html">
+                            <span class="text">Blank Page</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="main-menu">
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-ios7-pie"></i><span class="text">Charts</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li class="active">
+                        <a href="charts-basic.html">
+                            <span class="text">Basic</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="charts-interactive.html">
+                            <span class="text">Interactive Charts</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-android-storage"></i><span class="text">Tables</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li class="active">
+                        <a href="tables-static.html">
+                            <span class="text">Static Table</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tables-dynamic.html">
+                            <span class="text">Dynamic Table</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="maps.html"><i class="icon ion-earth"></i><span class="text">Maps</span></a></li>
+            <li><a href="typography.html"><i class="icon ion-edit"></i><span class="text">Typography</span></a></li>
+            <li class="has-submenu">
+                <a href="#" class="submenu-toggle"><i class="icon ion-android-sort"></i><span class="text">Menu Levels</span></a>
+                <ul class="list-unstyled sub-menu collapse">
+                    <li class="has-submenu">
+                        <a href="#" class="submenu-toggle">
+                            <span class="text">Second Lvl 1</span>
+                        </a>
+                        <ul class="list-unstyled sub-menu collapse">
+                            <li>
+                                <a href="#">
+                                    <span class="text">Third Lvl 1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="text">Third Lvl 2</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="text">Third Lvl 3</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Second Lvl 2</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Second Lvl 3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text">Second Lvl 4</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>*@
+
+
+
+
+

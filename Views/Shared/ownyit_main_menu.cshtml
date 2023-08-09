@@ -1,0 +1,53 @@
+﻿
+@using Microsoft.AspNetCore.Http
+
+@model System.Data.DataTable
+@using System.Data;
+@using OwnYITCSAT.DataAccessLayer;
+
+<div id="wrap">
+    <ul class="nav navbar-nav navbar-right" style="background-color:transparent;">
+        @*<li><a asp-area="" asp-controller="csat_main_dashboard" asp-action="csat_main_dashboard">Dashboard</a></li>
+            <li><a asp-area="" asp-controller="csat_asset_mgmt" asp-action="csat_asset_mgmt">Asset Mgmt</a></li>
+            <li><a asp-area="" asp-controller="csat_policy_mgmt" asp-action="csat_policy_mgmt">Policy Mgmt</a></li>
+            <li><a asp-area="" asp-controller="csat_settings_page" asp-action="csat_settings_page">Settings</a></li>
+            <li><a asp-area="" asp-controller="csat_report" asp-action="csat_report">Report</a></li>*@
+
+        @*<li class="active">@Html.ActionLink("Dashboard", "csat_main_dashboard", "csat_main_dashboard")</li>
+            <li class="active">@Html.ActionLink("Asset Mgmt", "csat_asset_mgmt", "csat_asset_mgmt")</li>
+            <li class="active">@Html.ActionLink("Policy Mgmt", "csat_policy_mgmt", "csat_policy_mgmt")</li>
+            <li class="active">@Html.ActionLink("Settings", "csat_settings_page", "csat_settings_page")</li>
+            <li class="active">@Html.ActionLink("Report", "csat_report", "csat_report")</li>*@
+
+        @{
+            if (OwnYITConstant.DT_MAIN_MENU != null)
+            {
+                foreach (DataRow dr in (OwnYITConstant.DT_MAIN_MENU.Rows))
+                {
+                    <li class="active">
+                        <a href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                    </li>
+                }
+            }
+        }
+        <li>
+            <div class="btn-group" style="margin:14px;">
+                <button type="button" class="btn btn-xs  btn-default "><span class="glyphicon glyphicon-log-out"></span>  Logout</button>
+                <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </div>
+        </li>
+
+
+    </ul>
+</div>
+
+
+
+

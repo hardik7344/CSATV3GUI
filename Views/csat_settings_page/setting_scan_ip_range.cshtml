@@ -1,0 +1,994 @@
+﻿
+@{
+    ViewData["Title"] = "setting_scan_ip_range";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script type="text/javascript">
+    // <!--
+    // Form validation code will come here.
+
+    function validate() {
+
+        if (document.ip_scan_form.iprange.value == "") {
+
+            document.ip_scan_form.iprange.focus();
+            alert("Please provide IP Range!");
+            return false;
+        }
+        if (document.ip_scan_form.subnet.value == "") {
+
+            document.ip_scan_form.subnet.focus();
+            alert("Please provide Subnet Mask!");
+            return false;
+        }
+        else {
+            return (true);
+        }
+    }
+    function validate1() {
+
+        if (document.add_ip_form.startip.value == "") {
+
+            document.add_ip_form.startip.focus();
+            alert("Please provide start IP Address!");
+            return false;
+        }
+        if (document.add_ip_form.endip.value == "") {
+
+            document.add_ip_form.endip.focus();
+            alert("Please provide End IP Address!");
+            return false;
+        }
+
+    }
+
+    function Check1() {
+        if (document.getElementById('authorize').checked) {
+            document.getElementById('authorize_category').style.display = 'block';
+            document.getElementById('unauthorize_category').style.display = 'none';
+        }
+
+        if (document.getElementById('unauthorize').checked) {
+            document.getElementById('unauthorize_category').style.display = 'block';
+            document.getElementById('authorize_category').style.display = 'none';
+
+        }
+        if (document.getElementById('authorize1').checked) {
+            document.getElementById('authorize_category1').style.display = 'block';
+            document.getElementById('unauthorize_category1').style.display = 'none';
+        }
+
+        if (document.getElementById('unauthorize1').checked) {
+            document.getElementById('unauthorize_category1').style.display = 'block';
+            document.getElementById('authorize_category1').style.display = 'none';
+
+        }
+
+    }
+    //-->
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<body onload="showscaniprange();">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" id="btnautorizeip">Authorized IP Range</button>
+                </div>
+
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Scan IP Range </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" name="ip_scan_form">
+                                @*onsubmit="return(validate());">*@
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1">IP Range</label>
+                                    <div class="col-xs-2">
+                                        <input type="text" name="iprange" id="ip" class="form-control ip_address" placeholder="Enter IP Range" />
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 form_label">Subnet Mask</label>
+                                    <div class="col-xs-2">
+                                        <input type="text" name="subnet" class="form-control" value="255.255.255.0" />
+
+                                    </div>
+                                    <div class="pull-left col-xs-1">
+                                        <input type="button" class="btn btn-primary" value="Scan IP Range" id="btnsavescanip" onclick="scanip()">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--form  content end-->
+
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divscanip_div">
+                    <table id="divscanip" class="table table-striped table-bordered " width="100%"></table>
+                </div>
+            </div>
+
+            @*<div class="row">
+
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="table-responsive" id="divscanip">
+
+                </div>
+            </div>
+        </div>*@
+        </div>
+        <div class="space_bottom">&nbsp;</div>
+    </div>
+    <!-- show_detail_popup model box  Content-->
+    <div class="modal fade" id="show_detail_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Show Detail IP Range
+                    </h6>
+                </div>
+                <div class="modal-body">
+
+                    <!-- IP Datatable start-->
+                   
+                    <div class="row">                       
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="divscanippcdetail_div">
+                            <table id="divscanippcdetail" class="table table-striped table-bordered " width="100%"></table>
+                        </div>
+                    </div>                   
+                    @*<div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="divscanippcdetail">
+                            </div>
+                        </div>
+                    </div>*@
+                    <!--Count System  Data  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End show_detail_popup model box Content -->
+    <!-- authorized_ip_popup model box  Content-->
+    <div class="modal fade" id="authorized_ip_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Authorized IP Range
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <!-- authorized IP Datatable start-->
+                    <div class="row">                       
+                        <div>
+                            <button type="button" data-toggle="modal" id="btnaddiprange" data-target="#add_ip_range" class="btn btn-primary pull-right " style="margin-top: -20px;">Add New <b style="font-weight:bolder;">+</b></button>
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="divauthip_div" style="margin-top: 20px;">
+                                <div id="overlay_modal" style="display:none;">
+                                    <div class="cv-spinner">
+                                        <span class="spinner_modal"></span>
+                                    </div>
+                                </div>
+                                <table id="divauthip" class="table table-striped table-bordered " width="100%"></table>
+                            </div>
+                        </div>
+
+                    </div>
+                    @*<div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            
+                            <div class="table-responsive" id="divauthip">
+
+                            </div>
+                        </div>
+
+                    </div>*@
+                    <!--authorized  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End authorized_ip_popup model box Content -->
+    <!--add new IP Range form content-->
+    <div class="modal fade" id="add_ip_range" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Add New IP Range </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="add_ip_form" onsubmit="return(validate1());">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label">Category </label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="category" id="authorize" value="0" checked onclick="javascript: Check1();"> Authorize </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="category" id="unauthorize" value="1" onclick="javascript: Check1();"> Unauthorize </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label">Start IP Address</label>
+                                            <div class="col-xs-5">
+                                                <input type="text" name="startip" id="startip" class="form-control ip_address" placeholder="Enter Start IP Address" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 form_label">End IP Address</label>
+                                            <div class="col-xs-5">
+                                                <input type="text" name="endip" id="endip" class="form-control ip_address" placeholder="Enter End IP Address" />
+                                            </div>
+                                        </div>
+                                        <div id="authorize_category">
+
+
+                                        </div>
+
+                                        <div id="unauthorize_category" style="display:none;">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Local Port</label>
+                                                <div class="col-xs-5">
+                                                    <input type="text" name="localport" id="localport" class="form-control" onkeypress="return isNumberKey(event)" maxlength="5" placeholder="Enter Local Port" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Remote Port</label>
+                                                <div class="col-xs-5">
+                                                    <input type="text" name="remoteport" id="remoteport" class="form-control" onkeypress="return isNumberKey(event)" maxlength="5" placeholder="Enter Remote Port" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-8 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Add IP Range" id="btnsaveiprange" name="add range1" />
+                                                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" name="Add cancel1" onclick="cleardata()" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div> <!--add new IP Range form content End-->
+    <!--edit  IP Range form content-->
+    <div class="modal fade" id="edit_ip_range" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Edit IP Range </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-3">Category </label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="category" id="authorize1" value="authorize" checked onclick="javascript: Check1();"> Authorize </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="category" id="unauthorize1" value="unauthorize" onclick="javascript: Check1();"> Unauthorize </label>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-3">Start IP Address</label>
+                                            <div class="col-xs-5">
+                                                <input type="text" name="startip" class="form-control ip_address" id="startip1" placeholder="Enter Start IP Address" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-3">End IP Address</label>
+                                            <div class="col-xs-5">
+                                                <input type="text" name="endip" class="form-control ip_address" id="endip1" placeholder="Enter End IP Address" />
+                                            </div>
+                                        </div>
+                                        <div id="authorize_category1">
+
+                                        </div>
+
+                                        <div id="unauthorize_category1" style="display:none;">
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-3">Local Port</label>
+                                                <div class="col-xs-5">
+                                                    <input type="text" name="Localport" id="localport1" class="form-control" onkeypress="return isNumberKey(event)" maxlength="5" value="8080" placeholder="Enter Local Port" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-3">Remote Port</label>
+                                                <div class="col-xs-5">
+                                                    <input type="text" name="remoteport" id="remoteport1" class="form-control" onkeypress="return isNumberKey(event)" maxlength="5" value="143" placeholder="Enter Remote Port" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Edit IP Range" id="ipupdate" name="edit range" />
+                                                <input type="button" class="btn btn-default" value="Cancel" id="ipEditcancel" name="Edit cancel" />
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div> <!--edit IP Range form content End-->
+    <!--delete_authorized_ip  model  content-->
+    <div class="modal fade" id="delete_authorized_ip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Confirmation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_authorized_ip device model  content-->
+    <!--delete_range device model  content-->
+    <div class='modal fade ' id='delete_range' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+        <div class='modal-dialog  modal-small'>
+            <div class='modal-content '>
+                <div class='modal-header'>
+                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                    <h6 class='modal-title'>Conformation </h6>
+                </div>
+                <div class='modal-body'>
+                    <!--form  content-->
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-12 col-lg-12'>
+
+                            <div class='row'>
+                                <div class='col-xs-12'>
+                                    <form class='form-horizontal' method='post'>
+                                        <div class='form-group'>
+
+                                            <label for='nameField' class='col-xs-12'>
+                                                <i class='glyphicon glyphicon-exclamation-sign delete_msg'></i>
+                                                <span style='font-weight:normal;margin-left:30px;'>Are you sure you want to delete this record?</span>
+                                            </label>
+
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='nameField' class='col-xs-4'></label>
+                                            <div class='col-xs-6'>
+                                                <input type='button' class='btn btn-primary' name='yes' value='Yes' id="btnscandelete" />
+                                                <input type='button' class='btn btn-default' data-dismiss="modal" name='no' value='No' />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- delete_range main node popup model box  Content-->
+    @*// Scan IP range*@
+    <script>
+        function showscaniprange() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetScanIPdata")',
+            success: function (data) {
+                var dataclear = document.getElementById('divscanip_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divscanip_div').append("<table id='divscanip' class='table table-striped table-bordered' width='100%'></table>");
+                dtable = document.getElementById('divscanip');
+                var data1 = [];
+                for (var i = 0; i < data.scanipdetail.length; i++) {
+                    //debugger;
+                    var setting_div = "<i class='glyphicon glyphicon-refresh manage_icon' type='button' title='Setting' onclick=rescanip('" + data.scanipdetail[i].ip_range + "','" + data.scanipdetail[i].subnet_mask + "')></i>";
+                    var details_div = "<i class='glyphicon glyphicon-list-alt manage_icon' type='button' data-toggle='modal'  onclick=ShowScanIPPCDetail('" + data.scanipdetail[i].ip_range + "') title='Show Detail'></i>";
+                    var delete_div = "<i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  title='Delete' onclick=deleteiprange('" + data.scanipdetail[i].ip_range + "','" + data.scanipdetail[i].subnet_mask + "')></i>";
+                    data1.push([data.scanipdetail[i].ip_range, data.scanipdetail[i].subnet_mask, data.scanipdetail[i].device_timestamp, status, setting_div, details_div, delete_div]);
+                }
+                var dtable = $("#divscanip").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                    columns: [{ title: "IP Range" }, { title: "Subnet Mask" }, { title: "Last Scan Time" }, { title: "Status" }, { title: "Rescan", orderable: false, className: 'dt-center', width: '10px' }, { title: "Show Detail", orderable: false, className: 'dt-center', width: '100px' }, { title: "Delete", orderable: false,className: 'dt-center', width: '10px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+          
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+     //$('#btnsavescanip').on('click', function () {
+        function scanip() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+      // debugger;
+        var variprange = document.ip_scan_form.iprange.value;
+        var ip = variprange.split(".");
+        if (ip.length != 4) {
+            alert("Please provide Proper IP Range !");
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+            return false;
+        }
+        //Check Numbers
+        for (var c = 0; c < 4; c++) {
+            //Perform Test
+            if (!(1 / ip[c] > 0) || ip[c] > 255 || isNaN(parseFloat(ip[c])) || !isFinite(ip[c]) || ip[c].indexOf(" ") !== -1) {
+                alert("Please provide Proper IP Range !");
+                return false;
+            }
+        }
+         var varsubnet = document.ip_scan_form.subnet.value;
+         $.ajax({
+            type: "POST",
+             url: '@Url.Content("~/csat_settings_page/AddScanIPdata?iprange=")' + variprange + '&netmask=' + varsubnet,
+             success: function (data) {
+              // debugger;
+                alert(data);
+                cleardata();
+                showscaniprange();
+            }
+         });
+        }
+        function rescanip(variprange, varsubnet) {
+           // debugger;
+         $.ajax({
+            type: "POST",
+             url: '@Url.Content("~/csat_settings_page/ReScanIPdata?iprange=")' + variprange + '&netmask=' + varsubnet,
+             success: function (data) {
+              // debugger;
+                alert(data);                
+                showscaniprange();
+            }
+    });
+    }
+    // Show IP Detail
+    var iprange1;
+    function ShowScanIPPCDetail(iprange) {
+       // debugger;
+       
+        $('#show_detail_popup').modal('show');
+        var url1 = '@Url.Content("~/csat_settings_page/GetScanIPPCDetail?iprange=")' + iprange;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+               // debugger;
+                var dataclear = document.getElementById('divscanippcdetail_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divscanippcdetail_div').append("<table id='divscanippcdetail' class='table table-striped table-bordered' width='100%'></table>");
+                dtable = document.getElementById('divscanippcdetail');
+                var data1 = [];               
+                    for (var i = 0; i < data.scanippcdetail.length; i++) {
+                        //debugger;
+                        var status = "";
+                        if (data.scanippcdetail[i].status == 'up') {
+                            status = "<span class='badge badge-success'>" + data.scanippcdetail[i].status+"</span>";
+                        } else {
+                            status = "<span class='badge badge-danger'>" + data.scanippcdetail[i].status + "</span>";
+                        }                       
+                        data1.push([data.scanippcdetail[i].ip, data.scanippcdetail[i].ip, data.scanippcdetail[i].mac, data.scanippcdetail[i].allocated_deviceid, status]);
+                    }
+                    var dtable = $("#divscanippcdetail").DataTable({
+                        data: data1, scrollX: !0, searching: !1, /*dom: "<'top'lB>rt<'bottom'ip><'clear'>",*/
+                        columns: [{ title: "System Name" }, { title: "IP Address" }, { title: "MAC Address" }, { title: "Manufacture" }, { title: "Status" }],
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });                                  
+            }
+       
+        });
+    }
+    </script>
+
+
+    <script>
+    function cleardata() {
+        document.getElementById("startip").value = '';
+        document.getElementById("endip").value = '';
+        document.getElementById("localport").value = '';
+        document.getElementById("remoteport").value = '';
+        document.getElementById('authorize').checked = true;
+        document.getElementById('unauthorize_category').style.display = 'none';
+        document.ip_scan_form.iprange.value = '';
+        document.ip_scan_form.subnet.value = '';
+    }
+        $('#btnautorizeip').on('click', function () {
+            $("#overlay_modal").show();
+            $("#overlay_modal").fadeIn(300); 
+        $('#authorized_ip_popup').modal('show');
+        showauthorizeip();
+    });
+    function showauthorizeip() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetAuthorizedIPdata")',
+            success: function (data) {
+                var dataclear = document.getElementById('divauthip_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divauthip_div').append("<table id='divauthip' class='table table-striped table-bordered' width='100%'></table>");
+                dtable = document.getElementById('divauthip');
+                var data1 = [];
+                for (var i = 0; i < data.authorizedipdetail.length; i++) {
+                    //debugger;
+                    var edit_div = "<i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick='editauthipdata(" + data.authorizedipdetail[i].ip_id +")' title='Edit'></i>";                   
+                    var delete_div = "<i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal' title='Delete' onclick='deleteauthipdata(" + data.authorizedipdetail[i].ip_id +")'></i>";
+                    data1.push([data.authorizedipdetail[i].type, data.authorizedipdetail[i].start_ip, data.authorizedipdetail[i].end_ip, data.authorizedipdetail[i].local_port, data.authorizedipdetail[i].remote_port, edit_div, delete_div]);
+                }
+                var dtable = $("#divauthip").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: [],
+                    columns: [{ title: "Category" },{ title: "Start IP Address" }, { title: "End IP Address" }, { title: "Local Port" }, { title: "Remote Port" }, { title: "Edit", orderable: false, className: 'dt-center', width: '10px' }, { title: "Delete", orderable: false, className: 'dt-center', width: '10px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+              
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay_modal").fadeOut(300);
+            }, 500);
+        });
+    }    
+
+    var IPauthorizevalue = "";
+    $('input[type=radio]').change(function () {
+        IPauthorizevalue = this.value;
+
+    });
+    $('#btnsaveiprange').on('click', function () {
+      //  debugger;
+        var varstartip = document.getElementById("startip").value;
+        var varendip = document.getElementById("endip").value;
+        var varlocalport = document.getElementById("localport").value;
+        var varremoteport = document.getElementById("remoteport").value;
+         $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/AddAuthorizedIPdata?type=")' + IPauthorizevalue + '&start_ip=' + varstartip + '&end_ip=' + varendip + '&remoteport=' + varremoteport + '&localport=' + varlocalport,
+            success: function (data) {
+                alert(data);
+                $('#add_ip_range').modal('hide');
+                $('#authorized_ip_popup').modal('show');
+                cleardata();
+                showauthorizeip();
+            }
+    });
+    });
+    var authipid = "";
+    function deleteauthipdata(id) {
+        //debugger;
+        authipid = id;
+        $('#delete_authorized_ip').modal('show');
+    }
+
+     $('#btndelete').on('click',function(){
+         var url1 = '@Url.Content("~/csat_settings_page/deleteAuthorizedIPdata?authipid=")' + authipid;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_authorized_ip').modal('hide');
+                showauthorizeip();
+			}
+			});
+
+	});
+	$('#btndeletecancle').on('click',function(){
+        $('#delete_authorized_ip').modal('hide');
+	});
+    // Edit IP Data
+    var autheditid = "";
+    function editauthipdata(id) {
+       // debugger;
+        autheditid = id;
+        var url1 = '@Url.Content("~/csat_settings_page/GetAuthorizedIPdetail?authipid=")' + autheditid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+              //  debugger;
+                document.getElementById("startip1").value = data.authipdata[0].start_ip;
+                document.getElementById("endip1").value = data.authipdata[0].end_ip;
+                document.getElementById("localport1").value = data.authipdata[0].local_port;
+                document.getElementById("remoteport1").value = data.authipdata[0].remote_port;
+                if (data.authipdata[0].type == '0') {
+                    document.getElementById('authorize1').checked = true;
+                    document.getElementById('authorize_category1').style.display = 'block';
+                    document.getElementById('unauthorize_category1').style.display = 'none';
+                }
+                else
+                {
+                    document.getElementById('unauthorize1').checked = true;
+                     document.getElementById('unauthorize_category1').style.display = 'block';
+                    document.getElementById('authorize_category1').style.display = 'none';
+                }
+                $('#edit_ip_range').modal('show');
+
+            }
+        });
+    }
+    $('#ipEditcancel').on('click', function () {
+        $('#edit_ip_range').modal('hide');
+    });
+    $('#ipupdate').on('click', function () {
+        var startip = "";
+        var endip = "";
+        var localport = "";
+        var remoteport = "";
+        var type = "";
+        var startip = document.getElementById("startip1").value;
+        var endip = document.getElementById("endip1").value;
+        var localport = document.getElementById("localport1").value;
+        var remoteport = document.getElementById("remoteport1").value;
+        if (document.getElementById('authorize1').checked) {
+            type = "0";
+            localport = 0;
+            remoteport = 0;
+        }
+        else
+            type = "1";
+        var url = '@Url.Content("~/csat_settings_page/UpdateAuthorizedIPdetail?ipid=")' + autheditid + '&startip=' + startip + '&endip=' + endip + '&localport=' + localport + '&remoteport=' + remoteport + '&type=' + type;
+        $.ajax({
+
+            type: "POST",
+            url: url,
+            success: function (result) {
+			alert(result);
+                $('#edit_ip_range').modal('hide');
+                showauthorizeip();
+			}
+
+			});
+    });
+
+    // Delete Scan IP Range
+    var scanip1 = "";
+    var subnetmask1 = "";
+    function deleteiprange(scanip,subnetmask) {
+      //  debugger;
+        scanip1 = scanip;
+        subnetmask1 = subnetmask;
+        $('#delete_range').modal('show');
+    }
+     $('#btnscandelete').on('click',function(){
+         var url1 = '@Url.Content("~/csat_settings_page/DeleteScanIP?iprange=")' + scanip1 + '&subnet=' + subnetmask1;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+            alert(result);
+            $('#delete_range').modal('hide');
+            showscaniprange();
+            subnetmask = "";
+            scanip = "";
+		 }
+		 });
+
+	});
+
+
+    </script>
+    <script>
+        (function (g) {
+            "function" === typeof define && define.amd ? define(["jquery"], g) : g(window.jQuery || window.Zepto)
+        })(function (g) {
+            var y = function (a, f, d) {
+                var k = this,
+                    x;
+                a = g(a);
+                f = "function" === typeof f ? f(a.val(), void 0, a, d) : f;
+                k.init = function () {
+                    d = d || {};
+                    k.byPassKeys = [9, 16, 17, 18, 36, 37, 38, 39, 40, 91];
+                    k.translation = {
+                        0: {
+                            pattern: /\d/
+                        },
+                        9: {
+                            pattern: /\d/,
+                            optional: !0
+                        },
+                        "#": {
+                            pattern: /\d/,
+                            recursive: !0
+                        },
+                        A: {
+                            pattern: /[a-zA-Z0-9]/
+                        },
+                        S: {
+                            pattern: /[a-zA-Z]/
+                        }
+                    };
+                    k.translation = g.extend({}, k.translation, d.translation);
+                    k = g.extend(!0, {}, k, d);
+                    a.each(function () {
+                        !1 !==
+                            d.maxlength && a.attr("maxlength", f.length);
+                        d.placeholder && a.attr("placeholder", d.placeholder);
+                        a.attr("autocomplete", "off");
+                        c.destroyEvents();
+                        c.events();
+                        var b = c.getCaret();
+                        c.val(c.getMasked());
+                        c.setCaret(b + c.getMaskCharactersBeforeCount(b, !0))
+                    })
+                };
+                var c = {
+                    getCaret: function () {
+                        var b;
+                        b = 0;
+                        var e = a.get(0),
+                            c = document.selection,
+                            e = e.selectionStart;
+                        if (c && !~navigator.appVersion.indexOf("MSIE 10")) b = c.createRange(), b.moveStart("character", a.is("input") ? -a.val().length : -a.text().length), b = b.text.length;
+                        else if (e ||
+                            "0" === e) b = e;
+                        return b
+                    },
+                    setCaret: function (b) {
+                        if (a.is(":focus")) {
+                            var e;
+                            e = a.get(0);
+                            e.setSelectionRange ? e.setSelectionRange(b, b) : e.createTextRange && (e = e.createTextRange(), e.collapse(!0), e.moveEnd("character", b), e.moveStart("character", b), e.select())
+                        }
+                    },
+                    events: function () {
+                        a.on("keydown.mask", function () {
+                            x = c.val()
+                        });
+                        a.on("keyup.mask", c.behaviour);
+                        a.on("paste.mask drop.mask", function () {
+                            setTimeout(function () {
+                                a.keydown().keyup()
+                            }, 100)
+                        });
+                        a.on("change.mask", function () {
+                            a.data("changeCalled", !0)
+                        });
+                        a.on("blur.mask",
+                            function (b) {
+                                b = g(b.target);
+                                b.prop("defaultValue") !== b.val() && (b.prop("defaultValue", b.val()), b.data("changeCalled") || b.trigger("change"));
+                                b.data("changeCalled", !1)
+                            });
+                        a.on("focusout.mask", function () {
+                            d.clearIfNotMatch && c.val().length < f.length && c.val("")
+                        })
+                    },
+                    destroyEvents: function () {
+                        a.off("keydown.mask keyup.mask paste.mask drop.mask change.mask blur.mask focusout.mask").removeData("changeCalled")
+                    },
+                    val: function (b) {
+                        var e = a.is("input");
+                        return 0 < arguments.length ? e ? a.val(b) : a.text(b) : e ? a.val() : a.text()
+                    },
+                    getMaskCharactersBeforeCount: function (b,
+                        e) {
+                        for (var a = 0, c = 0, d = f.length; c < d && c < b; c++) k.translation[f.charAt(c)] || (b = e ? b + 1 : b, a++);
+                        return a
+                    },
+                    determineCaretPos: function (b, a, d, h) {
+                        return k.translation[f.charAt(Math.min(b - 1, f.length - 1))] ? Math.min(b + d - a - h, d) : c.determineCaretPos(b + 1, a, d, h)
+                    },
+                    behaviour: function (b) {
+                        b = b || window.event;
+                        var a = b.keyCode || b.which;
+                        if (-1 === g.inArray(a, k.byPassKeys)) {
+                            var d = c.getCaret(),
+                                f = c.val(),
+                                n = f.length,
+                                l = d < n,
+                                p = c.getMasked(),
+                                m = p.length,
+                                q = c.getMaskCharactersBeforeCount(m - 1) - c.getMaskCharactersBeforeCount(n - 1);
+                            p !== f && c.val(p);
+                            !l || 65 === a && b.ctrlKey || (8 !== a && 46 !== a && (d = c.determineCaretPos(d, n, m, q)), c.setCaret(d));
+                            return c.callbacks(b)
+                        }
+                    },
+                    getMasked: function (b) {
+                        var a = [],
+                            g = c.val(),
+                            h = 0,
+                            n = f.length,
+                            l = 0,
+                            p = g.length,
+                            m = 1,
+                            q = "push",
+                            s = -1,
+                            r, u;
+                        d.reverse ? (q = "unshift", m = -1, r = 0, h = n - 1, l = p - 1, u = function () {
+                            return -1 < h && -1 < l
+                        }) : (r = n - 1, u = function () {
+                            return h < n && l < p
+                        });
+                        for (; u();) {
+                            var v = f.charAt(h),
+                                w = g.charAt(l),
+                                t = k.translation[v];
+                            if (t) w.match(t.pattern) ? (a[q](w), t.recursive && (-1 === s ? s = h : h === r && (h = s - m), r === s && (h -= m)), h += m) : t.optional && (h += m, l -= m), l +=
+                                m;
+                            else {
+                                if (!b) a[q](v);
+                                w === v && (l += m);
+                                h += m
+                            }
+                        }
+                        b = f.charAt(r);
+                        n !== p + 1 || k.translation[b] || a.push(b);
+                        return a.join("")
+                    },
+                    callbacks: function (b) {
+                        var e = c.val(),
+                            g = c.val() !== x;
+                        if (!0 === g && "function" === typeof d.onChange) d.onChange(e, b, a, d);
+                        if (!0 === g && "function" === typeof d.onKeyPress) d.onKeyPress(e, b, a, d);
+                        if ("function" === typeof d.onComplete && e.length === f.length) d.onComplete(e, b, a, d)
+                    }
+                };
+                k.remove = function () {
+                    var a = c.getCaret(),
+                        d = c.getMaskCharactersBeforeCount(a);
+                    c.destroyEvents();
+                    c.val(k.getCleanVal()).removeAttr("maxlength");
+                    c.setCaret(a - d)
+                };
+                k.getCleanVal = function () {
+                    return c.getMasked(!0)
+                };
+                k.init()
+            };
+            g.fn.mask = function (a, f) {
+                //this.unmask();
+                return this.each(function () {
+                    g(this).data("mask", new y(this, a, f))
+                })
+            };
+            //g.fn.unmask = function () {
+            //    return this.each(function () {
+            //        try {
+            //            g(this).data("mask").remove()
+            //        } catch (a) { }
+            //    })
+            //};
+            g.fn.cleanVal = function () {
+                return g(this).data("mask").getCleanVal()
+            };
+            g("*[data-mask]").each(function () {
+                var a = g(this),
+                    f = {};
+                "true" === a.attr("data-mask-reverse") && (f.reverse = !0);
+                "false" === a.attr("data-mask-maxlength") && (f.maxlength = !1);
+                "true" === a.attr("data-mask-clearifnotmatch") && (f.clearIfNotMatch = !0);
+                a.mask(a.attr("data-mask"), f)
+            })
+        });
+
+        $('.ip_address').mask('099.099.099.099');
+    </script>
+</body>

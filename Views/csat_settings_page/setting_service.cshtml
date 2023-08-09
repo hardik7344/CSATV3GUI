@@ -1,0 +1,414 @@
+﻿
+@{
+    ViewData["Title"] = "setting_service";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+<div class="row">
+
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>Service Settings</li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_settings_page_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <!--BackSide Generate white form color-->
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--BackSide Generate white form over-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" id="frm_setting_service_search" name="frm_setting_service_search">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU15"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="drpDevice15">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="IP Address" name="drpip15" id="drpip15">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip adrss" id="drpip15">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Service Name</label>
+                                <div class="col-xs-4">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="Service Name" name="drpsname15" id="drpsname15">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="Service Name" id="drpsname15">
+                                            <option value="-1">Select Service Name</option>
+
+                                        </select>*@
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">Display Name</label>
+                                <div class="col-xs-3">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="Display Name" name="drpdname15" id="drpdname15">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="DisplayName" id="drpdname15">
+                                            <option value="-1">Select Display Name</option>
+                                        </select>*@
+                                </div>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="funcservice_setting_data();">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Service Status</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Status" id="drpsstatus15">
+                                        <option value="-1">Select Service Status</option>
+                                        <option value="3">Start</option>
+                                        <option value="1">Stop</option>
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">Service Type</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Type" id="drpstype15">
+                                        <option value="-1">Select Service Type</option>
+                                        <option value="2">Automatic</option>
+                                        <option value="1">Manual</option>
+                                        <option value="0">Disable</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Apply" name="submit" id="service_apply" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--Service Settings Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divservicesetting_report_div">
+                <table id="divservicesetting_report" class="table table-striped table-bordered " width="100%"></table>
+            </div>
+
+        </div>
+
+        <!--Service Settings Datatable End-->
+
+    </div>
+    <div class="space_bottom">
+        &nbsp;
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_setting_service_search");
+    });
+</script>
+
+<script>
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () { //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+</script>
+
+<script>
+    var oudata = "";
+     $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        var tmpOUID = "";
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU15');
+                jQuery('#DrpOU15').html('');
+
+                oudata = "";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    if (i == 0)
+                        tmpOUID = data.ou[i].ouid;
+                }
+                SetData.append(oudata);
+                getsystemlist(tmpOUID);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+    $("#DrpOU15").change(function () {
+        ouidvalue = this.value;
+        getsystemlist(ouidvalue);
+    });
+     function getsystemlist(ouidvalue) {
+         var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouidvalue;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        var SetDatadevice = $('#drpDevice15');
+        jQuery('#drpDevice15').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+        }
+
+        });
+    }
+     @*$.get('@Url.Content("~/csat_settings_page/Getservice/")', null, DataBind1)
+    function DataBind1(data) {
+
+       //debugger;
+        var Setservicename = $('#drpsname15');
+        var Setdisplayname = $('#drpdname15');
+        jQuery('#drpsname15').html('');
+        jQuery('#drpdname15').html('');
+        //var servicename1;
+        var servicename1 = "<option value='-1'>Select Service Name</option>";
+        var displayname1 = "<option value='-1'>Select Display Name</option>";
+        for (var i = 0; i < data.sname.length; i++) {
+            servicename1 += "<option value='" + data.sname[i].service_name + "'>" + data.sname[i].service_name + "</option>";
+        }
+        for (var j = 0; j < data.dname.length; j++) {
+            displayname1 += "<option value='" + data.dname[j].display_name + "'>" + data.dname[j].display_name + "</option>";
+        }
+        Setservicename.append(servicename1);
+        Setdisplayname.append(displayname1);
+
+    }*@
+	var ouidvalue="";
+    var systemvalue="";
+    var ipvalue = "";
+    var servicenamevalue = ""
+    var displaynamevalue = ""
+    var servicestatusvalue = ""
+    var servicetypevalue = ""
+
+    //$("#drpDevice15").change(function () {
+    //    systemvalue = this.value;
+
+    //});
+    //$("#drpsname15").change(function () {
+    //    servicenamevalue = this.value;
+
+    //});
+    //$("#drpdname15").change(function () {
+    //    displaynamevalue = this.value;
+
+    //});
+    //$("#drpsstatus15").change(function () {
+    //    servicestatusvalue = this.value;
+
+    //});
+    //$("#drpstype15").change(function () {
+    //    servicetypevalue = this.value;
+
+    //});
+    var otable;
+    //service setting data
+    function funcservice_setting_data()
+    {
+        var $valid = $('#frm_setting_service_search').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            ipvalue = document.getElementById("drpip15").value;
+            if (ouidvalue == '')
+                ouidvalue = document.getElementById("DrpOU15").value;
+            servicenamevalue = document.getElementById("drpsname15").value;
+            displaynamevalue = document.getElementById("drpdname15").value;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/Getservice_settings_data?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&servicename=' + servicenamevalue + '&displayname=' + displaynamevalue,
+                success: function (response) {
+                    //debugger;
+                    var agent_divclear = document.getElementById('divservicesetting_report_div');
+                    agent_divclear.innerHTML = '&nbsp;';
+                    $('#divservicesetting_report_div').append("<table id='divservicesetting_report' class='table table-striped table-bordered' width='100%'></table>");
+                    //otable = document.getElementById('divservicesetting_report');
+                    otable = $('#divservicesetting_report').DataTable({
+                        serverSide: true,
+                        searching: false,
+                        type: 'POST',
+                        datatype: 'json',
+                        iDisplayLength: 100,
+                        ajax: function (data, callback, settings) {
+                            //debugger;
+                            var out = [];
+                            try {
+                                if (response.data.length > 0) {
+                                    for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
+                                        out.push([response.data[i].device_id, response.data[i].ou_longname, response.data[i].device_Name, response.data[i].ip, response.data[i].Servicename, response.data[i].DisplayName, response.data[i].servicestatus, response.data[i].servicetype]);
+                                    }
+                                }
+                            }
+                            catch (ex) {
+                                out;
+                            }
+                            setTimeout(function () {
+                                callback({
+                                    draw: data.draw,
+                                    data: out,
+                                    recordsTotal: response.recordsTotal,
+                                    recordsFiltered: response.recordsFiltered
+                                });
+                            }, 100);
+                        },
+                        //dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Services Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Services Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columnDefs: [{ type: 'ip-address', targets: 3 }, { 'targets': 0, 'checkboxes': { 'selectRow': false } }, { orderable: false, targets: 0 }], 'select': { 'style': 'multi' },
+                        columns: [{ title: "", width: '10px' }, { title: "Branch/ Unit", width: '170px' }, { title: "System Name", width: '90px' }, { title: "IP Address", width: '50px' }, { title: "Service Name", width: '60px' }, { title: "Display Name", width: '60px' }, { title: "Service Status", width: '60px' }, { title: "Service Type", width: '60px' }],
+                        scrollY: 400,
+                        scrollX: true,
+                        ordering: false,
+                        scrollCollapse: true,
+                        scroller: true,
+                        stateSave: true,
+                        scroller: {
+                            loadingIndicator: true,
+                        },
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    }
+    $('#service_apply').on('click', function (e) {
+        //debugger;
+        var form = this;
+        var rows_selected = otable.column(0).checkboxes.selected();
+        $.each(rows_selected, function (index) {
+            deviceidall = "";
+            for (var i = 0; i < rows_selected.length; i++) {
+                deviceidall += "," + rows_selected[i];
+            }
+            funcservice_setting_apply(deviceidall)
+            return false;
+        });
+        if (deviceidall == "") {
+            deviceidall = "";
+            funcservice_setting_apply(deviceidall)
+        }
+    });
+    //service policy apply
+        var deviceidall = "";
+        function funcservice_setting_apply(deviceidall)
+        {
+         ouidvalue = document.getElementById("DrpOU15").value;
+         var servicestatus = document.getElementById("drpsstatus15").value;
+         var servicetype = document.getElementById("drpstype15").value;
+            var servicename = document.getElementById("drpsname15").value;
+            var deviceidall = document.getElementById('add_systemname').value;
+            if (deviceidall == "") {
+                deviceidall = document.getElementById("drpDevice15").value;
+            }
+
+            if (deviceidall != "") {
+                 $.ajax({
+                    type: "POST",
+                    url: '@Url.Content("~/csat_settings_page/service_settings_apply?IP=")' + ipvalue + '&Deviceid=' + deviceidall + '&ouid=' + ouidvalue + '&servicename=' + servicename + '&displayname=' + displaynamevalue + '&servicestatus=' + servicestatus + '&servicetype=' + servicetype,
+                    success: function (data) {
+                        alert(data);
+                        funcservice_setting_data();
+                    }
+                });
+            }
+            else {
+                alert("Please select any Service !");
+            }
+     }
+
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+
+
+

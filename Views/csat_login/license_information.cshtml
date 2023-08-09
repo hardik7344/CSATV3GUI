@@ -1,0 +1,2385 @@
+﻿@model file
+@using OwnYITCSAT.Models
+@{
+    ViewData["Title"] = "license_information";
+    Layout = "~/Views/Shared/_new_registration_master.cshtml";
+}
+
+<script src="~/js/utils.js"></script>
+<link href="~/css/intlTelInput.css" rel="stylesheet" />
+<script src="~/js/intlTelInput.min.js"></script>
+<script src="~/js/angular.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#conformation_user').modal({
+            backdrop: 'static'
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#contact').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#contact').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            //if (number.length == 7) {
+            //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            //}
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+    $(document).ready(function () {
+        $('#mobno').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#mobno').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            //if (number.length == 7) {
+            //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            //}
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+    $(document).ready(function () {
+        $('#loc_contact').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#loc_contact').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            //if (number.length == 7) {
+            //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            //}
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+    $(document).ready(function () {
+        $('#loc_mobno').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#loc_mobno').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            //if (number.length == 7) {
+            //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            //}
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+    $(document).ready(function () {
+        $('#onlineloc_contact').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#onlineloc_contact').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            //if (number.length == 7) {
+            //    number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            //}
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+    $(document).ready(function () {
+        $('#onlineloc_mobno').intlTelInput({
+            separateDialCode: true,
+            autoPlaceholder: true,
+            geoIpLookup: "auto",
+            initialCountry: "in",
+        });
+        $('#onlineloc_mobno').on('input', function () {
+            var number = $(this).val().replace(/[^\d]/g, '')
+            if (number.length == 7) {
+                number = number.replace(/(\d{3})(\d{4})/, "$1-$2");
+            }
+            // US & Canada Formatting
+            //else if (number.length == 10) {
+            //    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+            //}
+            else if (number.length == 10) {
+                number = number.replace(/(\d{5})(\d{5})/, "$1 $2");
+            }
+            //France Formatting
+            else if (number.length == 11) {
+                number = number.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})/, "+$1 $2 $3 $4 $5 $6");
+            }
+            //German Formattiing
+            else if (number.length == 13) {
+                number = number.replace(/(\d{2})(\d{3})(\d{8})/, "+$1 $2 $3");
+            }
+            $(this).val(number)
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(window).on('load', function () {
+        $('#conformation_user').modal('show');
+    });
+    function yesnoCheck() {
+        //debugger;
+        if (document.getElementById('newregistration').checked) {
+            document.getElementById('divnewregistration').style.display = 'block';
+            document.getElementById('divlicenseload').style.display = 'none';
+        }
+        else if (document.getElementById('licenseload').checked) {
+            document.getElementById('divlicenseload').style.display = 'block';
+            document.getElementById('divnewregistration').style.display = 'none';
+        }
+        else {
+            document.getElementById('divnewregistration').style.display = 'none';
+            document.getElementById('divlicenseload').style.display = 'none';
+        }
+        if (document.getElementById('yesCheck').checked) {
+            document.getElementById('divyes').style.display = 'block';
+            document.getElementById('divno').style.display = 'none';
+        }
+        else if (document.getElementById('noCheck').checked) {
+            document.getElementById('divno').style.display = 'block';
+            document.getElementById('divyes').style.display = 'none';
+        }
+        else {
+            document.getElementById('divyes').style.display = 'none';
+            document.getElementById('divno').style.display = 'none';
+        }
+        if (document.getElementById('licenseload_online').checked) {
+            document.getElementById('divonline').style.display = 'block';
+            document.getElementById('divoffline').style.display = 'none';
+
+
+        }
+        else if (document.getElementById('licenseload_offline').checked) {
+            //debugger;
+            document.getElementById('divoffline').style.display = 'block';
+            document.getElementById('divonline').style.display = 'none';
+        }
+
+        else {
+            document.getElementById('divonline').style.display = 'none';
+            document.getElementById('divoffline').style.display = 'none';
+        }
+        if (document.getElementById('yesCheckLic').checked) {
+            document.getElementById('divyeslic').style.display = 'block';
+            document.getElementById('divnolic').style.display = 'none';
+        }
+        else if (document.getElementById('noCheckLic').checked) {
+            document.getElementById('divnolic').style.display = 'block';
+            document.getElementById('divyeslic').style.display = 'none';
+        }
+        //if (document.getElementById('checkoldlocation').checked) {
+        //    document.getElementById('oldlocation').style.display = 'block';
+        //}
+        //else {
+        //    document.getElementById('oldlocation').style.display = 'none';
+        //}
+    }
+</script>
+<body onload="GetCountry()">
+    <div ng-app="">
+
+        <!--conformation POPup  model  content-->
+        <div class="modal fade" id="conformation_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            License Enable Conformation
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post" style="padding:15px 15px;">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3 form_label"> Select License </label>
+                                        <div class="col-sm-8">
+                                            <label class="radio-inline " style="margin-top:2px;font-weight: bold;">
+                                                <input type="radio" name="enable" value="yes" id="newregistration" onclick="javascript:yesnoCheck();" checked /> New Registration
+                                            </label>
+                                            <label class="radio-inline " style="margin-top:2px;font-weight: bold;">
+                                                <input type="radio" name="enable" value="no" id="licenseload" onclick="javascript:yesnoCheck();" /> Set License
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-4"></label>
+                                        <div class="col-xs-8">
+                                            @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#conformation_user1" data-dismiss="modal">
+                                                    Continue
+                                                    <span class="glyphicon glyphicon-repeat normal-right-spinner"></span>
+                                                </button>*@
+                                            <input type="button" class="btn btn-primary " name="continue" value="Continue" data-toggle="modal" data-target="#conformation_user1" data-dismiss="modal" />
+                                            <input type="button" class="btn btn-default" name="no" value="Cancel" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--conformation POPup  content-->
+        <!--conformation_user POPup  model  content-->
+        <div class="modal fade" id="conformation_user1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            Register Installation Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div id="divnewregistration">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-5 form_label alert_text" style="margin-left: -22px;"> Select Registration type <strong>  &rarr; </strong></label>
+                                                    @*<label for="nameField" class="col-xs-4 form_label">Select License type </label>*@
+                                                    <div class="col-sm-5 radio1" style="margin-left: 18px;">
+                                                        <label class="radio-inline" style="margin-top:6px;font-weight: bold;">
+                                                            <input type="radio" name="registration_licensetype" value="online" id="registration_online" /> Online
+                                                        </label>
+                                                        <label class="radio-inline " style="margin-top:6px;font-weight: bold;">
+                                                            <input type="radio" name="registration_licensetype" value="offline" id="registration_offline" />Offline
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-1" style="margin-top: 4px;">
+                                                        <button type="button" class="btn btn-primary" onclick="valid_check_type()">Continue</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="divlicenseload" style="display:none">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-5 form_label alert_text" style="margin-left: -22px;"> Select Registration type <strong>  &rarr; </strong></label>
+                                                    @*<label for="nameField" class="col-xs-4 form_label">Select License type </label>*@
+                                                    <div class="col-sm-5" style="margin-left: 18px;">
+                                                        <label class="radio-inline" style="margin-top: 6px;font-weight: bold;">
+                                                            <input type="radio" name="licenseload_licensetype" value="online" id="licenseload_online" checked onclick="javascript: yesnoCheck();" /> Online
+                                                        </label>
+                                                        <label class="radio-inline" style="margin-top: 6px;font-weight: bold;">
+                                                            <input type="radio" name="licenseload_licensetype" value="offline" id="licenseload_offline" onclick="javascript: yesnoCheck();" />Offline
+                                                        </label>
+                                                    </div>
+                                                    <div id="divonline">
+                                                        <div class="col-sm-1" style="margin-top: 4px;">
+                                                            <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#licenseload_online_popup">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divoffline">
+                                                        <div class="col-sm-1" style="margin-top: 4px;">
+                                                            <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#licenseload_offline_popup">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--conformation_user POPup  content-->
+        <!--licenseload_online_popup POPup  model  content-->
+        <div class="modal fade" id="licenseload_online_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            License Online Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="jumbotron">
+                                        <div class="container">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label"> &nbsp; Your Customer ID  <b class="loginmsg">*</b></label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="customerid" id="verify_customerid1" class="form-control" placeholder=" Enter Customer ID" maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label"> &nbsp; Your Location ID <b class="loginmsg">*</b> </label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="customerid" id="verify_locationid" class="form-control" placeholder=" Enter Location ID" maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label"> &nbsp; </label>
+                                                <div class="col-sm-6">
+                                                    <button type="button" class="btn btn-primary" onclick="valid_verify();">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--licenseload_online_popup POPup  content-->
+        <!-- online_verify popup start -->
+        <div class="modal fade " id="online_verify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box">
+                            <i class="material-icons glyphicon glyphicon-ok"></i>
+                        </div>
+                        <h4 class="modal-title">Congratulations!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-center">Your License Verification is Successfully.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-block" data-dismiss="modal" onclick="window.location.href='/csat_main_dashboard/csat_main_dashboard'">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- online_verify popup end -->
+        <!--licenseload_offline_popup POPup  model  content-->
+        <!--licenseload_offline_popup POPup  content-->
+        <!-- online_verify popup start -->
+        <div class="modal fade " id="offline_verify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box">
+                            <i class="material-icons glyphicon glyphicon-ok"></i>
+                        </div>
+                        <h4 class="modal-title">Congratulations!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-center">Your License Verification is Successfully.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-block" data-dismiss="modal" onclick="window.location.href='/csat_main_dashboard/csat_main_dashboard'">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- offline_verify popup end -->
+        <!--conformation POPup  model  content-->
+        <div class="modal fade" id="licenseenable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            License Customer Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-5 form_label " style="margin-left: 8px;font-size:14px;font-weight:normal;"> Do you have a Customer ID ? </label>
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline radio_button">
+                                                <input type="radio" name="enable" value="yes" id="yesCheck" onclick="javascript:yesnoCheck();" checked /> Yes
+                                            </label>
+                                            <label class="radio-inline radio_button">
+                                                <input type="radio" name="enable" value="no" id="noCheck" onclick="javascript:yesnoCheck();" /> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    &nbsp;
+                                    &nbsp;
+                                    <div id="divyes">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-4 form_label"> &nbsp; Your Customer ID </label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" name="customerid" id="onlinecustomerid" class="form-control" placeholder="XXXXXXXXXXXXXXXX" maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <button type="button" class="btn btn-primary" onclick="online_get_customerid();">Verify</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="divno" style="display:none">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-1 form_label alert_text"> &nbsp; <strong>  </strong></label>
+                                                    <label for="nameField" class="col-xs-4 form_label alert_text"> &nbsp; New Registration <strong> &rarr; </strong></label>
+                                                    <div class="col-sm-3">
+                                                        <button type="button" class="btn btn-primary" style="margin-left: 16px; margin-top:4px;" data-target="#new_customer_registration" data-toggle="modal" data-dismiss="modal"> Registration</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="licenseenableLocation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            License Location Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-5 form_label " style="margin-left: 8px;font-size:14px;font-weight:normal;"> Do you have a Location ID ? </label>
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline radio_button">
+                                                <input type="radio" name="enable" value="yes" id="yesCheckLic" onclick="javascript:yesnoCheck();" checked /> Yes
+                                            </label>
+                                            <label class="radio-inline radio_button">
+                                                <input type="radio" name="enable" value="no" id="noCheckLic" onclick="javascript:yesnoCheck();" /> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    &nbsp;
+                                    &nbsp;
+                                    <div id="divyeslic">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-4 form_label"> &nbsp; Your Location ID </label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" name="customerid" id="onlinelocationid" class="form-control" placeholder="XXXXXXXXXXXXXXXX" maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <button type="button" class="btn btn-primary" onclick="online_get_locationid();">Verify</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="divnolic" style="display:none">
+                                        <div class="jumbotron">
+                                            <div class="container">
+                                                <div class="form-group">
+                                                    <label for="nameField" class="col-xs-1 form_label alert_text"> &nbsp; <strong>  </strong></label>
+                                                    <label for="nameField" class="col-xs-4 form_label alert_text"> &nbsp; Add Location <strong> &rarr; </strong></label>
+                                                    <div class="col-sm-3">
+                                                        <button type="button" class="btn btn-primary" style="margin-left: 16px; margin-top:4px;" onclick="generate_custid1();" data-toggle="modal" data-dismiss="modal">Add Location</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--conformation POPup  content-->
+        <!--add Customer_registration form content-->
+        <div class="modal fade" id="new_customer_registration" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> New Customer Registration  </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Customer Name <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="login_user" id="custname" class="form-control" placeholder="Enter Customer Name" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address <b class="loginmsg">*</b> </label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" id="addr" style="resize:vertical;" placeholder="Enter Address"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 1 </label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" id="addr1" style="resize:vertical;" placeholder="Enter Address 1"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 2 </label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" id="addr2" style="resize:vertical;" placeholder="Enter Address 2"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">City <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <input type="text" name="cityname" id="city" class="form-control" placeholder="Enter City Name" />
+                                                </div>
+                                                <label for="nameField" class="col-xs-1 form_label">Pincode <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <input type="text" name="pincode" id="pincode" class="form-control" placeholder="Enter Pincode Number" maxlength="6" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Country <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="country" id="country">                                                       
+                                                    </select>
+                                                </div>
+                                                <label for="nameField" class="col-xs-1">State <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="state" id="state"> 
+                                                        <option value='-1'>Select State</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Email ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="email" name="emailid" id="email" class="form-control" placeholder="Enter Email ID" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Contact No.<b class="loginmsg">*</b> </label>
+                                                <div class="col-xs-8">
+                                                    @*<input type="text" name="contactno" id="contact" class="form-control" placeholder="Enter Contact No." onkeypress="return isNumberKey(event)" maxlength="12" />*@
+                                                    <input type="text" name="contact" id="contact" class="form-control" placeholder="Enter Contact No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Mobile No. <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    @*<input type="text" name="contactno" id="mobno" class="form-control" placeholder="Enter Contact No." onkeypress="return isNumberKey(event)" maxlength="12" />*@
+                                                    <input type="text" name="mobno" id="mobno" class="form-control" placeholder="Enter Mobile No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-8 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Register" name="registration" onclick="registation_validation()" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--Customer_registration form content End-->
+        <!--location_id POPup  model  content-->
+        <div class="modal fade" id="installtion_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            Installation Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="jumbotron">
+                                        <div class="container">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label">Customer ID</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="getcustomerid" id="getcustomerid" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label">Installation ID</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="installationid" id="getinstallationid" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label"></label>
+                                                <div class="col-sm-8">
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_location" data-dismiss="modal">Ok</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-4 form_label" style="color:#3498DB;font-size:14px;font-weight:normal"> Note: Please store this Installation ID for future use &uarr;</label>
+                                    </div>
+                                    @*<hr />
+                                        <div class="form-group">
+                                            <label class="col-xs-12 checkbox-inline" style="margin-left:10px;font-weight: bold;">
+                                                <input type="checkbox" id="checkoldlocation" value="option1" onclick="javascript:yesnoCheck();"> Do you want to disable or move your old installation id ?
+                                            </label>
+                                        </div>
+                                        <div id="oldlocation" style="display:none">
+                                            <div class="jumbotron">
+                                                <div class="container">
+                                                    <div class="form-group">
+                                                        <label for="nameField" class="col-xs-4 form_label">Enter Installation ID</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="installationid" id="installationid" class="form-control" placeholder=" Enter Installation ID" value="123456" />
+                                                        </div>
+                                                        <div class="col-sm-1">
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#view_location_detail" data-dismiss="modal">Verify</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--conformation POPup  content-->
+        <!--add_location form content-->
+        <div class="modal fade" id="add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Add Location Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group" style="display:none;">
+                                                <label for="nameField" class="col-xs-2">Location ID </label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="login_user" ng-model="getlocationid" id="getlocationid" class="form-control" placeholder="Enter Location id" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Location <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="login_user" ng-model="location" id="location" class="form-control" placeholder="Enter Location Name" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="loc_addr" id="loc_addr" style="resize:vertical;" placeholder="Enter Address"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 1</label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="loc_addr1" id="loc_addr1" style="resize:vertical;" placeholder="Enter Address 1"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 2</label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="loc_addr2" id="loc_addr2" style="resize:vertical;" placeholder="Enter Address 2"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">City <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <input type="text" name="loc_city" ng-model="loc_city" id="loc_city" class="form-control" placeholder="Enter City Name" />
+                                                </div>
+                                                <label for="nameField" class="col-xs-1 form_label">Pincode <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <input type="text" name="loc_pincode" ng-model="loc_pincode" id="loc_pincode" class="form-control" placeholder="Enter Pincode Number" maxlength="6" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Country <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="loc_country" id="loc_country">                                                       
+                                                    </select>
+                                                </div>
+                                                <label for="nameField" class="col-xs-1">State <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="loc_state" id="loc_state">
+                                                        <option value='-1'>Select State</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Email ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="email" name="emailid" ng-model="loc_email" id="loc_email" class="form-control" placeholder="Enter Email ID" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Contact No. <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="loc_contact" ng-model="loc_contact" id="loc_contact" class="form-control" placeholder="Enter Contact No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Mobile No. <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="loc_mobno" ng-model="loc_mobno" id="loc_mobno" class="form-control" placeholder="Enter Mobile No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Save" onclick="location_validation();" name="location" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--add_location form content End-->
+        <!--view_location_detail form content-->
+        <div class="modal fade" id="view_location_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Location Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group" style="display:none;">
+                                                <label for="nameField" class="col-xs-2 ">Location ID </label>
+                                                <div class="col-xs-8">
+                                                    @*<label class="lable_normal"><b>: &nbsp;</b> Ahmedabad </label>*@
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{getlocationid}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Location </label>
+                                                <div class="col-xs-8">
+                                                    @*<label class="lable_normal"><b>: &nbsp;</b> Ahmedabad </label>*@
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{location}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 "> Address</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{loc_addr}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 "> Pincode</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{loc_pincode}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">City</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b>  {{loc_city}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Country</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> <span id="loccountry"></span>  </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">State</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> <span id="locstate"></span>  </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Email ID</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{loc_email}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Contact No.</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> <span id="loccontact"></span>  </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Ok" name="ok" onclick="show_partner_detail();" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--view_location_detail form content End-->
+        <!-- add_partner_detail form content-->
+        <div class="modal fade" id="add_partner_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Add Partner Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label"> Partner ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="partnerid" id="partnerid" class="form-control" placeholder="Enter Partner ID " maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">SI ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="siid" id="siid" class="form-control" placeholder="Enter SI ID " maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Save" onclick="partner_registration_validation();" name="save" data-toggle="modal" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--add_partner_detail form content End-->
+        <!-- product_license_detail form content-->
+        <div class="modal fade" id="product_license_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Product License Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group">
+                                                <label class="col-xs-3">Product Name</label>
+                                                <div class="col-sm-9 checkbox">
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="CSAT" value="OwnYITCSAT" onchange="UncheckMain2()"> CSAT
+                                                    </label>
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="VAPT" value="OwnYITVAPT" onchange="UncheckMain2()"> VAPT
+                                                    </label>
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="NOCDESK" value="OwnYITNOCDESK" onchange="UncheckMain2()"> NOCDESK
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-9 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Apply" name="apply" onclick="valid_online_product_registration()">
+                                                    @*<input type="button" class="btn btn-primary" value="Apply" name="apply" data-dismiss="modal" onclick="window.location.href='/csat_main_dashboard/csat_main_dashboard'">*@
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                    @*<input type="button" class="btn btn-default" value="Create XML" onclick="LicenseType()" />*@
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <!--product_license_detail form content End-->
+
+        <div class="modal fade" id="add_location2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Add Location Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Location <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="login_user" ng-model="onlinelocation" id="onlinelocation" class="form-control" placeholder="Enter Location Name" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="onlineloc_addr" id="onlineloc_addr" style="resize:vertical;" placeholder="Enter Address"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 1</label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="onlineloc_addr1" id="onlineloc_addr1" style="resize:vertical;" placeholder="Enter Address 1"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2"> Address 2</label>
+                                                <div class="col-xs-8">
+                                                    <textarea class="form-control" rows="2" ng-model="onlineloc_addr2" id="onlineloc_addr2" style="resize:vertical;" placeholder="Enter Address 2"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">City <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <input type="text" name="loc_city" ng-model="onlineloc_city" id="onlineloc_city" class="form-control" placeholder="Enter City Name" />
+                                                </div>
+                                                <label for="nameField" class="col-xs-1 form_label">Pincode <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <input type="text" name="loc_pincode" ng-model="onlineloc_pincode" id="onlineloc_pincode" class="form-control" placeholder="Enter Pincode Number" maxlength="6" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Country <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-4">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="onlineloc_country" ng-model="onlineloc_country" id="onlineloc_country">                                                        
+                                                    </select>
+                                                </div>
+                                                <label for="nameField" class="col-xs-1 form_label">State <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-3">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" ng-model="onlineloc_state" name="loc_state" id="onlineloc_state">
+                                                        <option value="-1">Select State</option>                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Email ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="email" name="emailid" ng-model="onlineloc_email" id="onlineloc_email" class="form-control" placeholder="Enter Email ID" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">Contact No. <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    @*<input type="text" name="onlineloc_contact" ng-model="onlineloc_contact" id="onlineloc_contact" class="form-control" placeholder="Enter Contact No." maxlength="10"  />*@
+                                                    <input type="text" name="onlineloc_contact" ng-model="onlineloc_contact" id="onlineloc_contact" class="form-control" placeholder="Enter Contact No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">Mobile No. <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="onlineloc_mobno" ng-model="onlineloc_mobno" id="onlineloc_mobno" class="form-control" placeholder="Enter Mobile No." maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Save" onclick="valid_online_location_registration2();" name="location" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="view_location_detail1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Location Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group" style="display:none;">
+                                                <label for="nameField" class="col-xs-2 ">Location ID </label>
+                                                <div class="col-xs-8">
+                                                    @*<label class="lable_normal"><b>: &nbsp;</b> Ahmedabad </label>*@
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlinegetlocationid}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Location </label>
+                                                <div class="col-xs-8">
+                                                    @*<label class="lable_normal"><b>: &nbsp;</b> Ahmedabad </label>*@
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlinelocation}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 "> Address</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlineloc_addr}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 "> Pincode</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlineloc_pincode}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2">City</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b>  {{onlineloc_city}} </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Country</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> <span id="loccountry2"></span> </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">State</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b><span id="locstate2"></span> </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Email ID</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlineloc_email}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 ">Contact No.</label>
+                                                <div class="col-xs-8">
+                                                    <label class="lable_normal"><b>: &nbsp;</b> {{onlineloc_contact}} </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Ok" name="ok" onclick="show_location()" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="installtion_popup1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog  modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class=" modal-title">
+                            Installation Detail
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="jumbotron">
+                                        <div class="container">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label">Customer ID</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="getcustomerid" id="onlinecustomeridshow" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label">Installation ID</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="installationid" id="onlineinstallationid" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-4 form_label"></label>
+                                                <div class="col-sm-8">
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_location2" data-dismiss="modal">Ok</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-4 form_label" style="color:#3498DB;font-size:14px;font-weight:normal"> Note: Please store this Installation ID for future use &uarr;</label>
+                                    </div>
+                                    @*<hr />
+                                        <div class="form-group">
+                                            <label class="col-xs-12 checkbox-inline" style="margin-left:10px;font-weight: bold;">
+                                                <input type="checkbox" id="checkoldlocation" value="option1" onclick="javascript:yesnoCheck();"> Do you want to disable or move your old installation id ?
+                                            </label>
+                                        </div>
+                                        <div id="oldlocation" style="display:none">
+                                            <div class="jumbotron">
+                                                <div class="container">
+                                                    <div class="form-group">
+                                                        <label for="nameField" class="col-xs-4 form_label">Enter Installation ID</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="installationid" id="installationid" class="form-control" placeholder=" Enter Installation ID" value="123456" />
+                                                        </div>
+                                                        <div class="col-sm-1">
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#view_location_detail" data-dismiss="modal">Verify</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </form>
+                            </div>
+                        </div>
+                        &nbsp;
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>*@
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="add_partner_detail1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Add Partner Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label"> Partner ID <b class="loginmsg">*</b> </label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="partnerid" id="onlinepartnerid" class="form-control" placeholder="Enter Partner ID " maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameField" class="col-xs-2 form_label">SI ID <b class="loginmsg">*</b></label>
+                                                <div class="col-xs-8">
+                                                    <input type="text" name="siid" id="onlinesiid" class="form-control" placeholder="Enter SI ID " maxlength="16" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-10 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Save" onclick="valid_online_partner_registration1()" name="save" />
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="product_license_detail2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-small">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h6 class="modal-title"> Product License Detail </h6>
+                    </div>
+                    <div class="modal-body model_body_scroll">
+                        <!--form  content-->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form class="form-horizontal" method="post" name="add_user_form">
+                                            <div class="form-group">
+                                                <label class="col-xs-3">Product Name</label>
+                                                <div class="col-sm-9 checkbox">
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="CSAT" value="OwnYITCSAT" onchange="UncheckMain2()"> CSAT
+                                                    </label>
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="VAPT" value="OwnYITVAPT" onchange="UncheckMain2()"> VAPT
+                                                    </label>
+                                                    <label class="checkbox-inline col-xs-3" style="font-weight: bold;">
+                                                        <input type="checkbox" name="product" class="product" id="NOCDESK" value="OwnYITNOCDESK" onchange="UncheckMain2()"> NOCDESK
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group model-button">
+                                                <div class="col-xs-9 pull-right ">
+                                                    <input type="button" class="btn btn-primary" value="Apply" name="apply" onclick="valid_online_product_registration1();">
+                                                    @*<input type="button" class="btn btn-primary" value="Apply" name="apply" data-dismiss="modal" onclick="window.location.href='/csat_main_dashboard/csat_main_dashboard'">*@
+                                                    <input type="button" class="btn btn-default" value="Cancel" data-dismiss="modal" />
+
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  <!--form  content end-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+        var custid = "";
+        var instid = "";
+        var custname = "";
+        var addr = "";
+        var addr1 = "";
+        var addr2 = "";
+        var city = "";
+        var pincode = "";
+        var state = "";
+        var country = "";
+        var email = "";
+        var contact = "";
+        var mobno = "";
+
+        var locid = "";
+        var loc = "";
+        var loc_addr = "";
+        var loc_addr1 = "";
+        var loc_addr2 = "";
+        var loc_city = "";
+        var loc_pincode = "";
+        var loc_state = "";
+        var loc_country = "";
+        var loc_email = "";
+        var loc_contact = "";
+        var loc_mobno = "";
+        var vapt = "";
+        var nocdesk = "";
+        var csat = "";
+        var partnerid = "";
+        var siid = "";
+        function LicenseType() {
+            custid = (document.getElementById("getcustomerid").value != "") ? document.getElementById("getcustomerid").value : "";
+            instid = (document.getElementById("getinstallationid").value != "") ? document.getElementById("getinstallationid").value : "";
+            custname = (document.getElementById("custname").value != "") ? document.getElementById("custname").value : "";
+            addr = (document.getElementById("addr").value != "") ? document.getElementById("addr").value : "";
+            addr1 = (document.getElementById("addr1").value != "") ? document.getElementById("addr1").value : "";
+            addr2 = (document.getElementById("addr2").value != "") ? document.getElementById("addr2").value : "";
+            city = (document.getElementById("city").value != "") ? document.getElementById("city").value : "";
+            pincode = (document.getElementById("pincode").value != "") ? document.getElementById("pincode").value : "";
+            state = (document.getElementById("state").value != "") ? document.getElementById("state").value : "";
+            country = (document.getElementById("country").value != "") ? document.getElementById("country").value : "";
+            email = (document.getElementById("email").value != "") ? document.getElementById("email").value : "";
+            contact = (document.getElementById("contact").value != "") ? document.getElementById("contact").value : "";
+            mobno = (document.getElementById("mobno").value != "") ? document.getElementById("mobno").value : "";
+
+            //installationID = (document.getElementById("installationid").value != "") ? document.getElementById("installationid").value : "";
+
+            locid = (document.getElementById("getlocationid").value != "") ? document.getElementById("getlocationid").value : "";
+            loc = (document.getElementById("location").value != "") ? document.getElementById("location").value : "";
+            loc_addr = (document.getElementById("loc_addr").value != "") ? document.getElementById("loc_addr").value : "";
+            loc_addr1 = (document.getElementById("loc_addr1").value != "") ? document.getElementById("loc_addr1").value : "";
+            loc_addr2 = (document.getElementById("loc_addr2").value != "") ? document.getElementById("loc_addr2").value : "";
+            loc_city = (document.getElementById("loc_city").value != "") ? document.getElementById("loc_city").value : "";
+            loc_pincode = (document.getElementById("loc_pincode").value != "") ? document.getElementById("loc_pincode").value : "";
+            loc_state = (document.getElementById("loc_state").value != "") ? document.getElementById("loc_state").value : "";
+            loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+            loc_email = (document.getElementById("loc_email").value != "") ? document.getElementById("loc_email").value : "";
+            loc_contact = (document.getElementById("loc_contact").value != "") ? document.getElementById("loc_contact").value : "";
+            loc_mobno = (document.getElementById("loc_mobno").value != "") ? document.getElementById("loc_mobno").value : "";
+
+            partnerid = (document.getElementById("partnerid").value != "") ? document.getElementById("partnerid").value : "";
+            siid = (document.getElementById("siid").value != "") ? document.getElementById("siid").value : "";
+            var url = '@Url.Content("~/csat_login/licensing?custname=")' + custname + '&custid=' + custid + '&instid=' + instid +'&addr=' + addr + '&addr1=' + addr1 + '&addr2=' + addr2 + '&city=' + city + '&pincode=' + pincode +
+                '&state=' + state + '&country=' + country + '&email=' + email + '&contact=' + contact + '&mobno=' + mobno + '&locid=' + locid + '&loc=' + loc + '&loc_addr=' + loc_addr + '&loc_addr1=' + loc_addr1 + '&loc_addr2=' + loc_addr2 + '&loc_city=' + loc_city + '&loc_pincode=' + loc_pincode + '&loc_state=' + loc_state + '&loc_country=' + loc_country + '&loc_email=' + loc_email + '&loc_contact=' + loc_contact + '&loc_mobno=' + loc_mobno + '&partnerid=' + partnerid + '&siid=' + siid + '&chkproduct=' + chkproduct;
+
+            $.ajax({
+                type: "post",
+                url: url,
+                success: function (data) {
+                    alert(data);
+                    window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+                }
+            });
+        }
+
+
+</script>
+<script>
+    var licensetype = "";
+    function valid_check_type() {
+        var len = document.querySelectorAll('.radio1 input[type="radio"]:checked').length
+        if (len <= 0) {
+            alert("Please check at least one");
+            return false;
+        }
+        else {
+            getlicensetype();
+            $('#conformation_user1').modal('hide');
+            $('#licenseenable').modal('show');
+            return (true);
+        }
+    }
+    function getlicensetype() {
+
+        if (document.getElementById('registration_online').checked) {
+            licensetype = document.getElementsByName("registration_licensetype")[0].value;
+        }
+        else if (document.getElementById('registration_offline').checked) {
+            licensetype = document.getElementsByName("registration_licensetype")[1].value;
+        }
+
+        //licensetype = document.getElementsByName("registration_licensetype")[0].values;
+    }
+    var onlineinstallid = "";
+    function registation_validation() {
+        //debugger;
+        var contact = document.getElementById("contact").value;
+        var mobno = document.getElementById("mobno").value;
+        var email = document.getElementById("email").value;
+        if ($("#custname").val() == "" && $("#addr").val() == "" && $("#city").val() == "" && $("#pincode").val() == "" && $("#state").val() == '-1' && $("#country").val() == '-1' && $("#email").val() == "" && $("#contact").val() == "" && $("#mobno").val() == "") {
+            alert("Please enter customer details !");
+            return false;
+        }
+        if ($("#custname").val() == "") {
+            alert("Please enter customer Name !");
+            return false;
+        }
+        if ($("#addr").val() == "") {
+            alert("Please enter address !");
+            return false;
+        }
+        if ($("#city").val() == "") {
+            alert("Please enter city !");
+            return false;
+        }
+        var cityval = document.getElementById("city").value;
+        var alpha = /^[a-zA-Z][a-zA-Z\s-]+[a-zA-Z]$/;
+        if (!cityval.match(alpha)) {
+            alert('Invalid City ->' + cityval);
+            return false;
+        }
+        if ($("#pincode").val() == "") {
+            alert("Please enter Pincode !");
+            return false;
+        }
+        if ($("#state").val() == '-1') {
+            alert("Please select State !");
+            return false;
+        }
+        if ($("#country").val() == '-1') {
+            alert("Please select Country !");
+            return false;
+        }
+        if ($("#email").val() == "") {
+            alert("Please enter Email ID !");
+            return false;
+        }
+        //atpos = email.indexOf("@@");
+        //dotpos = email.lastIndexOf(".");
+        //if (atpos < 1 || (dotpos - atpos < 3)) {
+        //    alert("Please enter correct email ID")
+        //    return false;
+        //}
+        var reg = /^([\w\.\-]+)@@([\w\-]+)((\.(\w){2,3})+)$/;
+        if (!email.match(reg)) {
+            alert('Invalid Email ID ->' + email);
+            return false;
+        }
+        if ($("#contact").val() == "") {
+            alert("Please enter Contact No. !");
+            return false;
+        }
+        if (contact.length < 10) {
+            alert("Please enter a valid Contact No.");
+            return false;
+        }
+        if ($("#mobno").val() == "") {
+            alert("Please enter Mobile No. !");
+            return false;
+        }
+        if (mobno.length < 10) {
+            alert("Please enter a valid Mobile No. ");
+            return false;
+        }
+        else {
+            generate_custid();
+            return (true);
+        }
+    }
+    function generate_custid() {
+       // debugger;
+        if (licensetype == 'online') {
+             $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/AutoGenerateCustomerid")',
+            success: function (data) {
+               // debugger;
+                custid= document.getElementById("getcustomerid").value = data.custid;
+                instid = document.getElementById("getinstallationid").value = data.installid;
+                onlineinstallid = data.custid;
+                online_customer_registration();
+                $('#new_customer_registration').modal('hide');
+                $('#installtion_popup').modal('show');
+               }
+
+        });
+
+        }
+        else {
+             $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/AutoGenerateCustomerid")',
+            success: function (data) {
+                //debugger;
+                custid= document.getElementById("getcustomerid").value = data.custid;
+                instid = document.getElementById("getinstallationid").value = data.installid;
+                $('#new_customer_registration').modal('hide');
+                $('#installtion_popup').modal('show');
+
+               }
+
+        });
+        }
+    }
+    function location_validation() {
+       // debugger;
+        var email = document.getElementById("loc_email").value;
+        var contact = document.getElementById("loc_contact").value;
+        var mobno = document.getElementById("loc_mobno").value;
+        if ($("#location").val() == "" && $("#loc_addr").val() == "" && $("#loc_city").val() == "" && $("#loc_pincode").val() == "" && $("#loc_state").val() == '-1' && $("#loc_country").val() == '-1' && $("#loc_email").val() == "" && $("#loc_contact").val() == "" && $("#loc_mobno").val() == "") {
+            alert("Please enter location details !");
+            return false;
+        }
+        if ($("#location").val() == "") {
+            alert("Please enter Location !");
+            return false;
+        }
+        if ($("#loc_addr").val() == "") {
+            alert("Please enter address !");
+            return false;
+        }
+        if ($("#loc_city").val() == "") {
+            alert("Please enter city !");
+            return false;
+        }
+        var cityval = document.getElementById("loc_city").value;
+        var alpha = /^[a-zA-Z][a-zA-Z\s-]+[a-zA-Z]$/;
+        if (!cityval.match(alpha)) {
+            alert('Invalid City ->' + cityval);
+            return false;
+        }
+        if ($("#loc_pincode").val() == "") {
+            alert("Please enter Pincode !");
+            return false;
+        }
+
+        if ($("#loc_state").val() == '-1') {
+            alert("Please select State !");
+            return false;
+        }
+        if ($("#loc_country").val() == '-1') {
+            alert("Please select Country !");
+            return false;
+        }
+        if ($("#loc_email").val() == "") {
+            alert("Please enter Email ID !");
+            return false;
+        }
+        var reg = /^([\w\.\-]+)@@([\w\-]+)((\.(\w){2,3})+)$/;
+        if (!email.match(reg)) {
+            alert('Invalid Email ID ->' + email);
+            return false;
+        }
+        if ($("#loc_contact").val() == "") {
+            alert("Please enter Contact No. !");
+            return false;
+        }
+        if (contact.length < 10) {
+            alert("Please enter a valid Contact No.");
+            return false;
+        }
+        if ($("#loc_mobno").val() == "") {
+            alert("Please enter Mobile No. !");
+            return false;
+        }
+        if (mobno.length < 10) {
+            alert("Please enter a valid Mobile No. ");
+            return false;
+        }
+        else {
+            generate_locationid();
+            return (true);
+        }
+    }
+
+    function generate_locationid() {
+       // debugger;
+        if (licensetype == 'online') {
+             $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/AutoGeneratelocationid")',
+            success: function (data) {
+                //debugger;
+                loc_state = (document.getElementById("loc_state").value != "") ? document.getElementById("loc_state").value : "";
+                loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+                loc_contact = (document.getElementById("loc_contact").value != "") ? document.getElementById("loc_contact").value : "";
+                var SetData = $('#locstate');
+                jQuery('#locstate').html('');
+                var SetData1 = $('#loccountry');
+                jQuery('#loccountry').html('');
+                var SetData2 = $('#loccontact');
+                jQuery('#loccontact').html('');
+                var lostat = loc_state;
+                var locou = loc_country;
+                var locon = loc_contact;
+                var locstate = lostat;
+                var loccountry = locou;
+                SetData.append(locstate);
+                SetData1.append(loccountry);
+                SetData2.append(locon);
+                document.getElementById("getlocationid").value = data.locid;
+                $('#add_location').modal('hide');
+                $('#view_location_detail').modal('show');
+                online_location_registration();
+            }
+        });
+
+        }
+        else {
+             $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/AutoGeneratelocationid")',
+            success: function (data) {
+                //debugger;
+                loc_state = (document.getElementById("loc_state").value != "") ? document.getElementById("loc_state").value : "";
+                loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+                loc_contact = (document.getElementById("loc_contact").value != "") ? document.getElementById("loc_contact").value : "";
+                var SetData = $('#locstate');
+                jQuery('#locstate').html('');
+                var SetData1 = $('#loccountry');
+                jQuery('#loccountry').html('');
+                var SetData2 = $('#loccontact');
+                jQuery('#loccontact').html('');
+                var lostat = loc_state;
+                var locou = loc_country;
+                var locon = loc_contact;
+                var locstate = lostat;
+                var loccountry = locou;
+                SetData.append(locstate);
+                SetData1.append(loccountry);
+                SetData2.append(locon);
+                document.getElementById("getlocationid").value = data.locid;
+                $('#add_location').modal('hide');
+                $('#view_location_detail').modal('show');
+            }
+        });
+        }
+    }
+    function show_partner_detail() {
+        //debugger;
+        $('#view_location_detail').modal('hide');
+        $('#add_partner_detail').modal('show');
+    }
+
+    jQuery(function ($) {
+        //debugger;
+        var $all = $('#all').change(function () {
+            $checkboxes.prop('checked', this.checked);
+            UncheckMain2();
+        });
+        var $checkboxes = $('input[class="product"]').not($all).change(function () {
+            $all.prop('checked', $checkboxes.not(':checked').length == 0);
+            UncheckMain2();
+        });
+        $checkboxes.eq(0).change();
+    })
+    var chkproduct = "";
+    function UncheckMain2() {
+         //debugger;
+        chkproduct = "";
+        var checkboxes = document.querySelectorAll('input[class="product"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkproduct += "," + checkboxes[i].value + "";
+
+            }
+            else {
+            }
+        }
+    }
+</script>
+<script>
+    //function offline_verify() {
+    //    if ($("#uploadlicense").val() == "") {
+    //        alert("Please Select File !");
+    //        return false;
+    //    }
+    //    else {
+    //        uploadlicensefile();
+    //        return (true);
+    //    }
+    //}
+    @*var uploadpath = "";
+    function uploadlicensefile() {
+        //debugger;
+        licensekey = document.getElementById("enterkey").value;
+        uploadpath = document.getElementById("uploadlicense").value;
+        var url1 = '@Url.Content("~/csat_login/uploadlicense?uploadpath=")' + uploadpath + '&licensekey=' + licensekey;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                //debugger;
+                window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+            }
+        });
+    }*@
+</script>
+<script>
+
+    function online_customer_registration() {
+       // debugger;
+        custid = (document.getElementById("getcustomerid").value != "") ? document.getElementById("getcustomerid").value : "";
+        instid = (document.getElementById("getinstallationid").value != "") ? document.getElementById("getinstallationid").value : "";
+        custname = (document.getElementById("custname").value != "") ? document.getElementById("custname").value : "";
+        addr = (document.getElementById("addr").value != "") ? document.getElementById("addr").value : "";
+        addr1 = (document.getElementById("addr1").value != "") ? document.getElementById("addr1").value : "";
+        addr2 = (document.getElementById("addr2").value != "") ? document.getElementById("addr2").value : "";
+        city = (document.getElementById("city").value != "") ? document.getElementById("city").value : "";
+        pincode = (document.getElementById("pincode").value != "") ? document.getElementById("pincode").value : "";
+        state = (document.getElementById("state").value != "") ? document.getElementById("state").value : "";
+        country = (document.getElementById("country").value != "") ? document.getElementById("country").value : "";
+        email = (document.getElementById("email").value != "") ? document.getElementById("email").value : "";
+        var intlNumber = $("#contact").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData = $("#contact").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode = countryData.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = "+" + countryCode; // convert 1 to +1
+        var contact = intlNumber.replace("+", "");
+        var contact = contact.replace(countryCode, "(" + countryCode + ")");
+        //contact = (document.getElementById("contact").value != "") ? document.getElementById("contact").value : "";
+        var intlNumber1 = $("#mobno").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData1 = $("#mobno").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode1 = countryData1.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = "+" + countryCode; // convert 1 to +1
+        var mobno = intlNumber1.replace("+", "");
+        var mobno = mobno.replace(countryCode1, "(" + countryCode1 + ")");
+        //mobno = (document.getElementById("mobno").value != "") ? document.getElementById("mobno").value : "";
+        var url1 = '@Url.Content("~/csat_login/online_customer_registration?custid=")' + custid + '&instid=' + instid + '&custname=' + custname + '&addr=' + addr + '&addr1=' + addr1 + '&addr2=' + addr2 + '&city=' + city + '&pincode=' + pincode + '&state=' + state + '&country=' + country + '&email=' + email + '&contact=' + contact + '&mobno=' + mobno;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+            }
+        });
+    }
+
+    function online_location_registration() {
+      // debugger;
+        custid = (document.getElementById("getcustomerid").value != "") ? document.getElementById("getcustomerid").value : "";
+        locid = (document.getElementById("getlocationid").value != "") ? document.getElementById("getlocationid").value : "";
+        instid = (document.getElementById("getinstallationid").value != "") ? document.getElementById("getinstallationid").value : "";
+        loc = (document.getElementById("location").value != "") ? document.getElementById("location").value : "";
+        loc_addr = (document.getElementById("loc_addr").value != "") ? document.getElementById("loc_addr").value : "";
+        loc_addr1 = (document.getElementById("loc_addr1").value != "") ? document.getElementById("loc_addr1").value : "";
+        loc_addr2 = (document.getElementById("loc_addr2").value != "") ? document.getElementById("loc_addr2").value : "";
+        loc_city = (document.getElementById("loc_city").value != "") ? document.getElementById("loc_city").value : "";
+        loc_pincode = (document.getElementById("loc_pincode").value != "") ? document.getElementById("loc_pincode").value : "";
+        loc_state = (document.getElementById("loc_state").value != "") ? document.getElementById("loc_state").value : "";
+        loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+        loc_email = (document.getElementById("loc_email").value != "") ? document.getElementById("loc_email").value : "";
+        var intlNumber = $("#loc_contact").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData = $("#loc_contact").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode = countryData.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = "+" + countryCode; // convert 1 to +1
+        var contact = intlNumber.replace("+", "");
+        var loc_contact = contact.replace(countryCode, "(" + countryCode + ")");
+        //loc_contact = (document.getElementById("loc_contact").value != "") ? document.getElementById("loc_contact").value : "";
+        var intlNumber1 = $("#loc_mobno").intlTelInput("getNumber"); // get full number eg +17024181234
+        var countryData1 = $("#loc_mobno").intlTelInput("getSelectedCountryData"); // get country data as obj
+        var countryCode1 = countryData1.dialCode; // using updated doc, code has been replaced with dialCode
+        //countryCode = "+" + countryCode; // convert 1 to +1
+        var locmobno = intlNumber1.replace("+", "");
+        var loc_mobno = locmobno.replace(countryCode1, "(" + countryCode1 + ")");
+        //loc_mobno = (document.getElementById("loc_mobno").value != "") ? document.getElementById("loc_mobno").value : "";
+        var url1 = '@Url.Content("~/csat_login/online_location_registration?custid=")' + custid + '&instid=' + instid + '&locid=' + locid + '&loc=' + loc + '&loc_addr=' + loc_addr + '&loc_addr1=' + loc_addr1 + '&loc_addr2=' + loc_addr2 + '&loc_city=' + loc_city + '&loc_pincode=' + loc_pincode + '&loc_state=' + loc_state + '&loc_country=' + loc_country + '&loc_email=' + loc_email + '&loc_contact=' + loc_contact + '&loc_mobno=' + loc_mobno;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                //debugger;
+
+            }
+        });
+    }
+
+    function partner_registration_validation() {
+        if ($("#partnerid").val() == "" && $("#siid").val() == "") {
+            alert("Please enter partner details !");
+            return false;
+        }
+        if ($("#partnerid").val() == "") {
+            alert("Please enter partner id !");
+            return false;
+        }
+        var str = document.getElementById("partnerid").value;
+        var n = str.length;
+        document.getElementById("partnerid").innerHTML = n;
+        if ((n > 16) || (n < 16)) {
+            alert("Please enter a valid partnerid number");
+            return false;
+        }
+
+        if ($("#siid").val() == "") {
+            alert("Please enter SI ID !");
+            return false;
+        }
+        var str1 = document.getElementById("siid").value;
+        var n1 = str1.length;
+        document.getElementById("siid").innerHTML = n1;
+        if ((n1 > 16) || (n1 < 16)) {
+            alert("Please enter a valid siid number");
+            return false;
+        }
+        else {
+            online_partner_registration();
+            return (true);
+        }
+    }
+
+    function online_partner_registration() {
+        if (licensetype == 'online') {
+         custid = (document.getElementById("getcustomerid").value != "") ? document.getElementById("getcustomerid").value : "";
+         locid = (document.getElementById("getlocationid").value != "") ? document.getElementById("getlocationid").value : "";
+         partnerid = (document.getElementById("partnerid").value != "") ? document.getElementById("partnerid").value : "";
+         siid = (document.getElementById("siid").value != "") ? document.getElementById("siid").value : "";
+         var url1 = '@Url.Content("~/csat_login/online_partner_registration?custid=")' + custid + '&locid=' + locid + '&partnerid=' + partnerid + '&siid=' + siid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                $("#add_partner_detail").modal('hide');
+                $("#product_license_detail").modal('show');
+            }
+        });
+        }
+        $("#add_partner_detail").modal('hide');
+        $("#product_license_detail").modal('show');
+
+    }
+    function valid_online_product_registration() {
+
+     var len = document.querySelectorAll('.checkbox input[type="checkbox"]:checked').length
+     if (len <= 0) {
+         alert("Please check at least one");
+         return false;
+       }
+       else {
+           online_product_registration();
+           return (true);
+       }
+    }
+    function online_product_registration() {
+        if (licensetype == 'online') {
+            //debugger;
+            custid = (document.getElementById("getcustomerid").value != "") ? document.getElementById("getcustomerid").value : "";
+            locid = (document.getElementById("getlocationid").value != "") ? document.getElementById("getlocationid").value : "";
+            var url1 = '@Url.Content("~/csat_login/online_product_registration?custid=")' + custid + '&locid=' + locid + '&chkproduct=' + chkproduct;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+                    window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+                }
+            });
+        }
+        else {
+            LicenseType();
+            $("#product_license_detail").modal('hide');
+        }
+    }
+    var onlinecustid = "";
+    function online_get_customerid() {
+        var custidval = document.getElementById("onlinecustomerid").value;
+        if ($("#onlinecustomerid").val() == "") {
+            alert("Please enter Customer ID !");
+            return false;
+        }
+        if (custidval.length != 16) {
+            alert(" Invalid Customer ID ! ");
+            return false;
+            //$("#licenseenable").modal('show');
+        }
+        else {
+             // $("#licenseenableLocation").modal('show');
+            if (licensetype == 'online') {
+                custid = (document.getElementById("onlinecustomerid").value != "") ? document.getElementById("onlinecustomerid").value : "";
+                var url1 = '@Url.Content("~/csat_login/online_get_customerid?custid=")' + custid;
+                $.ajax({
+                    type: "POST",
+                    url: url1,
+                    success: function (result) {
+                        //debugger;
+                        if (result == 'Customer Already Exits.') {
+                            $('#licenseenableLocation').modal('show');
+                        }
+                        else {
+                            alert(result);
+                            document.getElementById("onlinecustomerid").value = " "
+                            $('#licenseenable').modal('show');
+
+                        }
+                    }
+                });
+                $("#licenseenable").modal('hide');
+            }
+            return (true);
+        }
+    }
+
+    function online_get_locationid() {
+        var onlinelocidval = document.getElementById("onlinelocationid").value;
+        if ($("#onlinelocationid").val() == "") {
+            alert("Please enter Location ID !");
+            return false;
+        }
+        if (onlinelocidval.length != 16) {
+            alert(" Invalid Location ID ! ");
+            return false;
+        }
+        else {
+            if (licensetype == 'online') {
+                //debugger;
+                onlinecustid = (document.getElementById("onlinecustomerid").value != "") ? document.getElementById("onlinecustomerid").value : "";
+                var onlinelocid = (document.getElementById("onlinelocationid").value != "") ? document.getElementById("onlinelocationid").value : "";
+                var url1 = '@Url.Content("~/csat_login/online_get_locationid?custid=")' + onlinecustid + '&locid=' + onlinelocid;
+                $.ajax({
+                    type: "POST",
+                    url: url1,
+                    success: function (result) {
+                        // debugger;
+                        if (result == 'Location Already Exits.') {
+                            window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+                        }
+                        else {
+                            alert(result);
+                        }
+                    }
+                });
+            }
+            //$("#licenseenableLocation").modal('hide');
+            return true;
+        }
+    }
+    var onlineinstallid = "";
+
+    function generate_custid1() {
+       // debugger;
+        if (licensetype == 'online') {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_login/AutoGenerateCustomerid")',
+                success: function (data) {
+                   // debugger;
+                    onlineinstallid = document.getElementById("onlineinstallationid").value = data.installid;
+                    document.getElementById("onlinecustomeridshow").value = custid;
+                    $('#installtion_popup1').modal('show');
+                    online_generate_locationid();
+                }
+
+            });
+        }
+    }
+
+    var locids = "";
+    function online_generate_locationid() {
+        if (licensetype == 'online') {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_login/AutoGeneratelocationid")',
+                success: function (data) {
+                   // debugger;
+                    locids =  data.locid;
+                    //online_location_registration2();
+
+                }
+            });
+        }
+    }
+
+    function valid_online_location_registration2() {
+        var email = document.getElementById("onlineloc_email").value;
+        var contact = document.getElementById("onlineloc_contact").value;
+        var mobno = document.getElementById("onlineloc_mobno").value;
+        if ($("#onlinelocation").val() == "" && $("#onlineloc_addr").val() == "" && $("#onlineloc_city").val() == "" && $("#onlineloc_pincode").val() == "" && $("#onlineloc_state").val() == '-1' && $("#onlineloc_country").val() == '-1' && $("#onlineloc_email").val() == "" && $("#onlineloc_contact").val() == "" && $("#onlineloc_mobno").val() == "") {
+            alert("Please enter location details !");
+            return false;
+        }
+        if ($("#onlinelocation").val() == "") {
+            alert("Please enter Location !");
+            return false;
+        }
+        if ($("#onlineloc_addr").val() == "") {
+            alert("Please enter address !");
+            return false;
+        }
+        if ($("#onlineloc_city").val() == "") {
+            alert("Please enter city !");
+            return false;
+        }
+        var cityval = document.getElementById("onlineloc_city").value;
+        var alpha = /^[a-zA-Z][a-zA-Z\s-]+[a-zA-Z]$/;
+        if (!cityval.match(alpha)) {
+            alert('Invalid City ->' + cityval);
+            return false;
+        }
+        if ($("#onlineloc_pincode").val() == "") {
+            alert("Please enter Pincode !");
+            return false;
+        }
+
+        if ($("#onlineloc_state").val() == '-1') {
+            alert("Please select State !");
+            return false;
+        }
+        if ($("#onlineloc_country").val() == '-1') {
+            alert("Please select Country !");
+            return false;
+        }
+        if ($("#onlineloc_email").val() == "") {
+            alert("Please enter Email ID !");
+            return false;
+        }
+        var reg = /^([\w\.\-]+)@@([\w\-]+)((\.(\w){2,3})+)$/;
+        if (!email.match(reg)) {
+            alert('Invalid Email ID ->' + email);
+            return false;
+        }
+        if ($("#onlineloc_contact").val() == "") {
+            alert("Please enter Contact No. !");
+            return false;
+        }
+        if (contact.length < 10) {
+            alert("Please enter a valid Contact No.");
+            return false;
+        }
+        if ($("#onlineloc_mobno").val() == "") {
+            alert("Please enter Mobile No. !");
+            return false;
+        }
+        if (mobno.length < 10) {
+            alert("Please enter a valid Mobile No. ");
+            return false;
+        }
+        else {
+            online_location_registration2();
+            return (true);
+        }
+    }
+   function online_location_registration2() {
+       if (licensetype == 'online') {
+           // debugger;
+            custid = (document.getElementById("onlinecustomerid").value != "") ? document.getElementById("onlinecustomerid").value : "";
+            locid = locids;
+            instid = onlineinstallid;
+            loc = (document.getElementById("onlinelocation").value != "") ? document.getElementById("onlinelocation").value : "";
+            loc_addr = (document.getElementById("onlineloc_addr").value != "") ? document.getElementById("onlineloc_addr").value : "";
+            loc_addr1 = (document.getElementById("onlineloc_addr1").value != "") ? document.getElementById("onlineloc_addr1").value : "";
+            loc_addr2 = (document.getElementById("onlineloc_addr2").value != "") ? document.getElementById("onlineloc_addr2").value : "";
+            loc_city = (document.getElementById("onlineloc_city").value != "") ? document.getElementById("onlineloc_city").value : "";
+            loc_pincode = (document.getElementById("onlineloc_pincode").value != "") ? document.getElementById("onlineloc_pincode").value : "";
+            loc_state = (document.getElementById("onlineloc_state").value != "") ? document.getElementById("onlineloc_state").value : "";
+            loc_country = (document.getElementById("onlineloc_country").value != "") ? document.getElementById("onlineloc_country").value : "";
+           loc_email = (document.getElementById("onlineloc_email").value != "") ? document.getElementById("onlineloc_email").value : "";
+           var intlNumber = $("#onlineloc_contact").intlTelInput("getNumber"); // get full number eg +17024181234
+           var countryData = $("#onlineloc_contact").intlTelInput("getSelectedCountryData"); // get country data as obj
+           var countryCode = countryData.dialCode; // using updated doc, code has been replaced with dialCode
+           //countryCode = "+" + countryCode; // convert 1 to +1
+           var contact = intlNumber.replace("+", "");
+           var loc_contact = contact.replace(countryCode, "(" + countryCode + ")");
+            //loc_contact = (document.getElementById("onlineloc_contact").value != "") ? document.getElementById("onlineloc_contact").value : "";
+           var intlNumber1 = $("#onlineloc_mobno").intlTelInput("getNumber"); // get full number eg +17024181234
+           var countryData1 = $("#onlineloc_mobno").intlTelInput("getSelectedCountryData"); // get country data as obj
+           var countryCode1 = countryData1.dialCode; // using updated doc, code has been replaced with dialCode
+           //countryCode = "+" + countryCode; // convert 1 to +1
+           var locmobno = intlNumber1.replace("+", "");
+           var loc_mobno = locmobno.replace(countryCode1, "(" + countryCode1 + ")");
+           //loc_mobno = (document.getElementById("onlineloc_mobno").value != "") ? document.getElementById("onlineloc_mobno").value : "";
+            var url1 = '@Url.Content("~/csat_login/online_location_registration?custid=")' + custid + '&instid=' + instid + '&locid=' + locid + '&loc=' + loc + '&loc_addr=' + loc_addr + '&loc_addr1=' + loc_addr1 + '&loc_addr2=' + loc_addr2 + '&loc_city=' + loc_city + '&loc_pincode=' + loc_pincode + '&loc_state=' + loc_state + '&loc_country=' + loc_country + '&loc_email=' + loc_email + '&loc_contact=' + loc_contact + '&loc_mobno=' + loc_mobno;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+                    //debugger;
+                    $('#add_location2').modal('hide');
+                    loc_state = (document.getElementById("loc_state").value != "") ? document.getElementById("loc_state").value : "";
+                    loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+                    //loc_country = (document.getElementById("loc_country").value != "") ? document.getElementById("loc_country").value : "";
+                    var SetData = $('#locstate2');
+                    jQuery('#locstate2').html('');
+                    var SetData1 = $('#loccountry2');
+                    jQuery('#loccountry2').html('');
+                    var lostat = loc_state;
+                    var locou = loc_country;
+                    var locstate = lostat;
+                    var loccountry = locou;
+                    SetData.append(locstate);
+                    SetData1.append(loccountry);
+                    $('#view_location_detail1').modal('show');
+                }
+            });
+        }
+    }
+    function show_location() {
+        $('#view_location_detail1').modal('hide');
+        $('#add_partner_detail1').modal('show');
+    }
+    function valid_online_partner_registration1() {
+        if ($("#onlinepartnerid").val() == "" && $("#onlinesiid").val() == "") {
+            alert("Please enter online partner details !");
+            return false;
+        }
+        if ($("#onlinepartnerid").val() == "") {
+            alert("Please enter online partner ID !");
+            return false;
+        }
+        var str = document.getElementById("onlinepartnerid").value;
+        var n = str.length;
+        document.getElementById("onlinepartnerid").innerHTML = n;
+        if ((n > 16) || (n < 16)) {
+            alert("Please enter a valid partnerid number");
+            return false;
+        }
+        if ($("#onlinesiid").val() == "") {
+            alert("Please enter SI ID !");
+            return false;
+        }
+        var str1 = document.getElementById("onlinesiid").value;
+        var n1 = str1.length;
+        document.getElementById("onlinesiid").innerHTML = n1;
+        if ((n1 > 16) || (n1 < 16)) {
+            alert("Please enter a valid siid number");
+            return false;
+        }
+        else {
+            online_partner_registration1();
+            return (true);
+        }
+    }
+    function online_partner_registration1() {
+        if (licensetype == 'online') {
+          //debugger;
+         custid = (document.getElementById("onlinecustomerid").value != "") ? document.getElementById("onlinecustomerid").value : "";
+         locid = locids;
+         partnerid = (document.getElementById("onlinepartnerid").value != "") ? document.getElementById("onlinepartnerid").value : "";
+         siid = (document.getElementById("onlinesiid").value != "") ? document.getElementById("onlinesiid").value : "";
+         var url1 = '@Url.Content("~/csat_login/online_partner_registration?custid=")' + custid + '&locid=' + locid + '&partnerid=' + partnerid + '&siid=' + siid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                $('#add_partner_detail1').modal('hide');
+                $('#product_license_detail2').modal('show');
+                //debugger;
+            }
+        });
+        }
+
+    }
+    function valid_online_product_registration1() {
+        var len = document.querySelectorAll('.checkbox input[type="checkbox"]:checked').length
+        if (len <= 0) {
+            alert("Please check at least one");
+            return false;
+        }
+        else {
+            online_product_registration1();
+            return (true);
+        }
+    }
+    function online_product_registration1() {
+        if (licensetype == 'online') {
+            //debugger;
+            custid = (document.getElementById("onlinecustomerid").value != "") ? document.getElementById("onlinecustomerid").value : "";
+            locid = locids;
+            var url1 = '@Url.Content("~/csat_login/online_product_registration?custid=")' + custid + '&locid=' + locid + '&chkproduct=' + chkproduct;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+                    $('#product_license_detail2').modal('hide');
+                    window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+                }
+            });
+        }
+        else {
+            LicenseType();
+        }
+    }
+    function valid_verify() {
+        if ($("#verify_customerid1").val() == "" && $("#verify_locationid").val() == "") {
+            alert("Please enter customer id  and location id !");
+            return false;
+        }
+        if ($("#verify_customerid1").val() == "") {
+            alert("Please enter Customer ID !");
+            return false;
+        }
+        var str = document.getElementById("verify_customerid1").value;
+        var n = str.length;
+        document.getElementById("verify_customerid1").innerHTML = n;
+        if ((n > 16) || (n < 16)) {
+            alert("Please enter a valid Customer ID");
+            return false;
+        }
+        if ($("#verify_locationid").val() == "") {
+            alert("Please enter locatin ID !");
+            return false;
+        }
+        var str1 = document.getElementById("verify_locationid").value;
+        var n1 = str1.length;
+        document.getElementById("verify_locationid").innerHTML = n1;
+        if ((n1 > 16) || (n1 < 16)) {
+            alert("Please enter a valid location ID ");
+            return false;
+        }
+        else {
+            verify_custid();
+            return (true);
+        }
+
+    }
+    function verify_custid() {
+        $('#licenseload_online_popup').modal('hide');
+        $('#online_verify').modal('show');
+    }
+</script>
+<script>
+   
+    function GetCountry() {
+        //debugger;
+        var url = '@Url.Content("~/csat_login/getcountry/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //debugger;
+                var SetData = $('#loc_country,#country,#onlineloc_country');
+                jQuery('#loc_country,#country,#onlineloc_country').html('');
+                var countrydata = "<option value='-1'>Select Country</option>";
+                for (var i = 0; i < data.getcountry.length; i++) {
+                    countrydata += "<option value='" + data.getcountry[i].country + "'>" + data.getcountry[i].country + "</option>";
+                }
+                SetData.append(countrydata);              
+            }
+        });
+    }
+    var strcountry = "";
+    $("#loc_country,#country,#onlineloc_country").change(function () {
+      //debugger;
+        strcountry = this.value;
+        var url = '@Url.Content("~/csat_login/getstate?strcountry=")' + strcountry;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			    //debugger;
+                var SetDatadevice = $('#loc_state,#state,#onlineloc_state');				
+                jQuery('#loc_state,#state,#onlineloc_state').html('');               
+                var statedata = "<option value='-1'>Select State</option>";		
+                for (var i = 0; i < data.getstate.length; i++) {			     
+                    statedata += "<option value='" + data.getstate[i].state + "'>" + data.getstate[i].state +"</option>";				                   
+			}
+                SetDatadevice.append(statedata);				
+            }
+            });
+    });
+</script>

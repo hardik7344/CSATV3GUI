@@ -1,0 +1,1618 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<div class="row">
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;height: 38px;">
+            <div class="pull-right form_label">
+                <button class="btn btn-primary btn-xs day" id="btn7day" type="button" onclick="Dashboardcharts('30')">30 Day</button>
+                <button class="btn btn-primary btn-xs day" id="btn2day" type="button" onclick="Dashboardcharts('2')">2 Day</button>
+                <button class="btn btn-primary btn-xs day" id="btn1day" type="button" onclick="Dashboardcharts('1')">1 Day</button>
+            </div>
+            @*<ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Home", "csat_policy_mgmt", "csat_policy_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+
+                </ul>*@
+            @*<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2  pull-right" style="margin-top: -23px;">
+                    <button class="btn btn-primary btn-xs day" id="btn7day" type="button" onclick="Dashboardcharts('30')">30 Day</button>
+                    <button class="btn btn-primary btn-xs day" id="btn2day" type="button" onclick="Dashboardcharts('2')">2 Day</button>
+                    <button class="btn btn-primary btn-xs day" id="btn1day" type="button" onclick="Dashboardcharts('1')">1 Day</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<body onload="Dashboardcharts('1');">
+    <div class="row">
+        <div class="7 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    @*<h6>Policy Violations </h6>*@
+                    <h6>Violation</h6>
+                </div>
+                <div class="ibox-content box_height chat_content" id="divpolicy">
+                    <canvas id='dashboard_policy_violation'></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="8 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h6>Change Management</h6>
+                </div>
+                <div class="ibox-content box_height chat_content" id="divaudit">
+                    <canvas id='dashboard_audit_trail'></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="9 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h6>Most Effected Branch/ Unit</h6>
+                    <div class="day_wise" style="float:right;margin-top: -24px; margin-right: 5px;">
+                    </div>
+                </div>
+                <div class="ibox-content box_height chat_content" id="diveffectedou">
+                    <canvas id='dashboard_effected_pc_vlan'></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="10 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h6>Last Poll Time</h6>
+                </div>
+                <div class="ibox-content box_height chat_content" id="divlastpoll">
+                    <canvas id='dashboard_poll_time'></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="11 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h6>System Connectivity</h6>
+                </div>
+                <div class="ibox-content box_height chat_content" id="divpcconnectivity">
+                    <canvas id='dashboard_pc_connectivity'></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="12 div_none col-sm-12 col-md-6 col-lg-4 ">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h6>Auditor </h6>
+                    <div class="day_wise" style="float:right;margin-top: -24px; margin-right: 5px;">
+                    </div>
+                </div>
+                <div class="ibox-content box_height chat_content" id="divcsataudit">
+                    <canvas id='dashboard_csat_audit'></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="space_bottom">&nbsp;</div>
+    </div>
+    <br />
+</body>
+<!--Dashboard  Policy chart  and popup Start -->
+<div class="modal fade" id="policy_mgmt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="cleardata()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class="modal-title" id="chgmgmt1">
+                    @*Details of Hardware*@
+                    Compliance Details
+                </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="frm_policy" id="frm_policy">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou_policy" id="drpou_policy"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="system_policy" id="system_policy">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip_policy" id="ip_policy">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip">
+                                            <option value="-1">Select IP Address</option>
+
+                                        </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="Funpolicy(labelvalue)">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="policy_div">
+                        <table id="tblpolicymgmt" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!--Dashboard  Policy chart  and popup End -->
+<!--Dashboard  Audit chart  and popup Start -->
+<div class="modal fade" id="change_mgmt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="cleardata()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class="modal-title" id="chgmgmt">
+                    Details of Hardware
+                </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="frm_das_Hardware" id="frm_das_Hardware">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou" id="drpou"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys1">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="system" id="system">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname1">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip" id="ip">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip">
+                                            <option value="-1">Select IP Address</option>
+
+                                        </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="Funchwaudittrail(labelvalue)">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="changemgmt_div">
+                        <table id="changemgmt" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!--Dashboard  Audit chart  and popup End -->
+<!--Dashboard  Effected pc vlan chart  and popup start -->
+<div class="modal fade" id="effected_vlan_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 id="dlheader">
+                    Details of Data Leakage
+                </h6>
+                <h6 id="ouheader" style="display:none"></h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name=" frm_das_DataLeakage" id="frm_das_DataLeakage">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="dlsystem" id="dlsystem">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname2" id="add_systemname2">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk2" name="add_system_chk2" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="dlip" id="dlip">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="dlip">
+                                            <option value="-1">Select IP Address</option>
+                                        </select>*@
+                                </div>
+                                <div id="showprint" style="display:none">
+                                    <label for="nameField" class="col-xs-1">Printer wise</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Printer" id="printer"></select>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="showdataleakagedata(charttype, labels)" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tbldataleakage_div">
+                        <table id="tbldataleakage" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!--Dashboard  Effected pc vlan chart  and popup End -->
+@* PC Connectivity*@
+<div class="modal fade" id="presentlink_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class="modal-title" id="pctitle">
+                    @*Hardware Detail*@
+                </h6>
+                @*<h6 id="pctitle">
+                    Present Linked Detail [ Count:22]
+                            </h6>*@
+                <h6 id="pcheader" style="display:none"></h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="das_PCConnectivity" id="das_PCConnectivity">
+                            <div class="form-group">
+                                <div id="divdrpou4">
+                                    <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="dropou_linkage" id="dropou_linkage"></select>
+                                    </div>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="system_linkage" id="system_linkage">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname4">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname4" id="add_systemname4">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk4" name="add_system_chk4" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip_linkage" id="ip_linkage">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip_linkage">
+                <option value="-1">Select IP Address</option>
+
+            </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="PCConnectivity()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tblpcconnectivity_div">
+                        <table id="tblpcconnectivity" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@* PC Connectivity End*@
+@* Last Poll Time*@
+<div class="modal fade" id="1day_time_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title" id="systemtitle">
+                    Details of System
+                </h6>
+                <h6 id="systemheader" style="display:none"></h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="das_details_sys" id="das_details_sys">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou_count" id="drpou_count"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="system_count" id="system_count">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname3">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname3" id="add_systemname3">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk3" name="add_system_chk3" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip_count" id="ip_count">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip_count">
+                                            <option value="-1">Select IP Address</option>
+
+                                        </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="LastPollTime()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tbllastpolltime_div">
+                        <table id="tbllastpolltime" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@* Last Poll Time End*@
+<!--Dashboard CSAT Audit chart  and popup start -->
+@*<div class="modal fade" id="port_authorise_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Details of Port [ Count:20]
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                    <div class="col-xs-3">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="Branch/Unit">
+                                            <option>Root</option>
+                                            <option value="01">Root >> Location</option>
+                                            <option value="02">Root >> Location >> Department</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="System">
+                                            <option>Select System Name</option>
+                                            <option>Upendra</option>
+                                            <option value="01">Mittal</option>
+                                            <option value="02">sapan</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="IP">
+                                            <option>Select IP Address</option>
+                                            <option>192.168.100.102</option>
+                                            <option value="01">192.168.100.103</option>
+                                            <option value="02">192.168.100.104</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1">Select Port</label>
+                                    <div class="col-xs-2 col-md-1 col-lg-1" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="Port" value="local" checked> Local Port </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 col-md-2 col-lg-2" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="Port" value="remote"> Remote Port </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <input type="button" class="btn btn-primary" value="Show">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered csat_audit_datatable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sm-2">Branch/ Unit</th>
+                                            <th class="col-sm-2">System Name </th>
+                                            <th class="col-sm-1">IP Address</th>
+                                            <th class="col-sm-1">Protocol</th>
+                                            <th class="col-sm-2">Local Port</th>
+                                            <th class="col-sm-2">Remote Port</th>
+                                            <th class="col-sm-2">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-sm-2">Root >> Location</td>
+                                            <td class="col-sm-2">Upendra-PC </td>
+                                            <td class="col-sm-1">192.168.100.104</td>
+                                            <td class="col-sm-1">TCP</td>
+                                            <td class="col-sm-2">80/HTTP</td>
+                                            <td class="col-sm-2">443/HTTP</td>
+                                            <td class="col-sm-2">Authorised</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-sm-2">Root >> Location</td>
+                                            <td class="col-sm-2">Ajay-PC </td>
+                                            <td class="col-sm-1">192.168.100.120</td>
+                                            <td class="col-sm-1">TCP</td>
+                                            <td class="col-sm-2">443/HTTP</td>
+                                            <td class="col-sm-2">80/HTTP</td>
+                                            <td class="col-sm-2">Authorised</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-sm-2">Root >> Location</td>
+                                            <td class="col-sm-2">pankti-PC </td>
+                                            <td class="col-sm-1">192.168.100.120</td>
+                                            <td class="col-sm-1">TCP</td>
+                                            <td class="col-sm-2">20/FTP</td>
+                                            <td class="col-sm-2">80/HTTP</td>
+                                            <td class="col-sm-2">Authorised</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>*@
+<div class="modal fade" id="process_authorise_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title" id="processheader">
+                    Details of Process
+                </h6>
+                <h6 id="processtitle" style="display:none" />
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="das_Details_Process" id="das_Details_Process">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou_audit" id="drpou_audit"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2" id="selectsys5">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="system_audit" id="system_audit">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname5">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname5" id="add_systemname5">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk5" name="add_system_chk5" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip_audit" id="ip_audit">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip_audit">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="ShowCsatAuditData(audit_type)">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tblprocesschart_div">
+                        <table id="tblprocesschart" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="software_authorise_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title" id="softheader">
+                    Details of Software
+                </h6>
+                <h6 id="softtitle" style="display:none" />
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="das_Details_Software" id="das_Details_Software">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou7" id="drpou7"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="softsystem" id="softsystem">
+                                        <option value="-1">Select System Name</option>
+
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="softip" id="softip">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="softip">
+                                            <option value="-1">Select IP Address</option>
+
+                                        </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="ShowSoftwareChartData()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive" id="tblsoftchart">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="user_authorise_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                @*<h6 class=" modal-title">
+                        User Detail [ Count:62]
+                    </h6>*@
+                <h6 class=" modal-title" id="userheader">
+                    Details of User
+                </h6>
+                <h6 id="usertitle" style="display:none" />
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-horizontal" method="post" name="das_Details_User" id="das_Details_User">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpou8" id="drpou8"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">System Name</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="usersystem" id="usersystem">
+                                        <option value="-1">Select System Name</option>
+
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right ">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="userip" id="userip">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="userip">
+                                            <option value="-1">Select IP Address</option>
+
+                                        </select>*@
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="ShowUserChartData()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive" id="tbluserchart">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!--Dashboard CSAT Audit chart  and popup end -->
+@*<script>
+        debugger;
+        $(document).ready(function () {
+            validateSingleForm("#frm_das_Hardware");
+        });
+        jQuery('#frm_das_Hardware').submit(function (event) {
+            //debugger;
+            event.preventDefault();
+            var $valid = $('#frm_das_Hardware').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            } else {
+                console.log("das_Hardware form submitted");
+            }
+        });
+    </script>*@
+
+<script>
+    function Dashboardcharts(days) {
+        // debugger;
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);　
+        var url = '@Url.Content("~/csat_main_dashboard/GetDashboardCharts?NoOfDays=")' + days;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //debugger;
+                piechart('dashboard_pc_connectivity', data.pcdata1);
+                piechart('dashboard_poll_time', data.lastpolldata1);
+                New_stackedchart('dashboard_csat_audit', data.stackedalert);
+                stackedchart('dashboard_effected_pc_vlan', data.stacked1);
+                piechart('dashboard_audit_trail', data.auditdata1);
+                piechart('dashboard_policy_violation', data.policydata1);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+	 //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou,#drpou_count,#dropou_linkage,#drpou_audit,#drpou_policy');
+                jQuery('#drpou,#drpou_count,#dropou_linkage,#drpou_audit,#drpou_policy').html('');
+		        var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+		        for (var i = 0; i < data.ou.length; i++) {
+		            oudata+="<option value='"+ data.ou[i].ouid +"'>"+ data.ou[i].ouname +"</option>";
+                }
+                SetData.append(oudata);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        });
+    }
+    var ouidvalue = "";
+    $("#drpou,#drpou_count,#dropou_linkage,#drpou_audit,#drpou_policy").change(function () {
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+            var SetDatadevice = $('#system,#system_count,#system_linkage,#system_audit,#system_policy');
+            //var SetDataip = $('#ip,#ip_count,#ip_linkage,#ip_audit');
+            jQuery('#system,#system_count,#system_linkage,#system_audit,#system_policy').html('');
+            //jQuery('#ip,#ip_count,#ip_linkage,#ip_audit').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        });
+    });
+    $(document).ready(function () {
+        validateSingleForm("#frm_policy");
+    });
+    function Funpolicy(cattype) {
+        var $valid = $('#frm_policy').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            var ip = '';
+            var device = '';
+            ip = document.getElementById('ip_policy').value;
+            //device = document.getElementById('system_policy').value;
+            var device = document.getElementById('add_systemname').value;
+            if (device == "") {
+                device = document.getElementById("add_systemname").value;
+            }
+            var url = '@Url.Content("~/csat_main_dashboard/Getpolicychartpopup?ouid=")' + ouidvalue + '&system=' + device + '&ip=' + ip + '&categorytype=' + cattype;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    document.getElementById('chgmgmt1').innerText = titlevalue + ' [ Count: ' + data.getpolicydata.length + ' ]';
+                    //if (cattype == 112) { document.getElementById('chgmgmt1').innerText = titlevalue + ' [ Count: ' + data.getpolicydata.length + ' ]'; }
+                    //if (cattype == 111) { document.getElementById('chgmgmt1').innerText = titlevalue + ' [ Count: ' + data.getpolicydata.length + ' ]'; }
+                    //if (cattype == 122) { document.getElementById('chgmgmt1').innerText = titlevalue + ' [ Count: ' + data.getpolicydata.length + ' ]'; }
+                    var dataclear = document.getElementById('policy_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#policy_div').append("<table id='tblpolicymgmt' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblpolicymgmt');
+                    var data1 = [];
+                    //for (var i = 0; i < data.getpolicydata.length; i++) {
+                    //    data1.push([data.getpolicydata[i].ouname,data.getpolicydata[i].servertime, data.getpolicydata[i].devicetimestamp,data.getpolicydata[i].devicename, data.getpolicydata[i].ipaddress, data.getpolicydata[i].message]);
+                    //}
+                    //var otable = $("#tblpolicymgmt").DataTable({
+                    //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Policy Violation_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Policy Violation Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    //    columns: [{ title: "Branch/ Unit" },{ title: "Server Timestamp" }, { title: "Client Timestamp" },{ title: "System Name" }, { title: "IP Address" }, { title: "Details" }]
+                    //});
+                    if (cattype == 10008) {
+                        for (var i = 0; i < data.getpolicydata.length; i++) {
+                            data1.push([data.getpolicydata[i].ouname, data.getpolicydata[i].devicename, data.getpolicydata[i].ipaddress, data.getpolicydata[i].domainName]);
+                        }
+                        var otable = $("#tblpolicymgmt").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Policy Violation_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Policy Violation Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Domain Name" }]
+                        });
+                    }                    
+                    else {
+                        for (var i = 0; i < data.getpolicydata.length; i++) {
+                            data1.push([data.getpolicydata[i].ouname, data.getpolicydata[i].devicename, data.getpolicydata[i].ipaddress]);
+                        }
+                        var otable = $("#tblpolicymgmt").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Policy Violation_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Policy Violation Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }]
+                        });
+                    }
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                },
+                error: function () {
+                    alert("something went to wrong!")
+                }
+            });
+        }
+    };
+    $(document).ready(function () {
+        validateSingleForm("#frm_das_Hardware");
+    });
+    function Funchwaudittrail(cattype) {
+        var $valid = $('#frm_das_Hardware').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            var ip = '';
+            var device = '';
+            ip = document.getElementById('ip').value;
+            //device = document.getElementById('system').value;
+            var device = document.getElementById('add_systemname1').value;
+            if (device == "") {
+                device = document.getElementById("system").value;
+            }
+            var url = '@Url.Content("~/csat_main_dashboard/GetHWaudittrail?ouid=")' + ouidvalue + '&system=' + device + '&ip=' + ip + '&categorytype=' + cattype;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    if (cattype == 1) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 10) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 11) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 12) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 13) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 14) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 15) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 19) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    if (cattype == 20) { document.getElementById('chgmgmt').innerText = titlevalue + ' [ Count: ' + data.gethwaudittraildata.length + ' ]'; }
+                    var dataclear = document.getElementById('changemgmt_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#changemgmt_div').append("<table id='changemgmt' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('changemgmt');
+                    var data1 = [];
+                    for (var i = 0; i < data.gethwaudittraildata.length; i++) {
+                        data1.push([data.gethwaudittraildata[i].ouname,data.gethwaudittraildata[i].servertime, data.gethwaudittraildata[i].devicetimestamp,data.gethwaudittraildata[i].devicename, data.gethwaudittraildata[i].ipaddress, data.gethwaudittraildata[i].message, data.gethwaudittraildata[i].status]);
+                    }
+                    var otable = $("#changemgmt").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Change Management_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Change Management Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "Server Timestamp" }, { title: "Client Timestamp" },{ title: "System Name" }, { title: "IP Address" }, { title: "Details" }, { title: "Status" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                },
+                error: function () {
+                    alert("something went to wrong!")
+                }
+
+            }); showdataleakagedata        }
+    };
+    var ouid = "";
+    var OU = "";
+    function show_dlou(ouname) {
+        //debugger;
+        ouname = $('#ouheader').html();
+        var url1 = '@Url.Content("~/csat_main_dashboard/GetOUID?ouname=")' + ouname;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                ouid = data.ouid;
+                show_dl_systemname(ouid);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        })
+    }
+    function show_dl_systemname(ouid) {
+       var url2 = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouid;
+        $.ajax({
+        type: "POST",
+        url: url2,
+        success: function (data) {
+            var SetdlDatadevice = $('#dlsystem');
+            //var SetdlDataip = $('#dlip');
+            jQuery('#dlsystem').html('');
+            //jQuery('#dlip').html('');
+
+            var dldevicedata = "<option value='-1'>Select System Name</option>";
+            //var dlipdata = "<option value='-1'>Select IP Address</option>";
+            for (var i = 0; i < data.systemip.length; i++) {
+                dldevicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+                //dlipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetdlDatadevice.append(dldevicedata);
+            //SetdlDataip.append(dlipdata);
+            show_pr_printer();
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        });
+    }
+     function show_pr_printer() {
+        var url3 = '@Url.Content("~/csat_report/GetOU")';
+        $.ajax({
+            type: "POST",
+            url:url3,
+            success: function (data) {
+                var SetPrinterData = $('#printer');
+                jQuery('#printer').html('');
+                var Printerdata = "<option value='-1'>Select Printer</option>";
+                for (var i = 0; i < data.printer.length; i++) {
+                    Printerdata += "<option>" + data.printer[i].printer + "</option>";
+                }
+                SetPrinterData.append(Printerdata);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        });
+    }
+    var charttype = "";
+    var ouname = "";
+    $(document).ready(function () {
+        validateSingleForm("#frm_das_DataLeakage");
+    });
+    function showdataleakagedata(charttype, labels) {
+        var $valid = $('#frm_das_DataLeakage').valid();
+        //alert($valid);
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            //debugger;
+            var charttype = charttype;
+            var ouname = labels;
+            show_dlou(ouname)
+            //debugger;
+            //alert(charttype);
+            if (charttype == 0) {
+                var ip = document.getElementById('dlip').value;
+                //var device = document.getElementById('dlsystem').value;
+                var device = document.getElementById('add_systemname2').value;
+                if (device == "") {
+                    device = document.getElementById("dlsystem").value;
+                }
+                var url3 = '@Url.Content("~/csat_main_dashboard/GetRawDataLeakage?ip=")' + ip + '&system=' + device + '&ouid=' + ouname;
+                $.ajax({
+                    type: "POST",
+                    url: url3,
+                    success: function (data) {
+                        document.getElementById('dlheader').innerText = 'Dataleakage Details [ Count: ' + data.getdataleakagedata.length + ' ]';
+                        var dataclear = document.getElementById('tbldataleakage_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tbldataleakage');
+                        var data1 = [];
+                        for (var i = 0; i < data.getdataleakagedata.length; i++) {
+                            //data1.push([data.getdataleakagedata[i].timeStamp, data.getdataleakagedata[i].systemName, data.getdataleakagedata[i].ip, data.getdataleakagedata[i].filetype, data.getdataleakagedata[i].media, data.getdataleakagedata[i].source_path, data.getdataleakagedata[i].destination_path, data.getdataleakagedata[i].size]);
+                            data1.push([data.getdataleakagedata[i].timeStamp, data.getdataleakagedata[i].systemName, data.getdataleakagedata[i].ip, data.getdataleakagedata[i].filetype, data.getdataleakagedata[i].type1, data.getdataleakagedata[i].filepath,  data.getdataleakagedata[i].size]);
+                        }
+                        var otable = $("#tbldataleakage").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Data leakage Chart_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Data Leakage Chart Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Timestamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "File Type" }, { title: "Media" }, { title: "File Path" }, { title: "Size(kb)" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+            if (charttype == 1) {
+                var ip = document.getElementById('dlip').value;
+                //var device = document.getElementById('dlsystem').value;
+                var device = document.getElementById('add_systemname2').value;
+                if (device == "") {
+                    device = document.getElementById("dlsystem").value;
+                }
+                var Printer = document.getElementById('printer').value;
+                var url4 = '@Url.Content("~/csat_main_dashboard/GetPrinterUsage?ip=")' + ip + '&system=' + device + '&ouid=' + ouname + '&printer=' + Printer;
+                $.ajax({
+                    type: "POST",
+                    url: url4,
+                    success: function (data) {
+                        document.getElementById('dlheader').innerText = 'Printer Detail [ Count: ' + data.printerusagedata.length + ' ]';
+                        var dataclear = document.getElementById('tbldataleakage_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tbldataleakage');
+                        var data1 = [];
+                        for (var i = 0; i < data.printerusagedata.length; i++) {
+                            data1.push([data.printerusagedata[i].device_timestamp, data.printerusagedata[i].device_name, data.printerusagedata[i].ip, data.printerusagedata[i].user_name, data.printerusagedata[i].printer_name, data.printerusagedata[i].doc]);
+                        }
+                        var otable = $("#tbldataleakage").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Printer Usages Chart_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Printer Usages Chart Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Timestamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Username" }, { title: "Printer Name" }, { title: "Document" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+            if (charttype == 2) {
+                var ip = document.getElementById('dlip').value;
+                //var device = document.getElementById('dlsystem').value;
+                var device = document.getElementById('add_systemname2').value;
+                if (device == "") {
+                    device = document.getElementById("dlsystem").value;
+                }
+                var url4 = '@Url.Content("~/csat_main_dashboard/GetRemovableMedia?ip=")' + ip + '&system=' + device + '&ouid=' + ouname;
+                $.ajax({
+                    type: "POST",
+                    url: url4,
+                    success: function (data) {
+                        document.getElementById('dlheader').innerText = 'Removable Media Detail [ Count: ' + data.removabledata.length + ' ]';
+                        var dataclear = document.getElementById('tbldataleakage_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tbldataleakage');
+                        var data1 = [];
+                        for (var i = 0; i < data.removabledata.length; i++) {
+                            data1.push([data.removabledata[i].device_name, data.removabledata[i].ip, data.removabledata[i].login_user, data.removabledata[i].e110deviceused, data.removabledata[i].e110activity, data.removabledata[i].e110starttime, data.removabledata[i].e110endtime, data.removabledata[i].duration]);
+                        }
+                        var otable = $("#tbldataleakage").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Removable Media Chart_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Removable Media Chart Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "System Name" }, { title: "IP Address" }, { title: "Login By" }, { title: "Device Used" }, { title: "Description" }, { title: "Start time" }, { title: "End time" }, { title: "Duration" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+            if (charttype == 3) {
+                var ip = document.getElementById('dlip').value;
+                //var device = document.getElementById('dlsystem').value;
+                var device = document.getElementById('add_systemname2').value;
+                if (device == "") {
+                    device = document.getElementById("dlsystem").value;
+                }
+                var url4 = '@Url.Content("~/csat_main_dashboard/GetModemUsage?ip=")' + ip + '&system=' + device + '&ouid=' + ouname;
+                $.ajax({
+                    type: "POST",
+                    url: url4,
+                    success: function (data) {
+                        document.getElementById('dlheader').innerText = 'Internal Modem Usage Detail [ Count: ' + data.modemusagedata.length + ' ]';
+                        var dataclear = document.getElementById('tbldataleakage_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tbldataleakage');
+                        var data1 = [];
+                        for (var i = 0; i < data.modemusagedata.length; i++) {
+                            data1.push([data.modemusagedata[i].ip, data.modemusagedata[i].user_name, data.modemusagedata[i].printer_name, data.modemusagedata[i].doc, data.modemusagedata[i].doc, data.modemusagedata[i].total_pages]);
+                        }
+                        var otable = $("#tbldataleakage").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Modem Usages Chart_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Modem Usages Chart Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "IP Address" }, { title: "Username" }, { title: "Modem Name" }, { title: "Start time" }, { title: "End time" }, { title: "Duration" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+        }
+    }
+    // Presently Linked PC
+
+    var pcheader;
+    function bind_systemlist() {
+        var url = '@Url.Content("~/csat_report/Get_systemname_ip_NotMonitoring")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetDatadevice4 = $('#system_linkage');
+                //var SetDataip4 = $('#ip_linkage');
+                jQuery('#system_linkage').html('');
+                //jQuery('#ip_linkage').html('');
+
+                var devicedata4 = "<option value='-1'>Select System Name</option>";
+                //var ipdata4 = "<option value='-1'>Select IP Address</option>";
+
+                for (var i = 0; i < data.systemip.length; i++) {
+                    devicedata4 += "<option value='" + data.systemip[i].device_name + "'>" + data.systemip[i].device_name + "</option>";
+                    //ipdata4 += "<option value='" + data.systemip[i].ip + "'>" + data.systemip[i].ip + "</option>";
+                }
+                SetDatadevice4.append(devicedata4);
+                //SetDataip4.append(ipdata4);
+            },
+            error: function () {
+                alert("something went to wrong!")
+            }
+        });
+    }
+    var pcstatus = '';
+    $(document).ready(function () {
+        validateSingleForm("#das_PCConnectivity");
+    });
+    function PCConnectivity()
+    {
+        var $valid = $('#das_PCConnectivity').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            var ouid = document.getElementById('dropou_linkage').value;
+            var ip = document.getElementById('ip_linkage').value;
+            //var device = document.getElementById('system_linkage').value;
+            var systemvalue = document.getElementById('add_systemname4').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system_linkage").value;
+            }
+            //debugger;
+            pcheader = $('#pctitle').html();
+            //alert(pcheader);
+            if (pcheader == 'Linked Equipment' || pcheader == 'Details of system not linked' || pcheader == 'Not Linked Detail' || pcheader == 'Today Connected Device') {
+                if (pcheader == 'Linked Equipment') {
+                    document.getElementById('pctitle').innerText = 'Linked Equipment';
+                    document.getElementById('pcheader').innerText = 'Linked Equipment';
+                    var title = 'Linked Equipment Report';
+                }
+                if (pcheader == 'Today Connected Device') {
+                    document.getElementById('pctitle').innerText = 'Today Connected Device';
+                    document.getElementById('pcheader').innerText = 'Today Connected Device';
+                    var title = 'Today Connected Device';
+                }
+                if (pcheader == 'Details of system not linked' || pcheader == 'Not Linked Detail') {
+                    document.getElementById('pctitle').innerText = 'Not Linked Detail';
+                    document.getElementById('pcheader').innerText = 'Not Linked Detail';
+                    var title = 'Not Linked Report';
+                }
+                var url = '@Url.Content("~/csat_main_dashboard/GetPCConnectivitychartdata?ip=")' + ip + '&system=' + systemvalue + '&ouid=' + ouid + '&status=' + document.getElementById('pcheader').innerText;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        //debugger;
+                        var dataclear = document.getElementById('tblpcconnectivity_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tblpcconnectivity_div').append("<table id='tblpcconnectivity' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblpcconnectivity');
+                        var data1 = [];
+                        for (var i = 0; i < data.getpcconnectivitydata.length; i++) {
+                            data1.push([data.getpcconnectivitydata[i].ou_longname,data.getpcconnectivitydata[i].datetime,data.getpcconnectivitydata[i].device_name, data.getpcconnectivitydata[i].ip, data.getpcconnectivitydata[i].os_name]);
+                        }
+                        var otable = $("#tblpcconnectivity").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "" + title + "_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "" + title + "", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" },{ title: "Timestamp" },{ title: "System Name" }, { title: "IP Address" }, { title: "Operating System Name" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+            else {
+                document.getElementById('pctitle').innerText = 'Not Monitoring Device Detail';
+                document.getElementById('pcheader').innerText = 'Not Monitoring Device Detail';
+                //var url = '@Url.Content("~/csat_main_dashboard/GetPCConnectivitychartdata?ip=")' + ip + '&system=' + device + '&ouid=' + ouid + '&status=' + document.getElementById('pcheader').innerText;
+                var url = '@Url.Content("~/csat_main_dashboard/GetPCConnectivitychartdata?ip=")' + ip + '&system=' + systemvalue + '&ouid=' + ouid + '&status=' + document.getElementById('pcheader').innerText;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        var dataclear = document.getElementById('tblpcconnectivity_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tblpcconnectivity_div').append("<table id='tblpcconnectivity' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblpcconnectivity');
+                        var data1 = [];
+                        for (var i = 0; i < data.getpcconnectivitydata.length; i++) {
+                            data1.push([data.getpcconnectivitydata[i].device_name, data.getpcconnectivitydata[i].ip]);
+                        }
+                        var otable = $("#tblpcconnectivity").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Not Monitoring Device Detail_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Not Monitoring Device  Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "System Name" }, { title: "IP Address" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+                });
+            }
+        }
+    }
+
+
+    // Last Poll time
+    $(document).ready(function () {
+        validateSingleForm("#das_details_sys");
+    });
+    var days;
+    var title;
+    function LastPollTime() {
+        var $valid = $('#das_details_sys').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            // debugger;
+            days = $('#systemheader').html();
+            title = $('#systemtitle').html();
+            $('#systemtitle').html('');
+            var ip = document.getElementById('ip_count').value;
+            //var device = document.getElementById('system_count').value;
+            var device = document.getElementById('add_systemname3').value;
+            if (device == "") {
+                device = document.getElementById("system_count").value;
+            }
+            var url = '@Url.Content("~/csat_main_dashboard/GetLastPollTimechartdata?ip=")' + ip + '&system=' + device + '&lastpolldays=' + days;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    document.getElementById('systemtitle').innerText = 'System Detail [ Count: ' + data.getlastpolltimedata.length + ' ]';
+                    var dataclear = document.getElementById('tbllastpolltime_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tbllastpolltime_div').append("<table id='tbllastpolltime' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tbllastpolltime');
+                    var data1 = [];
+                    for (var i = 0; i < data.getlastpolltimedata.length; i++) {
+                        data1.push([data.getlastpolltimedata[i].ou_longname, data.getlastpolltimedata[i].device_name, data.getlastpolltimedata[i].ip, data.getlastpolltimedata[i].date, data.getlastpolltimedata[i].data1 + " " + data.getlastpolltimedata[i].ostype]);
+                    }
+                    var otable = $("#tbllastpolltime").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Last Poll Time Chart_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Last Poll Time Chart Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Last Poll Time" }, { title: "Operating System Name" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                },
+                error: function () {
+                    alert("something went to wrong!")
+                }
+            });
+        }
+    }
+    // CSAT Audit
+    $(document).ready(function () {
+        validateSingleForm("#das_Details_Process");
+    });
+    var title;
+    var audit_type = "";
+    function ShowCsatAuditData(labels) {
+        var $valid = $('#das_Details_Process').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            //debugger;
+            audit_type = labels;
+            var ouid_audit = document.getElementById('drpou_audit').value;
+            var ip = document.getElementById('ip_audit').value;
+            //var device = document.getElementById('system_audit').value;
+            var device = document.getElementById('add_systemname5').value;
+            if (device == "") {
+                device = document.getElementById("system_audit").value;
+            }
+
+            if (audit_type === "Process") {
+                var url = '@Url.Content("~/csat_main_dashboard/GetCSATAuditProcesschartdata?ip=")' + ip + '&system=' + device + '&ouid=' + ouid_audit + '&status=' + $('#processtitle').html();
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        document.getElementById('processheader').innerText = 'Process Detail  [ Count :' + data.getcsatauditprocesschartdata.length + ' ] ';
+                        var dataclear = document.getElementById('tblprocesschart_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblprocesschart');
+                        var data1 = [];
+                        for (var i = 0; i < data.getcsatauditprocesschartdata.length; i++) {
+                            data1.push([data.getcsatauditprocesschartdata[i].ou_longname, data.getcsatauditprocesschartdata[i].device_name, data.getcsatauditprocesschartdata[i].ip, data.getcsatauditprocesschartdata[i].process_name, data.getcsatauditprocesschartdata[i].process_exec_path, data.getcsatauditprocesschartdata[i].process_desc, data.getcsatauditprocesschartdata[i].status]);
+                        }
+                        var otable = $("#tblprocesschart").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Process Name" }, { title: "Process Path" }, { title: "Process Description" }, { title: "Status" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+
+                });
+            }
+            if (audit_type === "Software") {
+                var url = '@Url.Content("~/csat_main_dashboard/GetCSATAuditSoftwarechartdata?ip=")' + ip + '&system=' + device + '&ouid=' + ouid_audit + '&status=' + $('#processtitle').html();
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        document.getElementById('processheader').innerText = 'Software Detail  [ Count :' + data.getcsatauditsoftwarechartdata.length + ' ] ';
+                        var dataclear = document.getElementById('tblprocesschart_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblprocesschart');
+                        var data1 = [];
+                        for (var i = 0; i < data.getcsatauditsoftwarechartdata.length; i++) {
+                            data1.push([data.getcsatauditsoftwarechartdata[i].ou_longname, data.getcsatauditsoftwarechartdata[i].device_name, data.getcsatauditsoftwarechartdata[i].ip, data.getcsatauditsoftwarechartdata[i].software, data.getcsatauditsoftwarechartdata[i].publisher, data.getcsatauditsoftwarechartdata[i].date, data.getcsatauditsoftwarechartdata[i].status]);
+                        }
+                        var otable = $("#tblprocesschart").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Software Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Software Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Software Name" }, { title: "Publisher" }, { title: "Installation Date" }, { title: "Status" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+
+                });
+            }
+            if (audit_type === "User") {
+                var url = '@Url.Content("~/csat_main_dashboard/GetCSATAuditUserchartdata?ip=")' + ip + '&system=' + device + '&ouid=' + ouid_audit + '&status=' + $('#processtitle').html();
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        document.getElementById('processheader').innerText = 'User Detail  [ Count :' + data.getcsataudituserchartdata.length + ' ] ';
+                        var dataclear = document.getElementById('tblprocesschart_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblprocesschart');
+                        var data1 = [];
+                        for (var i = 0; i < data.getcsataudituserchartdata.length; i++) {
+                            data1.push([data.getcsataudituserchartdata[i].ou_longname, data.getcsataudituserchartdata[i].device_name, data.getcsataudituserchartdata[i].ip, data.getcsataudituserchartdata[i].username, data.getcsataudituserchartdata[i].domain_name, data.getcsataudituserchartdata[i].status, data.getcsataudituserchartdata[i].description, data.getcsataudituserchartdata[i].usertype]);
+                        }
+                        var otable = $("#tblprocesschart").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "User Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "User Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "User Name" }, { title: "Domain Name" }, { title: "Status" }, { title: "Description" }, { title: "User Type" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    },
+                    error: function () {
+                        alert("something went to wrong!")
+                    }
+
+                });
+            }
+        }
+    }
+
+
+    function cleardata() {
+        var dataclear = document.getElementById('tbldataleakage_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tbldataleakage');
+
+        var dataclear = document.getElementById('tbldataleakage_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tbldataleakage');
+
+        var dataclear = document.getElementById('tbldataleakage_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tbldataleakage');
+
+        var dataclear = document.getElementById('tbldataleakage_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tbldataleakage_div').append("<table id='tbldataleakage' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tbldataleakage');
+
+        var dataclear = document.getElementById('tblpcconnectivity_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblpcconnectivity_div').append("<table id='tblpcconnectivity' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblpcconnectivity');
+
+        var dataclear = document.getElementById('tbllastpolltime_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tbllastpolltime_div').append("<table id='tbllastpolltime' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tbllastpolltime');
+        var dataclear = document.getElementById('changemgmt_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#changemgmt_div').append("<table id='changemgmt' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('changemgmt');
+
+        var dataclear = document.getElementById('tblprocesschart_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblprocesschart');
+        var dataclear = document.getElementById('tblprocesschart_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblprocesschart');
+        var dataclear = document.getElementById('tblprocesschart_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblprocesschart_div').append("<table id='tblprocesschart' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblprocesschart');
+
+        document.getElementById('pcheader').innerText = '';
+        document.getElementById('drpou').value = '-1';
+        document.getElementById('ip').value = '';
+        document.getElementById('system').value = '-1';
+        document.getElementById('dropou_linkage').value = '-1';
+        document.getElementById('ip_linkage').value = '';
+        document.getElementById('system_linkage').value = '-1';
+        //CAST Audit process_authorise_popup
+        document.getElementById('drpou_audit').value = '-1';
+        document.getElementById('ip_audit').value = '';
+        document.getElementById('system_audit').value = '-1';
+        //policy chart popup
+        var dataclear = document.getElementById('policy_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#policy_div').append("<table id='tblpolicymgmt' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblpolicymgmt');
+        document.getElementById('drpou_policy').value = '-1';
+        document.getElementById('ip_policy').value = '';
+        document.getElementById('system_policy').value = '-1';
+
+        document.getElementById("add_system_chk").checked = false;
+        document.getElementById('add_systemname').value = '-1';
+        $('#selectsys').show();
+        $('#inputsystemname').hide();
+
+        document.getElementById("add_system_chk1").checked = false;
+        document.getElementById('add_systemname1').value = '-1';
+        $('#selectsys1').show();
+        $('#inputsystemname1').hide();
+
+        document.getElementById("add_system_chk2").checked = false;
+        document.getElementById('add_systemname2').value = '-1';
+        $('#selectsys2').show();
+        $('#inputsystemname2').hide();
+
+        document.getElementById("add_system_chk3").checked = false;
+        document.getElementById('add_systemname3').value = '-1';
+        $('#selectsys3').show();
+        $('#inputsystemname3').hide();
+
+        document.getElementById("add_system_chk4").checked = false;
+        document.getElementById('add_systemname4').value = '-1';
+        $('#selectsys4').show();
+        $('#inputsystemname4').hide();
+
+        document.getElementById("add_system_chk5").checked = false;
+        document.getElementById('add_systemname5').value = '-1';
+        $('#selectsys5').show();
+        $('#inputsystemname5').hide();
+    }
+
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname2').hide();
+    $('#add_system_chk2').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys2').hide();
+            $('#inputsystemname2').show();
+        }
+        else {
+            $('#selectsys2').show();
+            $('#inputsystemname2').hide();
+            document.getElementById('add_systemname2').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname3').hide();
+    $('#add_system_chk3').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys3').hide();
+            $('#inputsystemname3').show();
+        }
+        else {
+            $('#selectsys3').show();
+            $('#inputsystemname3').hide();
+            document.getElementById('add_systemname3').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname4').hide();
+    $('#add_system_chk4').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys4').hide();
+            $('#inputsystemname4').show();
+        }
+        else {
+            $('#selectsys4').show();
+            $('#inputsystemname4').hide();
+            document.getElementById('add_systemname4').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname5').hide();
+    $('#add_system_chk5').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys5').hide();
+            $('#inputsystemname5').show();
+        }
+        else {
+            $('#selectsys5').show();
+            $('#inputsystemname5').hide();
+            document.getElementById('add_systemname5').value = "";
+        }
+    });
+</script>
+
+
+

@@ -1,0 +1,958 @@
+﻿@{
+    ViewData["Title"] = "Audit Trail Summary";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<!--date-time picker-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#count_up").click(function () {
+            $("#audit_form").toggle();
+
+        });
+    });
+    $(document).ready(function () {
+        $("#greport_up").click(function () {
+            $("#greport_form").toggle();
+
+        });
+    });
+
+    function Check() {
+        if (document.getElementById('CaregoryWise').checked) {
+            document.getElementById('system_view').style.display = 'none';
+            document.getElementById('category_view').style.display = 'block';
+        }
+        else {
+            document.getElementById('system_view').style.display = 'block';
+            document.getElementById('category_view').style.display = 'none';
+        }
+        if (document.getElementById('SystemWise').checked) {
+            document.getElementById('system_view').style.display = 'block';
+            document.getElementById('category_view').style.display = 'none';
+        }
+        else {
+            document.getElementById('system_view').style.display = 'none';
+            document.getElementById('category_view').style.display = 'block';
+        }
+    }
+    function Check1() {
+        if (document.getElementById('CaregoryWise').checked) {
+            document.getElementById('category_show').style.display = 'block';
+            document.getElementById('system_show').style.display = 'none';
+        }
+        else {
+            document.getElementById('system_show').style.display = 'block';
+            document.getElementById('category_show').style.display = 'none';
+        }
+        if (document.getElementById('SystemWise').checked) {
+            document.getElementById('system_show').style.display = 'block';
+            document.getElementById('category_show').style.display = 'none';
+        }
+        else {
+            document.getElementById('category_show').style.display = 'block';
+            document.getElementById('system_show').style.display = 'none';
+        }
+    }
+</script>
+
+<div class="row">
+
+    <!--side menu-->
+
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li> Audit Trail Summary  </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu end-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" name="frm_audittrail" id="frm_audittrail">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Branch/ Unit</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id='DrpOU'></select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 form_label">Date-Range</label>
+                                    <div class="col-xs-3">
+                                        <input type="text" name="datefilter" class="form-control" placeholder="DD/MM/YYYY - DD/MM/YYYY " id="date">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2">Type</label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="viewby" value="Category Wise" checked="checked" id="CaregoryWise" onclick="javascript:Check(),Check1(); "> Category Wise </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 col-md-1 col-lg-2" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="viewby" value="System Wise" id="SystemWise" onclick="javascript:Check(),Check1();"> System Wise </label>
+                                        </div>
+                                    </div>
+                                    @*<div class="pull-left col-xs-1" id="system_show" style="display:none">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="Funcaudittrail_syswise()">
+                                        </div>*@
+                                </div>
+
+                                <div id="category_show">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2 ">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type">
+                                                <option value="-1">Select Type</option>
+                                                <option value="type">Type</option>
+                                                <option value="subtype">Sub Type</option>
+                                                <option value="status">Status</option>
+                                                @*<option value="Total Count">Total Count</option>*@
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue" autocomplete="off">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" onclick="Funcaudittrail()">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="Funcaudittrail()">
+                                        </div>
+                                        <div class="pull-left col-xs-1" style="margin-left:18px;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="system_show" style="display:none">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">System Name</label>
+                                        <div class="col-xs-2" id="selectsys">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System Name" id="system1">
+                                                <option value='-1'>Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label" style="margin-left:-66px;">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="IP1" id="IP1">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="IP Address" id="IP">
+                                                    <option value='-1'>Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                        <input type="button" class="btn btn-primary" value="Show" onclick="Funcaudittrail_syswise()">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--form  content end-->
+        <!--audit trail report form end-->
+        <!--audit trail Datatable start-->
+        <div id="category_view">
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="tblaudittrail_div">
+                    <table id="tblaudittrail" class="table table-striped table-bordered " width="100%"></table>
+                </div>
+            </div>
+        </div>
+        <div id="system_view" style="display:none">
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="tblsyswise_div">
+                    <table id="tblsyswise" class="table table-striped table-bordered " width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+</div>
+
+<!-- audit Count  Data pop-up model box  Content-->
+<div class="modal fade" id="audit_count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Audit Trail Summary
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="count_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="audit_form" name="audit_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU1"></select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys1">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="system">
+                                                <option value="-1">Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname1">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip" id="ip">
+                                            @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip">
+                                                    <option value="-1">Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label for="nameField" class="col-xs-1 ">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type1">
+                                                <option value="-1">Select Type</option>
+                                                <option value="DeviceTimeStamp">TimeStamp</option>
+                                                @*<option value="UserName">User Name</option>*@
+                                                <option value="Type">Type</option>
+                                                <option value="SubType">Sub Type</option>
+                                                <option value="Message">Message</option>
+                                                <option value="Status">Status</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="searchvalue1" name="searchvalue1" autocomplete="off">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" onclick="Funcaudittrailsummaryfilter()">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="Funcaudittrailsummaryfilter()">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!--End form  content-->
+                    </div>
+                </div>
+                <!--Count System  Data   Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12" id="audittrailsummary_div">
+                        <table id="audittrailsummary" class="table table-striped table-bordered " width="100%"></table>
+                    </div>
+                </div>
+                <!--Count System  Data  Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End audit Count  pop-up model box Content -->
+<!-- audit Count System wise Data pop-up model box  Content-->
+<div class="modal fade" id="audit_count_syswise" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Audit Trail Summary
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="count_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="audit_form" name="audit_form">
+                                    @*<div class="form-group">
+                                            <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU2"></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                            <div class="col-xs-2" id="selectsys1">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="system2">
+                                                    <option value="-1">Select System Name</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-2" id="inputsystemname1">
+                                                <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                            </div>
+                                            <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                            <div class="col-xs-2">
+                                                <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip2" id="ip2">
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 ">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type2">
+                                                <option value="-1">Select Type</option>
+                                                <option value="DeviceTimeStamp">TimeStamp</option>
+                                                @*<option value="UserName">User Name</option>*@
+                                                <option value="Type">Type</option>
+                                                <option value="SubType">Sub Type</option>
+                                                <option value="Message">Message</option>
+                                                <option value="Status">Status</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="searchvalue2" name="searchvalue2" autocomplete="off">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" onclick="Funcaudittrailsummaryfilter_syswise()">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="Funcaudittrailsummaryfilter_syswise()">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12" id="audittrailsummary_syswise_div">
+                        <table id="audittrailsummary_syswise" class="table table-striped table-bordered " width="100%"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End audit Count  pop-up model box Content -->
+<script>
+
+    $(document).ready(function () {
+        validateSingleForm("#frm_audittrail");
+        validateSingleForm("#audit_form");
+    });
+
+</script>
+<script>
+
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+
+</script>
+
+<script>
+    //function dateselect() {
+    var startdate = "";
+    var enddate = "";
+    $('input[name="datefilter"]').val('');
+    $(function () {
+
+        $('input[name="datefilter"]').daterangepicker({
+            autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+            locale: {
+                format: 'DD/MM/YYYY',
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+            //  debugger;
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            startdate = picker.startDate.format('DD/MM/YYYY');
+            enddate = picker.endDate.format('DD/MM/YYYY');
+
+        });
+
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $(window).bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+    //}
+</script>
+
+<script>
+
+    var ouidvalue = "";
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+	    //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+	            var SetData = $('#DrpOU');
+                jQuery('#DrpOU').html('');
+                var SetData1 = $('#DrpOU1');
+                jQuery('#DrpOU1').html('');
+                var SetData2 = $('#DrpOU2');
+                jQuery('#DrpOU2').html('');
+			    var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+			    for (var i = 0; i < data.ou.length; i++) {
+			        oudata+="<option value='"+ data.ou[i].ouid +"'>"+ data.ou[i].ouname +"</option>";
+                }
+                SetData.append(oudata);
+                SetData1.append(oudata);
+                SetData2.append(oudata);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+    $("#DrpOU").change(function () {
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#system1');
+				 //var SetDataip = $('#ip1');
+			  jQuery('#system1').html('');
+			   //jQuery('#ip1').html('');
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+			     //devicedata+="<option value='"+ data.systemip[i].device_id +"'>"+ data.systemip[i].device_name +"</option>";
+				 devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				 // ipdata+="<option value='"+ data.systemip[i].device_id +"'>"+ data.systemip[i].ip +"</option>";
+                    //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+    });
+    $("#DrpOU1").change(function () {
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#system');
+				 //var SetDataip = $('#ip');
+			  jQuery('#system').html('');
+			   //jQuery('#ip').html('');
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+			     //devicedata+="<option value='"+ data.systemip[i].device_id +"'>"+ data.systemip[i].device_name +"</option>";
+				 devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+				 // ipdata+="<option value='"+ data.systemip[i].device_id +"'>"+ data.systemip[i].ip +"</option>";
+                    //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+    });
+    $("#DrpOU2").change(function () {
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetDatadevice = $('#system2');
+                jQuery('#system2').html('');
+                var devicedata = "<option value='-1'>Select System Name</option>";
+                for (var i = 0; i < data.systemip.length; i++) {
+                    devicedata += "<option value='" + data.systemip[i].device_name + "'>" + data.systemip[i].device_name + "</option>";
+                }
+                SetDatadevice.append(devicedata);
+            }
+        });
+    });
+
+    $("#DrpOU").change(function () {
+    //  debugger;
+        ouidvalue = this.value;
+    });
+    var ouidvalue1 = "";
+    $("#DrpOU1").change(function () {
+        //  debugger;
+        ouidvalue1 = this.value;
+    });
+    var ouidvalue2 = "";
+    $("#DrpOU2").change(function () {
+        //  debugger;
+        ouidvalue2 = this.value;
+    });
+    var systemvalue = "";
+    $("#system").change(function () {
+        systemvalue = this.value;
+    });
+    var systemvalue2 = "";
+    $("#system2").change(function () {
+        systemvalue2 = this.value;
+    });
+    //var ipvalue = "";
+    //$("#ip").change(function () {
+    //    ipvalue = this.value;
+    //});
+
+    var type = "";
+    $("#type").change(function () {
+        //debugger;
+        type = this.value;
+    });
+    var type1 = "";
+    $("#type1").change(function () {
+        //debugger;
+        type1 = this.value;
+    });
+    var type2 = "";
+    $("#type2").change(function () {
+        //debugger;
+        type2 = this.value;
+    });
+</script>
+
+<script>
+    var startdate = "";
+    var enddate = "";
+    var type = "";
+    var subtype = "";
+    var status = "";
+    var deviceidall = "";
+    var ValueSerach = "";
+    var devicename = "";
+    var ipaddress = "";
+    var utable;
+    function Funcaudittrail() {
+        var $valid = $('#frm_audittrail').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var audit_type = $("input[type='radio'][name='viewby']:checked").val();
+            startdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var e = document.getElementById("searchvalue");
+            ValueSerach = e.value;
+            var url = '@Url.Content("~/csat_report/Getaudittrail?startdate=")' + startdate + '&enddate=' + enddate + '&ouid=' + ouidvalue + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach + '&audittype=' + audit_type;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var agent_divclear = document.getElementById('tblaudittrail_div');
+                    agent_divclear.innerHTML = '&nbsp;';
+                    $('#tblaudittrail_div').append("<table id='tblaudittrail' class='table table-striped table-bordered' width='100%'></table><div class='col-xs-11 pull-left'><input type='button' class='btn btn-primary' style='margin-bottom:15px;margin-top: -20px; margin-left: -8px;' value='Details Report' name='Details Report' id='audit_trail_summary'/></div>");
+                    utable = document.getElementById('tblaudittrail');
+                    var data1 = [];
+                    for (var i = 0; i < data.getaudittraildata.length; i++) {
+                        var var_count = "<div noExport'><a href='' data-toggle='modal' data-target='#audit_count' onclick=Funcaudittrailsummary('" + startdate + "','" + enddate + "'," + data.getaudittraildata[i].category_type + ",'" + encodeURIComponent(data.getaudittraildata[i].category_subtype) + "','" + encodeURIComponent(data.getaudittraildata[i].category_status) + "','" + ouidvalue + "') >" + data.getaudittraildata[i].total + "</a></div>";
+                        data1.push([data.getaudittraildata[i].category_type + "," + encodeURIComponent(data.getaudittraildata[i].category_subtype) + "," + encodeURIComponent(data.getaudittraildata[i].category_status), data.getaudittraildata[i].type, data.getaudittraildata[i].subtype, data.getaudittraildata[i].status, var_count]);
+                    }
+                    utable = $("#tblaudittrail").DataTable({
+                        data: data1, scrollX: !0, searching: !1,
+                        'columnDefs': [{ 'targets': 0, 'checkboxes': { 'selectRow': true } }, { orderable: false, targets: 1 }], 'select': { 'style': 'multi' }, 'order': [[2, 'asc']],
+                        columns: [{ title: "", width: '10px' }, { title: "Type", width: '90px' }, { title: "Sub Type", width: '50px' }, { title: "Status", width: '60px' }, { title: "Total Count", width: '170px' }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                    $('#audit_trail_summary').on('click', function (e) {
+                        //debugger;
+                        var form = this;
+                        var rows_selected = utable.column(0).checkboxes.selected();
+                        $.each(rows_selected, function (index) {
+                            deviceidall = ""; type2 = ""; subtype2 = ""; status2 = "";
+                            for (var i = 0; i < rows_selected.length; i++) { deviceidall = ""; deviceidall += rows_selected[i]; var val_arr = []; val_arr = deviceidall.split(','); type2 += "," + val_arr[0]; subtype2 += "," + val_arr[1]; status2 += "," + val_arr[2]; } if (type2.length > 0) type = type2.substring(1); if (subtype2.length > 0) subtype = subtype2.substring(1); if (status2.length > 0) status = status2.substring(1); Funcaudittrailsummary(startdate, enddate, type, subtype, status, ouidvalue)
+                            return false;
+                        });
+                        deviceidall == ""; if (deviceidall == "") { Funcaudittrailsummary(startdate, enddate, type, subtype, status, ouidvalue) }
+                    });
+                }
+
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    };
+    var vtable;
+    function Funcaudittrail_syswise() {
+        var $valid = $('#frm_audittrail').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var audit_type = $("input[type='radio'][name='viewby']:checked").val();
+            startdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var ipvalue = document.getElementById('IP1').value;
+            //var systemvalue = document.getElementById('system1').value;
+            var systemvalue = document.getElementById('add_systemname').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system1").value;
+            }
+
+            ValueSerach = "";
+            var url = '@Url.Content("~/csat_report/Getaudittrail_syswise?startdate=")' + startdate + '&enddate=' + enddate + '&ouid=' + ouidvalue + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach + '&audittype=' + audit_type + '&system=' + systemvalue + '&ip=' + ipvalue;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var agent_divclear = document.getElementById('tblsyswise_div');
+                    agent_divclear.innerHTML = '&nbsp;';
+                    $('#tblsyswise_div').append("<table id='tblsyswise' class='table table-striped table-bordered' width='100%'></table><div class='col-xs-11 pull-left'><input type='button' class='btn btn-primary' style='margin-bottom:15px;margin-top: -20px; margin-left: -8px;' value='Details Report' name='Details Report' id='audit_trail_summary_syswise'/></div>");
+                    vtable = document.getElementById('tblsyswise');
+                    var data1 = [];
+                    for (var i = 0; i < data.getaudittraildata.length; i++) {
+                        var var_count = "<div noExport'><a href='' data-toggle='modal' data-target='#audit_count_syswise' onclick=Funcaudittrailsummary_syswise('" + startdate + "','" + enddate + "','" + data.getaudittraildata[i].device_id + "','" + ouidvalue + "') >" + data.getaudittraildata[i].total + "</a></div>";
+                        data1.push([data.getaudittraildata[i].device_id, encodeURIComponent(data.getaudittraildata[i].device_name), encodeURIComponent(data.getaudittraildata[i].ip), var_count]);
+                    }
+                    vtable = $("#tblsyswise").DataTable({
+                        data: data1, scrollX: !0, searching: !1,
+                        'columnDefs': [{ 'targets': 0, 'checkboxes': { 'selectRow': true } }, { orderable: false, targets: 1 }], 'select': { 'style': 'multi' }, 'order': [[2, 'asc']],
+                        columns: [{ title: "", width: '10px' }, { title: "System Name", width: '90px' }, { title: "IP Address", width: '50px' }, { title: "Total Count", width: '170px' }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                    $('#audit_trail_summary_syswise').on('click', function (e) {
+                        var form = this;
+                        deviceidall = "";
+                        var rows_selected = vtable.column(0).checkboxes.selected();
+                        $.each(rows_selected, function (index) {
+                            for (var i = 0; i < rows_selected.length; i++) { deviceidall += "," + rows_selected[i]; } if (deviceidall.length > 0) deviceidall = deviceidall.substring(1); Funcaudittrailsummary_syswise(startdate, enddate, deviceidall, ouidvalue)
+                            return false;
+                        });
+                        deviceidall == ""; if (deviceidall == "") { Funcaudittrailsummary_syswise(startdate, enddate, deviceidall, ouidvalue) }
+                    });
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    };
+
+   // Count Display
+    function Funcaudittrailsummary(startdate, enddate, type, subtype, status, ouidvalue) {
+        var $valid = $('#audit_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            if (type != "" || subtype != "" || status != "") {
+                //debugger;
+                $('#audit_count').modal('show');
+                var url = '@Url.Content("~/csat_report/Getaudittrailsummary?startdate=")' + startdate + '&enddate=' + enddate + '&ouid=' + ouidvalue + '&type=' + type + '&subtype=' + subtype + '&status=' + status;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        //debugger;
+                        var dataclear = document.getElementById('audittrailsummary_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#audittrailsummary_div').append("<table id='audittrailsummary' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('audittrailsummary');
+                        var data1 = [];
+                        for (var i = 0; i < data.getaudittrailsummarydata.length; i++) {
+                            data1.push([data.getaudittrailsummarydata[i].ouName, data.getaudittrailsummarydata[i].serverTime, data.getaudittrailsummarydata[i].deviceTimeStamp, data.getaudittrailsummarydata[i].deviceName, data.getaudittrailsummarydata[i].ipAddress, data.getaudittrailsummarydata[i].type, data.getaudittrailsummarydata[i].subType, data.getaudittrailsummarydata[i].message, data.getaudittrailsummarydata[i].status]);
+                        }
+                        var otable = $("#audittrailsummary").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Audit Trail Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Audit Trail Summary", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" },{ title: "Server TimeStamp" }, { title: "Client TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Type" }, { title: "Sub Type" }, { title: "Message" }, { title: "Status" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    }
+
+                });
+
+            }
+            if (type == "" || subtype == "" || status == "") {
+                alert("Select any one option !");
+                $('#audit_count').modal('hide');
+            }
+        }
+    }
+    function Funcaudittrailsummary_syswise(startdate, enddate, deviceidall, ouidvalue) {
+        var $valid = $('#audit_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //debugger;
+            if (deviceidall != "") {
+                //debugger;
+                $('#audit_count_syswise').modal('show');
+                var url = '@Url.Content("~/csat_report/Getaudittrailsummary_syswise?startdate=")' + startdate + '&enddate=' + enddate + '&ouid=' + ouidvalue + '&device_ids=' + deviceidall;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (data) {
+                        //debugger;
+                        var dataclear = document.getElementById('audittrailsummary_syswise_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#audittrailsummary_syswise_div').append("<table id='audittrailsummary_syswise' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('audittrailsummary_syswise');
+                        var data1 = [];
+                        for (var i = 0; i < data.getaudittrailsummary_syswisedata.length; i++) {
+                            data1.push([data.getaudittrailsummary_syswisedata[i].ouName, data.getaudittrailsummary_syswisedata[i].serverTime, data.getaudittrailsummary_syswisedata[i].deviceTimeStamp, data.getaudittrailsummary_syswisedata[i].deviceName, data.getaudittrailsummary_syswisedata[i].ipAddress, data.getaudittrailsummary_syswisedata[i].type, data.getaudittrailsummary_syswisedata[i].subType, data.getaudittrailsummary_syswisedata[i].message, data.getaudittrailsummary_syswisedata[i].status]);
+                        }
+                        var otable = $("#audittrailsummary_syswise").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Audit Trail Report_syswise_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Audit Trail Summary", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" },{ title: "Server TimeStamp" }, { title: "Client TimeStamp" },{ title: "System Name" }, { title: "IP Address" }, { title: "Type" }, { title: "Sub Type" }, { title: "Message" }, { title: "Status" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    }
+                });
+            }
+            if (deviceidall == "") {
+                alert("Select any one option !");
+                $('#audit_count_syswise').modal('hide');
+            }
+        }
+    }
+
+    var ValueSerach1 = "";
+    // Count display filter
+    function Funcaudittrailsummaryfilter() {
+        var $valid = $('#audit_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            ipvalue = document.getElementById("ip").value;
+            var e = document.getElementById("searchvalue1");
+            ValueSerach1 = e.value;
+            var systemvalue = document.getElementById('add_systemname1').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system").value;
+            }
+            var url = '@Url.Content("~/csat_report/Getaudittrailsummaryfilter?device=")' + systemvalue + '&ip=' + ipvalue + '&FieldSerach=' + type1 + '&ValueSerach=' + ValueSerach1;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('audittrailsummary_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#audittrailsummary_div').append("<table id='audittrailsummary' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('audittrailsummary');
+                    var data1 = [];
+                    for (var i = 0; i < data.getaudittrailsummarydata.length; i++) {
+                        data1.push([data.getaudittrailsummarydata[i].ouName,data.getaudittrailsummarydata[i].serverTime, data.getaudittrailsummarydata[i].deviceTimeStamp, data.getaudittrailsummarydata[i].deviceName, data.getaudittrailsummarydata[i].ipAddress, data.getaudittrailsummarydata[i].type, data.getaudittrailsummarydata[i].subType, data.getaudittrailsummarydata[i].message, data.getaudittrailsummarydata[i].status]);
+                    }
+                    var otable = $("#audittrailsummary").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Audit Trail Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Audit Trail Summary", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" }, { title: "Server TimeStamp" }, { title: "Client TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Type" }, { title: "Sub Type" }, { title: "Message" }, { title: "Status" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+
+            });
+        }
+    }
+    function Funcaudittrailsummaryfilter_syswise() {
+        alert(1);
+        var $valid = $('#audit_form').valid();
+        alert($valid);
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            //ipvalue = document.getElementById("ip2").value;
+            var e = document.getElementById("searchvalue2");
+            ValueSerach1 = e.value;
+            //var systemvalue = document.getElementById('add_systemname1').value;
+            //if (systemvalue == "") {
+            //    systemvalue = document.getElementById("system2").value;
+            //}
+            var systemvalue = null;
+            var ipvalue = null;
+            var url = '@Url.Content("~/csat_report/Getaudittrailsummaryfilter_syswise?device=")' + systemvalue + '&ip=' + ipvalue + '&FieldSerach=' + type2 + '&ValueSerach=' + ValueSerach1;
+            alert(url);
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    try {
+
+
+                    var dataclear = document.getElementById('audittrailsummary_syswise_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#audittrailsummary_syswise_div').append("<table id='audittrailsummary_syswise' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('audittrailsummary_syswise');
+                    var data1 = [];
+                    for (var i = 0; i < data.getaudittrailsummary_syswisedata.length; i++) {
+                        data1.push([data.getaudittrailsummary_syswisedata[i].serverTime, data.getaudittrailsummary_syswisedata[i].deviceTimeStamp, data.getaudittrailsummary_syswisedata[i].ouName, data.getaudittrailsummary_syswisedata[i].deviceName, data.getaudittrailsummary_syswisedata[i].ipAddress, data.getaudittrailsummary_syswisedata[i].type, data.getaudittrailsummary_syswisedata[i].subType, data.getaudittrailsummary_syswisedata[i].message, data.getaudittrailsummary_syswisedata[i].status]);
+                    }
+                    var otable = $("#audittrailsummary_syswise").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Audit Trail Report_syswise_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Audit Trail Summary", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Server TimeStamp" }, { title: "Client TimeStamp" }, { title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Type" }, { title: "Sub Type" }, { title: "Message" }, { title: "Status" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    } catch (e) {
+
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+<script>
+    function cleardata() {
+        $('#audittrailsummary').html('');
+        document.getElementById("system").value = '-1';
+        document.getElementById("ip").value = '';
+        document.getElementById("DrpOU1").value = '-1';
+        document.getElementById("type1").value = '-1';
+        document.getElementById("searchvalue1").value = "";
+        systemvalue = "";
+        document.getElementById("searchvalue2").value = "";
+        document.getElementById("add_systemname1").value = "";
+        document.getElementById("add_system_chk1").checked = false;
+        document.getElementById("add_system_chk").checked = false;
+        
+        $('#selectsys').show();
+        $('#inputsystemname').hide();
+
+        $('#selectsys1').show();
+        $('#inputsystemname1').hide();
+        ipvalue = "";
+        $('#audittrailsummary_syswise').html('');
+        document.getElementById("system2").value = '-1';
+        document.getElementById("ip2").value = '';
+        document.getElementById("DrpOU2").value = '-1';
+        document.getElementById("type2").value = '-1';
+        document.getElementById("searchvalue2").value = "";
+    }
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>

@@ -1,0 +1,195 @@
+﻿@*@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;*@
+@model OwnYITCSAT.Models.SoftAuth;
+
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "setting_software_authentication";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+
+<body onload="DataBind()">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Software Authentication Detail</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <!--BackSide Generate white form color-->
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;display:none">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--BackSide Generate white form over-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_setting_sw_auth" name="frm_setting_sw_auth">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 form_label">Software Name</label>
+                                    <div class="col-xs-4">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" placeholder="Search" id="txtsearchSW" name="txtsearchSW">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default " type="button" onclick="DataBind()">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--Software Authentication Detail Datatable start-->
+                </div>
+            </div>
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content">
+                    <div class="table-responsive" id="div_software_main_data">
+                    </div>
+                </div>
+            </div>
+            <!--Software Authentication Detail Datatable End-->
+
+        </div>
+        <div class="space_bottom">
+            &nbsp;
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_setting_sw_auth");
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.software_authentication').DataTable({
+            paging: true,
+            order: [],
+            columnDefs: [{ orderable: false }],
+            searching: false,
+            info: false,
+            responsive: false,
+        });
+        $(".table").css({ "width": "100%" });
+        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+    });
+
+</script>
+<script>
+
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+    $.get(null, null, DataBind);
+
+    function DataBind() {        
+        var $valid = $('#frm_setting_sw_auth').valid();        
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var searchvalue = document.getElementById("txtsearchSW").value;
+            var url1 = '@Url.Content("~/csat_settings_page/csat_software_authentication_data?strsearch=")' + searchvalue;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (data) {
+
+                    var SetSoftwareData = $('#div_software_main_data');
+                    jQuery('#div_software_main_data').html('');
+                    var csat_software_auth_data = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm-5'>Software Name</th><th class='col-sm-3'>Software Description</th><th data-orderable='false' class='col-sm-1'>Manage</th></tr></thead><tbody>";
+                    for (var i = 0; i < data.csat_software_auth_data.length; i++) {
+                        csat_software_auth_data += "<tr>";
+                        csat_software_auth_data += "<td class='col-sm-5'>" + data.csat_software_auth_data[i].software + "</td>";
+                        csat_software_auth_data += "<td class='col-sm-3'>" + data.csat_software_auth_data[i].publisher + "</td>";
+                        csat_software_auth_data += "<td class='col-sm-1 icon_center' data-orderable='false'><div class='dropdown'><i class='dropdown-toggle glyphicon glyphicon-pencil manage_icon' type='button' data-toggle='dropdown'></i>";
+                        csat_software_auth_data += "<ul class='dropdown-menu' style='min-width: 120px;'><li style='text-align: left;'><a href='#' onclick=SoftwareAction('','" + encodeURIComponent(data.csat_software_auth_data[i].software) + "','" + encodeURIComponent(data.csat_software_auth_data[i].software_guid) + "','authorise')>Authorise</a></li>";
+                        csat_software_auth_data += "<li style='text-align: left;'><a href='#' onclick=SoftwareAction('','" + encodeURIComponent(data.csat_software_auth_data[i].software) + "','" + encodeURIComponent(data.csat_software_auth_data[i].software_guid) + "','UnAuthorise')>Unauthorise</a></li></ul></div></td>";
+                        csat_software_auth_data += "</tr >";
+                    }
+                    csat_software_auth_data += "</tbody></table>";
+                    SetSoftwareData.append(csat_software_auth_data);
+                    datatable_paging();
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    }
+    var software_selected_value = "";
+    var software_not_selected = "";
+      // new Software unauth//auth code
+    function SoftwareAction(Id, name, guid, type) {
+         if (confirm("Are you sure want to " + type+"?")) {
+
+             var url = '@Url.Content("~/csat_settings_page/SoftwareAction?software=")' + decodeURIComponent(name) + '&guid=' + guid + '&ActionType=' + type;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+
+                window.location.href = '@Url.Content("~/csat_settings_page/setting_software_authentication")';
+            }
+        });
+        } else {
+        }
+        document.getElementById("txtsearchSW").value = '';
+        DataBind();
+    }
+</script>

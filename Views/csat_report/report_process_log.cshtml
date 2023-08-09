@@ -1,0 +1,466 @@
+﻿
+@{
+    ViewData["Title"] = "report_process_log";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script>
+    var startdate = "";
+    var enddate = "";
+    $(function () {
+        $('input[name="datetime1"]').daterangepicker({
+            autoUpdateInput: true,
+            timePicker: true,
+            timePickerSeconds: true,
+            timePicker24Hour: true,
+            startDate: moment().add(-24, 'hour'),
+            endDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY hh:mm:ss '
+            }
+        });
+
+        $('input[name="datetime1"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY hh:mm:ss') + ' - ' + picker.endDate.format('DD/MM/YYYY hh:mm:ss'));
+            startdate = picker.startDate.format('DD/MM/YYYY hh:mm A');
+            enddate = picker.endDate.format('DD/MM/YYYY hh:mm A');
+        });
+
+        $('input[name="datetime1"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        $(window).bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+    });
+</script>
+
+<div class="row">
+   
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Process Log </li>
+                </ul>
+            </div>
+        </div>
+   
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <!--BackSide Generate white form color-->
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--BackSide Generate white form over-->
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_processlog_report" id="frm_processlog_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpdevice">
+                                        <option value="-1">Select System Name</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-24px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip" id="drpip">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip">
+                <option value="-1">Select IP Address</option>
+
+            </select>*@
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="datetime1" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " id="dateprocesslog">
+                                </div>
+
+                                <label for="nameField" class="col-xs-1 form_label">Search</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type">
+                                        @*<option value="loginuser">Login User</option>*@
+                                        <option value="process">Process</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="Funcprocesslog()">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">View By</label>
+                                <div class="col-xs-2 col-md-1 col-lg-2" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="viewby" value="Authorise" checked="checked" id="auth"> Authorise </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 col-md-1 col-lg-2" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="viewby" value="Unauthorise" id="unauth"> Unauthorise </label>
+                                    </div>
+                                </div>
+                                <div class="pull-left col-xs-3">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="Funcprocesslog()">
+                                    <input type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_processlog" style="display:none" value="Delete Record" id="deleteprocess">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--process log report Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divprocesslog_div">
+                <table id="divprocesslog" class="table table-striped table-bordered display nowrap" width="100%"></table>
+            </div>
+        </div>
+    </div>
+    <div class="space_bottom">
+        &nbsp;
+    </div>
+</div>
+  
+    <div class="modal fade" id="delete_processlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this Record?</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deleteprocesslog()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_processlog_report");
+    });
+</script>
+    <script>
+     var oudata = "";
+     $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+        function DataBind(data) {
+            var tmpOUID = "";
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+      
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou');
+                jQuery('#drpou').html('');
+                oudata = "";
+                for (var i = 0; i < data.ou.length; i++) {
+                    //debugger;
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    if (i == 0)
+                        tmpOUID = data.ou[i].ouid;
+                }
+                SetData.append(oudata);
+                getsystemlist(tmpOUID);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+    var ouidvalue='';
+     $("#drpou").change(function () {
+         ouidvalue = this.value;
+         getsystemlist(ouidvalue);
+     });
+        function getsystemlist(ouidvalue){       
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouidvalue;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+                var SetDatadevice = $('#drpdevice');
+                //var SetDataip = $('#drpip');
+                    jQuery('#drpdevice').html('');
+                    //jQuery('#drpip').html('');
+                var devicedata = "<option value='-1'>Select System Name</option>";
+                //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+
+                for (var i = 0; i < data.systemip.length; i++) {
+                    devicedata += "<option value='" + data.systemip[i].device_id +"'>"+ data.systemip[i].device_name +"</option>";
+                    //ipdata += "<option value='" + data.systemip[i].device_id +"'>"+ data.systemip[i].ip +"</option>";
+                    }
+
+                    SetDatadevice.append(devicedata);
+                    //SetDataip.append(ipdata);
+
+           }
+
+        });
+
+        }
+    var ipvalue;
+    var systemvalue;
+    var ValueSerach;
+    var type;
+    var viewby;
+        function Funcprocesslog() {
+            var $valid = $('#frm_processlog_report').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            } else {
+                $("#overlay").show();
+                $("#overlay").fadeIn(300);
+                // debugger;
+                startdate = $('#dateprocesslog').data('daterangepicker').startDate.format('DD/MM/YYYY hh:mm A');
+                enddate = $('#dateprocesslog').data('daterangepicker').endDate.format('DD/MM/YYYY hh:mm A');
+
+                ipvalue = document.getElementById("drpip").value;
+                //if (ipvalue != "")
+                //    ipvalue = $("#drpip option:selected").text();
+
+                //systemvalue = document.getElementById("drpdevice").value;
+                //if (systemvalue != "-1")
+                //    systemvalue = $("#drpdevice option:selected").text();
+
+                var systemvalue = document.getElementById('add_systemname').value;
+                if (systemvalue == "") {
+                    systemvalue = document.getElementById("drpdevice").value;
+                }
+
+                ValueSerach = document.getElementById("searchvalue").value;
+                type = document.getElementById("type").value;
+                viewby = $('input[name=viewby]:checked').val();
+                var url = '@Url.Content("~/csat_report/ShowProcesslog?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&startdate=' + startdate + '&enddate=' + enddate + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach + '&viewby=' + viewby;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (response) {
+                        //debugger;
+                        //3
+                        //$(document).ready(function () {
+                        //    $('#divprocesslog').DataTable({
+                        //        data: response.data,
+                        //        columns: [
+                        //            {
+                        //                "data": "ou_longname",
+                        //                "title": "Branch/ Unit"
+                        //            },
+                        //            {
+                        //                "data": "device_name",
+                        //                "title": "System Name",
+                        //            },
+                        //            {
+                        //                "data": "ip",
+                        //                "title": "IP Address"
+                        //            },
+                        //            {
+                        //                "data": "process",
+                        //                "title": "Process",
+                        //            },
+                        //            {
+                        //                "data": "starttime",
+                        //                "title": "Start time"
+                        //            },
+                        //            {
+                        //                "data": "endtime",
+                        //                "title": "End time",
+                        //            },
+                        //            {
+                        //                "data": "duration",
+                        //                "title": "Duration"
+                        //            },
+                        //        ]
+                        //    });
+                        //});
+
+
+                        //2
+                        if (response.data.length > 0)
+                            $("#deleteprocess").show();
+                        var dataclear = document.getElementById('divprocesslog_div');
+                        dataclear.innerHTML = '&nbsp;';
+                        $('#divprocesslog_div').append("<table id='divprocesslog' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('divprocesslog');
+                        $('#divprocesslog').DataTable({
+                            serverSide: true,
+                            searching: false,
+                            type: 'POST',
+                            datatype: 'json',
+                            iDisplayLength: 100,
+                            ajax: function (data, callback, settings) {
+                                //debugger;                                                                 
+                                var out = [];
+                                try {
+                                    for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
+                                        out.push([response.data[i].ou_longname, response.data[i].device_name, response.data[i].ip, response.data[i].process, response.data[i].starttime, response.data[i].endtime, response.data[i].duration]);
+                                    }
+                                } catch (ex) { }
+                                setTimeout(function () {
+                                    callback({
+                                        draw: data.draw,
+                                        data: out,
+                                        recordsTotal: response.recordsTotal,
+                                        recordsFiltered: response.recordsFiltered
+                                    });
+                                }, 50);
+                            },
+                            dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Log_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Log Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columnDefs: [{ type: 'ip-address', targets: 2 }],
+                            columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Process" }, { title: "Start time" }, { title: "End time" }, { title: "Duration" }],
+                            scrollY: 400,
+                            scrollX: true,
+                            scroller: true,
+                            scroller: {
+                                loadingIndicator: true,
+                            }
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+
+                        //1
+                        //var dataclear = document.getElementById('divprocesslog_div');
+                        //dataclear.innerHTML = '&nbsp;';
+                        //$('#divprocesslog_div').append("<table id='divprocesslog' class='table table-striped table-bordered' width='100%'></table>");
+                        //otable = document.getElementById('divprocesslog');
+                        //var data1 = [];
+                        //for (var i = 0; i < data.processlogdata.length; i++) {
+                        //    data1.push([data.processlogdata[i].ou_longname, data.processlogdata[i].device_name, data.processlogdata[i].ip, data.processlogdata[i].process, data.processlogdata[i].starttime, data.processlogdata[i].endtime, data.processlogdata[i].duration]);
+                        //}
+                        //var otable = $("#divprocesslog").DataTable({
+                        //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Process Log_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Process Log Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        //    columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Process" }, { title: "Start time" }, { title: "End time" }, { title: "Duration" }]
+                        //});    
+                        //if (data.processlogdata.length > 0)
+                        //    $("#deleteprocess").show();             
+                    }
+                }).done(function () {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                    }, 500);
+                });
+            }
+
+    }
+
+    function deleteprocesslog() {
+        startdate = $('#dateprocesslog').data('daterangepicker').startDate.format('DD/MM/YYYY hh:mm A');
+        enddate = $('#dateprocesslog').data('daterangepicker').endDate.format('DD/MM/YYYY hh:mm A');
+        ipvalue = document.getElementById("drpip").value;
+        systemvalue = document.getElementById("drpdevice").value;
+        ValueSerach = document.getElementById("searchvalue").value;
+        type = document.getElementById("type").value;
+        var url1= '@Url.Content("~/csat_report/Delete_Processlog?IP=")' + ipvalue + '&Device=' + systemvalue +  '&startdate=' + startdate + '&enddate=' + enddate + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach ;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_processlog').modal('hide');
+                Funcprocesslog();
+			}
+			});
+
+	}
+	$('#btndeletecancle').on('click',function(){
+        $('#delete_processlog').modal('hide');
+	});
+
+
+
+    </script>
+    <script>
+        //checkbox input hide & show
+        $('#inputsystemname').hide();
+        $('#add_system_chk').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#selectsys').hide();
+                $('#inputsystemname').show();
+            }
+            else {
+                $('#selectsys').show();
+                $('#inputsystemname').hide();
+                document.getElementById('add_systemname').value = "";
+            }
+        });
+    </script>

@@ -1,0 +1,384 @@
+﻿
+@{
+    ViewData["Title"] = "agent_report";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script>
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear() + "-" + (month) + "-" + (day);
+</script>
+<body onload="fn_loading()">
+</body>
+<div class="row">
+    <!--side menu-->
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li> Agent Information  </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu end-->
+    @*<div class="row">*@
+
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_report_agent_infrm" id="frm_report_agent_infrm">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU">
+                                        @*<option>Root</option>
+                                            <option value="01">Root >> Location</option>
+                                            <option value="02">Root >> Location >> Department</option>*@
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="system">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="ip">
+                                            <option value="-1">Select IP Address</option>
+                                        </select>*@
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="ip" id="ip">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">OS Name</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="os name" id="os">
+
+                                        <option value="-1">Select OS</option>
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 ">Search</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type">
+                                        <option>Select Type</option>
+                                        <option value="mac">MAC</option>
+                                        <option value="login_user">Login User</option>
+                                        <option value="client_version">Client Version</option>
+                                        @*<option value="ng.os">Type</option>*@
+
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue" autocomplete="off">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="Funcagentifo()">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2" style="white-space:nowrap">Last Poll Time Before</label>
+                                <div class="col-xs-1" style="margin-left: -30px;">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="sorting" id="lastpolldays">
+                                        <option value="-1">Day</option>
+                                        <option value='01'>01</option>
+                                        <option value='02'>02</option>
+                                        <option value='03'>03</option>
+                                        <option value='04'>04</option>
+                                        <option value='05'>05</option>
+                                        <option value='06'>06</option>
+                                        <option value='07'>07</option>
+                                        <option value='15'>15</option>
+                                        <option value='30'>30</option>
+                                        <option value='31'> above</option>
+                                    </select>
+                                </div>
+
+                                <label for="nameField" class="col-xs-1 form_label">Agent Status</label>
+                                <div class="col-xs-2 col-md-1 col-lg-1" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input name="status" value="all" type="radio"> All </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-1 col-md-1 col-lg-1" style="padding-top:2px;margin-left: -40px;">
+                                    <div class="radio">
+                                        <label> <input name="status" value="1" type="radio"> Active </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 col-md-1 col-lg-1" style="padding-top:2px;margin-left:-21px;">
+                                    <div class="radio">
+                                        <label> <input name="status" value="3" type="radio"> Inactive </label>
+                                    </div>
+                                </div>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" id="btnshowreport" onclick="Funcagentifo()">
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <!--form  content end-->
+        <!--agent report form end-->
+        <!--agent report Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="agent_divclear">
+                <table id="tblagentinfo" class="table table-striped table-bordered display nowrap" width="100%"></table>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+<script>
+        function fn_loading() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        }
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU');
+                jQuery('#DrpOU').html('');
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+
+                // OS fill
+                var SetOSData = $('#os');
+                jQuery('#os').html('');
+
+                var OSdata = "<option value='-1'>Select OS</option>";
+                for (var i = 0; i < data.os.length; i++) {
+                    OSdata += "<option>" + data.os[i].parameter_value + "</option>";
+                }
+                SetOSData.append(OSdata);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+	}
+</script>
+<script>
+var ouidvalue="";
+var systemvalue="";
+    var ipvalue = "";
+    var osvalue = "";
+    var agentstatus = "";
+    var lastpolldays = "";
+$("#DrpOU").change(function () {
+     //  debugger;
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+				 var SetDatadevice = $('#system');
+				 //var SetDataip = $('#ip');
+			  jQuery('#system').html('');
+                //jQuery('#ip').html('');
+
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+				 devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+                    //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+						}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+});
+        $(document).ready(function () {
+            validateSingleForm("#frm_report_agent_infrm");
+        });
+    // Agent Status
+    $('input[type=radio][name=status]').change(function () {
+        agentstatus = this.value;
+    });
+     var table1 = "";
+        function Funcagentifo() {
+            var $valid = $('#frm_report_agent_infrm').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            }
+            else {
+             //debugger;
+                $("#overlay").show();
+                $("#overlay").fadeIn(300);
+                var ValueSerach = document.getElementById("searchvalue").value;
+                var ipvalue = document.getElementById("ip").value;
+                //var systemvalue = document.getElementById("system").value;
+                var systemvalue = document.getElementById('add_systemname').value;
+                if (systemvalue == "") {
+                    systemvalue= document.getElementById("system").value;
+                }
+                
+                var osvalue = document.getElementById("os").value;
+                var type = document.getElementById("type").value;
+                var lastpolldays = document.getElementById("lastpolldays").value;
+                var agentstatus = $('input[name=status]:checked').val();
+                var url = '@Url.Content("~/csat_report/GetAgentInformationReport?IP=")' + ipvalue + '&Device=' + systemvalue + '&OS=' + osvalue + '&ouid=' + ouidvalue + '&status=' + agentstatus + '&lastpolldays=' + lastpolldays + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function (response) {
+                        //debugger;
+                        //var agent_divclear = document.getElementById('agent_divclear');
+                        //agent_divclear.innerHTML = '&nbsp;';
+                        //$('#agent_divclear').append("<table id='tblagentinfo' class='table table-striped table-bordered' width='100%'></table>");
+                        //otable = document.getElementById('tblagentinfo');
+                        //$('#tblagentinfo').DataTable({
+                        //    serverSide: true,
+                        //    searching: false,
+                        //    type: 'POST',
+                        //    datatype: 'json',
+                        //    iDisplayLength: 100,
+                        //    ajax: function (data, callback, settings) {
+                        //        // debugger;
+                        //        var out = [];
+                        //        try {
+                        //            for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
+                        //                out.push([response.data[i].device_name, response.data[i].ip, response.data[i].mac, response.data[i].login_user, response.data[i].date, response.data[i].client_version, response.data[i].generatedate, response.data[i].data1, response.data[i].ostype, response.data[i].ou_longname]);
+                        //            }
+                        //        } catch (ex) {
+                        //        }
+                        //        setTimeout(function () {
+                        //            callback({
+                        //                draw: data.draw,
+                        //                data: out,
+                        //                recordsTotal: response.recordsTotal,
+                        //                recordsFiltered: response.recordsFiltered
+                        //            });
+                        //        }, 50);
+                        //    },
+                        //    dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Agent Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Agent Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        //    columnDefs: [{ type: 'ip-address', targets: 1 }],
+                        //    columns: [{ title: "System Name", width: '90px' }, { title: "IP Address", width: '90px' }, { title: "MAC", width: '90px' }, { title: "Login User", width: '90px' }, { title: "Last Poll Time", width: '90px' }, { title: "Client Version", width: '90px' }, { title: "Installed Date", width: '90px' }, { title: "Operating System", width: '110px' }, { title: "Type", width: '40px' }, { title: "Branch/ Unit" }],
+                        //    scrollY: 400,
+                        //    scrollX: true,
+                        //    ordering: true,
+                        //    scroller: {
+                        //        loadingIndicator: true
+                        //    },
+                        //});
+                        //debugger;
+                        var agent_divclear = document.getElementById('agent_divclear');
+                        agent_divclear.innerHTML = '&nbsp;';
+                        $('#agent_divclear').append("<table id='tblagentinfo' class='table table-striped table-bordered' width='100%'></table>");
+                        otable = document.getElementById('tblagentinfo');
+                        var data1 = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            data1.push([response.data[i].ou_longname, response.data[i].device_name, response.data[i].ip, response.data[i].mac, response.data[i].login_user, response.data[i].date, response.data[i].client_version, response.data[i].generatedate, response.data[i].data1, response.data[i].ostype]);
+                            //data1.push([response.data[i].device_name, response.data[i].ip, response.data[i].mac, response.data[i].login_user, response.data[i].date, response.data[i].client_version, response.data[i].generatedate, response.data[i].data1, response.data[i].ostype, response.data[i].ou_longname]);
+
+                        }
+                        var otable = $("#tblagentinfo").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Agent Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Agent Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "Branch/ Unit" },{ title: "System Name", width: '90px' }, { title: "IP Address", width: '90px' }, { title: "MAC", width: '90px' }, { title: "Login User", width: '90px' }, { title: "Last Poll Time", width: '90px' }, { title: "Client Version", width: '90px' }, { title: "Installed Date", width: '90px' }, { title: "Operating System", width: '110px' }, { title: "Type", width: '40px' }]
+                            //columns: [{ title: "System Name", width: '90px' }, { title: "IP Address", width: '90px' }, { title: "MAC", width: '90px' }, { title: "Login User", width: '90px' }, { title: "Last Poll Time", width: '90px' }, { title: "Client Version", width: '90px' }, { title: "Installed Date", width: '90px' }, { title: "Operating System", width: '110px' }, { title: "Type", width: '40px' }, { title: "Branch/ Unit" }]
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                        //var agent_divclear = document.getElementById('agent_divclear');
+                        //agent_divclear.innerHTML = '&nbsp;';
+                        //$('#agent_divclear').append("<table id='tblagentinfo' class='table table-striped table-bordered' width='100%'></table>");
+                        //otable = document.getElementById('tblagentinfo');
+                        //var data1 = [];
+                        //for (var i = 0; i < data.getagentinfodata.length; i++) {
+                        //    data1.push([data.getagentinfodata[i].device_name, data.getagentinfodata[i].ip, data.getagentinfodata[i].mac, data.getagentinfodata[i].login_user, data.getagentinfodata[i].date, data.getagentinfodata[i].client_version, data.getagentinfodata[i].generatedate, data.getagentinfodata[i].data1, data.getagentinfodata[i].ostype, data.getagentinfodata[i].ou_longname]);
+                        //}
+                        //var otable = $("#tblagentinfo").DataTable({
+                        //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Agent Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Agent Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        //    columns: [{ title: "System Name", width: '90px' }, { title: "IP Address", width: '90px' }, { title: "MAC", width: '90px' }, { title: "Login User", width: '90px' }, { title: "Last Poll Time", width: '90px' }, { title: "Client Version", width: '90px' }, { title: "Installed Date", width: '90px' }, { title: "Operating System", width: '110px' }, { title: "Type", width: '40px' }, { title: "Branch/ Unit" }]
+                        //});
+                    }
+                }).done(function () {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                    }, 500);
+                });
+            }
+        };
+</script>
+
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>

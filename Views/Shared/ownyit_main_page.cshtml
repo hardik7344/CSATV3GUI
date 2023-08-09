@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/images/aa1.png" rel="shortcut icon" title="tectonas" type="image/png">
+    <title>@ViewData["Title"]</title>
+    @*<script src="~/js/jquery-3.3.1.js"></script>*@
+    <script src="~/js/jquery-3.6.0.js"></script>
+    <link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/OverlayScrollbars.css" rel="stylesheet" />
+    <script src="~/js/OverlayScrollbars.js"></script>
+    <link href="~/css/Datatables/responsive.dataTables.min.css" rel="stylesheet" />
+    <link href="~/css/ownyit_csat.css" rel="stylesheet" />
+    <link href="~/css/Datatables/datatables.min.css" rel="stylesheet" />
+    <link href="~/css/Datatables/buttons.dataTables.min.css" rel="stylesheet" />
+    <script src="~/js/ownyitcsat_datatable.js"></script>
+    <link href="~/css/Datatables/scroller.dataTables.min.css" rel="stylesheet" />
+
+    <script>
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = (day) + "-" + (month) + "-" + now.getFullYear();
+    </script>
+
+    <script>
+
+        $(function () {
+            //The passed argument has to be at least a empty object or a object with your desired options
+            $('body').overlayScrollbars({
+                callbacks: {
+                    onInitialized: null,               //null || function
+                    onInitializationWithdrawn: null,   //null || function
+                    onDestroyed: null,                 //null || function
+                    onScrollStart: null,               //null || function
+                    onScroll: null,                    //null || function
+                    onScrollStop: null,                 //null || function
+                    onOverflowChanged: null,           //null || function
+                    onOverflowAmountChanged: null,     //null || function
+                    onDirectionChanged: null,          //null || function
+                    onContentSizeChanged: null,        //null || function
+                    onHostSizeChanged: null,           //null || function
+                    onUpdated: null                    //null || function
+                }
+            });
+            $('.modal-body').overlayScrollbars({
+                className: "os-theme-dark"
+            });
+        });
+
+    </script>
+    <script>
+        //$(document).ready(function () {
+
+        //});
+        var pdflogo = "";
+        window.addEventListener('load', function () {
+            pdflogo = localStorage.getItem("dtlogo");
+            //$('#productlogo img').attr('src', 'data:image/png;base64,' + localStorage.getItem("dtlogo"));
+            //debugger;
+            dashboard_chart();
+            alert_count();
+            //reportlogo();
+        })
+        function dashboard_chart() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_login/Get_Dashbord_chats")',
+                success: function (data) {
+                    //debugger;
+                    for (var i = 0; i < data.getdashbordchats.length; i++) {
+                        if (data.getdashbordchats[i].menu_active == "1") {
+                            $('.' + data.getdashbordchats[i].menu_id).css("display", "block")
+                            if (data.getdashbordchats[i].menu_id == '98' || data.getdashbordchats[i].menu_id == '99' || data.getdashbordchats[i].menu_id == '100' || data.getdashbordchats[i].menu_id == '101') {
+                                $('.' + data.getdashbordchats[i].menu_id).css("display", "table-row")
+                            }
+                        }
+                        else {
+                            $('.' + data.getdashbordchats[i].menu_id).css("display", "none")
+                        }
+                    }
+                },
+                error: function () {
+                    alert("something went to wrong!")
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    @{
+        @Html.Partial("ownyit_header");
+    }
+    <div id="overlay" style="display:none;">
+        <div class="cv-spinner">
+            <span class="spinner"></span>
+        </div>
+    </div>
+    <div class="row" style="padding-top:60px;">
+        @RenderBody()
+    </div>
+    @{
+        Html.RenderPartial("ownyit_footer");
+    }
+    @RenderSection("Scripts", required: false)
+    <script src="~/js/jspdf.debug.js"></script>
+    <script src="~/js/html2canvas.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/chart.min.js"></script>
+    <script src="~/js/ownyitcsat_chartcore.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/jquery.validate.js"></script>
+    <script src="~/js/datatables/datatables.min.js"></script>
+    <script src="~/js/datatables/dataTables.colReorder.js"></script>
+    <script src="~/js/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/js/datatables/buttons.colVis.min.js"></script>
+    <script src="~/js/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/js/datatables/dataTables.scroller.min.js"></script>
+    <script src="~/js/progresscircle.js"></script>
+    <script src="~/js/datatables/dataTables.checkboxes.min.js"></script>
+    <script src="~/js/datatables/pdfmake.min.js"></script>
+    <script src="~/js/datatables/vfs_fonts.js"></script>
+    <script src="~/js/datatables/ip-address.js"></script>
+    <script src="~/js/Tectona_Validation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.asset_datatable').DataTable({
+                paging: true,
+                order: [],
+                columnDefs: [{ orderable: false, targets: [] }],
+                searching: false,
+                info: false,
+                responsive: false,
+            });
+            $(".table").css({ "width": "100%" });
+            $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+        });
+    </script>
+    <!--circlechart  -->
+    <script type="text/javascript">
+        function toggleDiv(divId) {
+            $("#" + divId).toggle();
+        }
+        $(function () {
+            $('.circlechart').circlechart();
+        });
+    </script>
+    <!--circlechart  end-->
+    <!--horizBarChart -->
+    <script src="~/js/jquery.horizBarChart.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.chart').horizBarChart({
+                selector: '.bar',
+                speed: 3000,
+            });
+            $(document).ready(function () {
+                $('.score').each(function (index, value) {
+                    var value1 = parseInt($(this).text());
+                    if (value1 >= 0 && value1 <= 40) { $(this).css('background-color', 'mediumseagreen'); }
+                    else if (value1 > 40 && value1 <= 70) { $(this).css('background-color', 'orange'); }
+                    else if (value1 > 70 && value1 <= 100) { $(this).css('background-color', 'orangered'); }
+
+                });
+
+            });
+
+        });
+        //function menuactive () {
+        //   //  debugger;
+        //     $(".subcategories li > a").removeClass("active");
+        //     $(this).addClass("active");
+        // }
+        $(document).ready(function () {
+            $('ul.nav li.dropdown').hover(function () {
+                $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(200);
+            }, function () {
+                $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(200);
+            });
+        });                   
+    </script>
+    <!--horizBarChart  end-->
+
+</body>
+</html>

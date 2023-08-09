@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewData["Title"] = "report_active_directory_data";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<body onload="getaddata()">
+    <div class="row">
+        <!--side menu-->
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_active_directory_data", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Active Directory Data  </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu end-->
+        @*<div class="row">*@
+
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_report_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" name="frm_report_ad_data" id="frm_report_ad_data">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1">AD Data Type</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="ad_data" id="ad_data">
+                                            <option value="1">Active Directory</option>
+                                            <option value="2">User</option>
+                                            <option value="3">Device</option>
+                                        </select>
+                                    </div>
+                                    <div class="pull-left col-xs-1">
+                                        <input type="button" class="btn btn-primary" value="Show" id="btnshowreport" onclick="getaddata()">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!--form  content end-->
+            <!--agent report form end-->
+            <!--agent report Datatable start-->
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="addata_divclear">
+                    <table id="tbladdata" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+</body>
+
+<script>
+    var table1 = "";
+        function getaddata() {
+            //debugger;
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var type = document.getElementById("ad_data").value;
+            var url = '@Url.Content("~/csat_report/getaddata?adtype=")' + type;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (response) {
+                    //debugger;
+                    var agent_divclear = document.getElementById('addata_divclear');
+                        agent_divclear.innerHTML = '&nbsp;';
+                    $('#addata_divclear').append("<table id='tbladdata' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tbladdata');
+                    var data1 = [];
+                    if (type == 1) {
+                        for (var i = 0; i < response.ad_data.length; i++) {
+                            data1.push([response.ad_data[i].ouName, response.ad_data[i].longName]);
+                        }
+                        var otable = $("#tbladdata").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Active Directory_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Active Directory Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "OU Name", width: '90px' }, { title: "OU Long Name", width: '90px' }]
+                        });
+                    }
+                    else if (type == 2) {
+                        for (var i = 0; i < response.ad_data.length; i++) {
+                            data1.push([response.ad_data[i].ouName, response.ad_data[i].userName, response.ad_data[i].longName]);
+                        }
+                        var otable = $("#tbladdata").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Active Directory_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Active Directory Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "OU Name", width: '90px' }, { title: "User Name", width: '90px' }, { title: "Long Name", width: '90px' }]
+                        });
+                    }
+                    else if (type == 3) {
+                        for (var i = 0; i < response.ad_data.length; i++) {
+                            data1.push([response.ad_data[i].ouName, response.ad_data[i].deviceName]);
+                        }
+                        var otable = $("#tbladdata").DataTable({
+                            data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Active Directory_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Active Directory Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                            columns: [{ title: "OU Name", width: '90px' }, { title: "Device Name", width: '90px' }]
+                        });
+                    }
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    }
+                }).done(function () {
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                    }, 500);
+                });
+
+        }
+</script>
+

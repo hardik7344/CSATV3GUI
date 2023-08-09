@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "csat_main_dashboard";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<div class="row">
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Home", "csat_policy_mgmt", "csat_policy_mgmt")
+                    <i class="icon-angle-right"></i>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>
+<style>
+    .activeted {
+        padding: 20px;
+        border-radius: 50%;
+        background-color: #5c9b66;
+        color: #fff;
+        font-size: 20px;
+    }
+</style>
+<div class="custom-login-panel">
+    <div class="row" style="margin-top:100px">
+        <div class="col-xs-1 col-sm-2 col-md-1 col-lg-3">
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="panel panel-primary loginbox">
+
+                <div class="panel-body">
+                    <div>
+                        <div class="icon-box text-center">
+                            <i class="material-icons glyphicon glyphicon-ok activeted"></i>
+                        </div>
+                        <h4 class="text-center" style="margin-bottom:10px;">Congratulations!</h4>
+                    </div>
+                    <p class="text-center">Successfully Activated!</p>
+                    <div class="alert alert-light text-center" role="alert">
+                        @Html.ActionLink("Go to Dashboard", "csat_main_dashboard", "csat_main_dashboard", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-0 col-sm-3 col-md-3 col-lg-3">
+        </div>
+    </div>
+</div>
+

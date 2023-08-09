@@ -1,0 +1,381 @@
+﻿@model file
+@*@model System.Data.DataTable*@
+@using System.Data;
+@using OwnYITCSAT.Models
+@using OwnYITCSAT.DataAccessLayer;
+
+<div class="modal fade" id="licenseload_offline_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    License Offline Detail
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" asp-controller="csat_login" asp-action="license_information" method="post" enctype="multipart/form-data">
+                            <div class="jumbotron">
+                                <div class="container">
+                                    <div class="form-group" style="display:none">
+                                        <label for="nameField" class="col-xs-12 form_label" style="text-align:center">  Enter License Key </label>
+                                        <div class="col-sm-12">
+                                            <input type="text" name="enterkey" id="enterkey" class="form-control" placeholder=" XXXX-XXXX-XXXX-XXXX" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group files">
+                                        <label class="col-xs-12 form_label" style="text-align:center"> Upload Your File </label>
+                                        <div class="col-sm-12">
+                                            <input name="file" type="file" id="uploadlicense" multiple>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-12 form_label">  </label>
+                                        <div class="col-sm-12" style="margin-top:8px;text-align:center">
+                                            <button type="submit" class="btn btn-primary">Submit</button>                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>                       
+                    </div>
+                </div>
+                &nbsp;
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>*@
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="navbar navbar-default navbar-static-top">
+    <div class="container-flued">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @*<a class="navbar-brand" href="#">
+                    <img src="~/images/Setting/ownyitcsat_head.png" style="height: 58px;margin-top: 1px;" />
+                </a>*@
+            <a class="navbar-brand" href="#">
+                <img src="~/images/Setting/logo.png" style="height: 62px;margin-top: 1px;width: 100%;"  alt=""/>
+                @*<img src="~/images/Setting/ownyitcsat_head.png" style="height: 63px;margin-top: 1px;" />*@
+                @*<b style="color:#fff;font-size:25px;">  Cyber Security Audit Tool</b>*@
+            </a>
+            <div class="navbar-collapse collapse">            
+                <div>
+                    <ul class="nav navbar-left pull-right dots" style="margin-top: -1px;">
+                        <li>
+                            <span id="alert_count">
+                            </span>
+                        </li>
+                        <li><a href="#" style="padding: 2px 5px 2px 5px;color: khaki;" title="login User"> Welcome to<span style="color:khaki" id="user"></span></a> </li>
+
+                        @*<li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" style="padding: 14px 5px 2px 5px;padding-right: 10px;margin-right: 10px;color: #fff;"><i class="glyphicon glyphicon-user"></i></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" id="btnlogout"><i class="glyphicon glyphicon-log-out" style="margin-right:10px;"></i>Logout</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#licenseload_offline_popup" data-dismiss="modal"><i class="glyphicon glyphicon-file" style="margin-right:10px;"></i>License</a></li>
+
+            </ul>
+        </li>*@
+                        @*<li>
+            <a href="#" style="padding: 14px 5px 2px 5px;padding-right: 10px;margin-right: 10px;color: #fff;" id="btnlogout" data-toggle="dropdown" class="dropdown-toggle" title="Logout"><i class="glyphicon glyphicon-user"></i> <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Support</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Help</a></li>
+
+            </ul>
+        </li>*@
+
+                    </ul>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav navbar-left" style="background-color:transparent;position: absolute;bottom: 0;right: 30px;">
+                        @{
+                            if (OwnYITConstant.DT_MAIN_MENU != null)
+                            {
+                                foreach (DataRow dr in (OwnYITConstant.DT_MAIN_MENU.Rows))
+                                {
+                                    if ("Asset Management" == @dr["menu_name"].ToString())
+                                    {
+                                        <li class="dropdown @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="2 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")</li>
+                                                <li class="52 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("System List", "asset_system_list", "csat_asset_mgmt")</li>
+                                                <li class="53 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Hardware Master", "asset_hardware_master", "csat_asset_mgmt")</li>
+                                                <li class="54 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Software Master", "asset_software_master", "csat_asset_mgmt")</li>
+                                                <li class="55 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Vendor Master", "asset_vendor_master", "csat_asset_mgmt")</li>
+                                            </ul>
+                                        </li>
+                                    }
+                                    else if ("Policy Enforcement" == @dr["menu_name"].ToString())
+                                    {
+                                        <li class="dropdown @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="102 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Policy Summary", "csat_policy_mgmt", "csat_policy_mgmt")</li>
+                                                <li class="103 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Define Policy", "csat_policy_create", "csat_policy_mgmt")</li>
+                                                @*<li id="102" class="div_none"><a asp-area="" asp-controller="csat_policy_mgmt" asp-action="csat_policy_mgmt">Policy Dashboard</a></li>*@
+                                                @*<li id="103" class="div_none"><a asp-area="" asp-controller="csat_policy_mgmt" asp-action="csat_policy_create">Create Policy</a></li>*@
+                                            </ul>
+                                        </li>
+                                    }
+                                    else if ("Reports" == @dr["menu_name"].ToString())
+                                    {
+                                        <li class="dropdown @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                            <ul class="dropdown-menu dropdown-menu-right" style="height:auto;max-height:190px;overflow-x:hidden;">
+                                                <li class="143 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Agent Information", "report_agent_information", "csat_report")</li>
+                                                <li class="144 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Data Leakage", "report_data_leakage", "csat_report")</li>
+                                                <li class="145 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Internet Modem Usage", "report_modem_usage", "csat_report")</li>
+                                                <li class="146 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Audit Trail Summary", "report_audit_trail", "csat_report")</li>
+                                                <li class="181 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Event Monitoring", "report_event_monitoring", "csat_report")</li>
+                                                <li class="147 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Asset Information", "report_asset_information", "csat_report")</li>
+                                                <li class="148 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("System Firewall Status", "report_system_firewall_status", "csat_report")</li>
+                                                <li class="149 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Software Information", "report_software_information", "csat_report")</li>
+                                                <li class="150 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("User Information", "report_user_information", "csat_report")</li>
+                                                <li class="151 div_none  @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Shared Information", "report_shared_Resources", "csat_report")</li>
+                                                <li class="152 div_none  @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Service Details", "report_service_details", "csat_report")</li>
+                                                <li class="153 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Port Information", "report_port_information", "csat_report")</li>
+                                                <li class="154 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("User Login Details", "report_login_logoff_timetrack", "csat_report")</li>
+                                                <li class="155 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Password Change Details", "report_password_change", "csat_report")</li>
+                                                @*<li  class="156 div_none">@Html.ActionLink("DCM", "report_dcm", "csat_report")</li>*@
+                                                <li class="157 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Network Statistics", "report_network_statistics", "csat_report")</li>
+                                                <li class="158 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Enumerate Files", "report_enumerate_files", "csat_report")</li>
+                                                @*<li class="159 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Auto Power Off", "report_autopower_off_status", "csat_report")</li>*@
+                                                <li class="160 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Policy Enforcement", "report_policy_apply", "csat_report")</li>
+                                                @*<li class="162 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Off Network Activity", "report_offnetwork_activity", "csat_report")</li>*@
+                                                <li class="163 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Antivirus Update", "report_antivirus_update", "csat_report")</li>
+                                                <li class="164 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Manage Agent-Registry", "report_manage_agent_registry", "csat_report")</li>
+                                                <li class="165 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Process Log", "report_process_log", "csat_report")</li>
+                                                <li class="166 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Unauthorise IP Log", "report_unauthorise_ip_log", "csat_report")</li>
+                                                <li class="167 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Agent Connectivity", "report_agent_connectivity", "csat_report")</li>
+                                                <li class="168 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">@Html.ActionLink("Hardware Information", "report_hardware_information", "csat_report")</li>
+                                                <li class="186 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_usb_history" ? "active" : "")">@Html.ActionLink("USB History", "report_usb_history", "csat_report")</li>
+                                                <li class="187 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_gui_log" ? "active" : "")">@Html.ActionLink("GUI Log", "report_gui_log", "csat_report")</li>
+                                                <li class="191 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_employee_details" ? "active" : "")">@Html.ActionLink("Employee Details", "report_employee_details", "csat_report")</li>
+                                                <li class="192 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_summary_compliance_management" ? "active" : "")">@Html.ActionLink("Summary of Compliance Management", "report_summary_compliance_management", "csat_report")</li>
+                                                <li class="193 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "report_active_directory_data" ? "active" : "")">@Html.ActionLink("Active Directory Data ", "report_active_directory_data", "csat_report")</li>
+                                            </ul>
+                                        </li>
+                                    }
+                                    else if ("Administrator" == @dr["menu_name"].ToString())
+                                    {
+                                        <li class="dropdown @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="130 form_label div_none">@Html.ActionLink("Organization Structure", "setting_organization_structure", "csat_settings_page")</li>
+                                                <li class="134 div_none">@Html.ActionLink("User Management", "setting_user_mgmt", "csat_settings_page")</li>
+                                            </ul>
+                                        </li>
+                                    }
+                                    else if ("Settings" == @dr["menu_name"].ToString())
+                                    {
+                                        <li class="dropdown @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                            <ul class="dropdown-menu pull-left" style="height:auto;max-height:190px;overflow-x:hidden;">
+                                                @*<li class="130 form_label div_none">@Html.ActionLink("Organization Structure Management ", "setting_organization_structure", "csat_settings_page")</li>*@
+                                                <li class="131 div_none">@Html.ActionLink(" Scan IP Range", "setting_scan_ip_range", "csat_settings_page")</li>
+                                                <li class="132 div_none">@Html.ActionLink("Agent Release license ", "setting_agent_release_licence", "csat_settings_page")</li>
+                                                <li class="133 div_none">@Html.ActionLink("Database Maintenance", "setting_database_maintenance", "csat_settings_page")</li>
+                                                @*<li>@Html.ActionLink("Admin user management", "setting_admin_user_mgmt", "csat_settings_page")</li>*@
+                                                @*<li  class="134 div_none">@Html.ActionLink("User Management", "setting_user_mgmt", "csat_settings_page")</li>*@
+                                                <li class="135 div_none">@Html.ActionLink("Notification Configuration", "setting_notification_handler", "csat_settings_page")</li>
+                                                <li class="136 form_label div_none">@Html.ActionLink("Desired Configuration Management", "setting_dcm", "csat_settings_page")</li>
+                                                <li class="137 div_none">@Html.ActionLink("Updater", "setting_csatupdater", "csat_settings_page")</li>
+                                                <li class="138 div_none">@Html.ActionLink("Software Authentication", "setting_software_authentication", "csat_settings_page")</li>
+                                                <li class="139 div_none">@Html.ActionLink("Process Authentication", "setting_process_authentication", "csat_settings_page")</li>
+                                                @*<li>@Html.ActionLink("Event Monitoring", "setting_event_monitoring", "csat_settings_page")</li>*@
+                                                @*<li>@Html.ActionLink("Manage Disk Cleanup Schedule", "setting_managedisk_cleanup", "csat_settings_page")</li>*@
+                                                <li class="140 div_none">@Html.ActionLink("Service Settings", "setting_service", "csat_settings_page")</li>
+                                                <li class="141 div_none">@Html.ActionLink("Configuration Settings", "setting_configuration", "csat_settings_page")</li>
+                                                <li class="142 div_none">@Html.ActionLink("Make Setup", "setting_makesetup", "csat_settings_page")</li>
+                                                <li class="185 div_none">@Html.ActionLink("Flag OnOff", "setting_flag_onoff", "csat_settings_page")</li>
+                                                <li class="188 div_none">@Html.ActionLink("Device ONOff Status", "setting_device_onoff", "csat_settings_page")</li>
+                                                <li class="189 div_none">@Html.ActionLink("Authorized IP Access GUI", "authorizeip_access_gui", "csat_settings_page")</li>
+                                            </ul>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class=" @(ViewContext.RouteData.Values["Action"].ToString() == "@dr['menu_name']" ? "active" : "")">
+                                            <a href='@Url.Content("~" + @dr["menu_url"] + "?id=" + @dr["menu_id"] + "")'>@dr["menu_name"]</a>
+                                        </li>
+                                    }
+
+
+                                }
+                            }
+
+                        }
+                       
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-right" style="width:200px;max-height:190px;overflow-x:hidden;">
+                                    <li><a href="#" id="btnlogout"><i class="glyphicon glyphicon-log-out" style="margin-right:10px;"></i>Logout</a></li>
+                                    <li><a href="#" data-toggle="modal" data-target="#licenseload_offline_popup" data-dismiss="modal"><i class="glyphicon glyphicon-file" style="margin-right:10px;"></i>License</a></li>
+                                    <li><a href="~/Utility/CSAT_User_Manual.chm" download><i class="glyphicon glyphicon-user" style="margin-right:10px;"></i>User Manual</a></li>
+                                    <li><span style="margin-left:20px">Version: 11.2020.0903.01</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  $('#btnlogout').on('click',function(){
+ 	  window.location.href = '@Url.Content("~/csat_login/logout/")';
+	});
+</script>
+<script type="text/javascript">
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+    $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('nav a').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+<script>
+    var uploadpath = "";
+    function uploadlicensefile() {
+       // debugger;
+        licensekey = document.getElementById("enterkey").value;
+        uploadpath = document.getElementById("uploadlicense").value;
+        var url1 = '@Url.Content("~/csat_login/uploadlicense?uploadpath=")' + uploadpath + '&licensekey=' + licensekey;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                //debugger;
+                window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+            }
+        });
+    }
+</script>
+<div class="modal  fade" id="alert_popup" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog  modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close newbtn" data-dismiss="modal" aria-hidden="true" onclick="clear_alert()">&times;</button>
+                <h6 class=" modal-title">
+                    <i class="glyphicon glyphicon-bell"></i> Notification
+                </h6>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;height:350px;">
+                <div class="row">
+                    <div id="alert_messages"></div>                   
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary newbtn" data-dismiss="modal" onclick="clear_alert()">Clear All</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<script>
+    function alert_message() {
+         $("#alert_popup").modal('show');
+        $.ajax({
+              type: "POST",
+              url: '@Url.Content("~/csat_main_dashboard/Get_alert")',
+              success: function (data) {
+                // debugger;
+                 var SetData = $('#alert_messages');
+                 jQuery('#alert_messages').html('');
+                 var alertrows = "";
+                 for (var i = 0; i < data.getalert.length; i++) {
+                     if (data.getalert[i].category_status == " Violation") {
+                        alertrows += "<div class='alert alert-success alert-dismissible fade in'><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><h4 style='padding: 5px 0px;font-size:12px'>" + data.getalert[i].device_name + "&nbsp;(" + data.getalert[i].ip + "&nbsp;)<p  style='font-size: 12px;margin-right:3px;float:right'>" + data.getalert[i].device_timestamp + "</p></h4><h4 style='padding: 5px 0px;font-size:13px'>" + data.getalert[i].category_type + "&nbsp;&nbsp;(" + data.getalert[i].category_status + "&nbsp;)</h4><p>" + data.getalert[i].message + "</p> </div></div></div>";
+                    }
+                     else if (data.getalert[i].category_status == " Changed" || data.getalert[i].category_status == " Attempt" || data.getalert[i].category_status == " Access") {
+                        alertrows += "<div class='alert alert-warning fade in'><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><h4 style='padding: 5px 0px;font-size:12px'>" + data.getalert[i].device_name + "&nbsp;(" + data.getalert[i].ip + "&nbsp;)<p style='font-size: 12px;margin-right:3px;float:right'>" + data.getalert[i].device_timestamp + "</p></h4><h4 style='padding: 5px 0px;font-size:13px'>" + data.getalert[i].category_type + "&nbsp;&nbsp;(" + data.getalert[i].category_status + "&nbsp;)</h4></div></div><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><p>" + data.getalert[i].message + "</p></div></div></div>";
+                    }
+                     else {
+                        alertrows += "<div class='alert alert-info fade in'><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><h4 style='padding: 5px 0px;font-size:12px'>" + data.getalert[i].device_name + "&nbsp;(" + data.getalert[i].ip + "&nbsp;)<p style='font-size: 12px;margin-right:3px;float:right'>" + data.getalert[i].device_timestamp + "</p></h4><h4 style='padding: 5px 0px;font-size:13px'>" + data.getalert[i].category_type + "&nbsp;&nbsp;(" + data.getalert[i].category_status + "&nbsp;)</h4></div></div><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><p>" + data.getalert[i].message + "</p></div></div></div>";
+                    }
+                   
+                 }
+                  alert = alertrows;
+                  SetData.append(alert);
+
+              }
+        });
+    }
+
+    function alert_count() {
+            //debugger;
+           $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_main_dashboard/Get_count")',
+                success: function (data) {
+                    var SetData = $('#alert_count');
+                    jQuery('#alert_count').html('');
+                    var alertcount1 = "";
+                    alertcount = data.alertcount;
+                    //debugger;
+                    if (alertcount == 0) {
+                        $(".alert_count").removeClass("red").addClass("blue");
+                        var alertcount1 = "<a href='#' style='color: #fff;' title='Notification'><span class='glyphicon glyphicon-bell'></span></a>";
+                    }
+                    else {
+                        $(".alert_count").removeClass("blue").addClass("red");
+                        var alertcount1 = "<a href='#' data-toggle='modal' onclick='alert_message();' style='padding: 10px;color: #fff;' title='Notification'><span class='glyphicon glyphicon-bell'><mark class='big swing alert_count'>" + alertcount+"</mark></span></a>";
+                    }
+                    SetData.append(alertcount1);
+                }   
+           });
+    }
+
+    function clear_alert() {
+        //alert_count();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_main_dashboard/Delete_alert")',
+            success: function (data) {
+                alert_count();
+            }
+        });
+    }
+
+    $(function () {
+        $(".newbtn").click(function () {
+            $(".alert_count").removeClass("red").addClass("blue");
+        });
+    });
+
+        window.addEventListener('load', function () {
+            $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_main_dashboard/viewusername")',
+                success: function (data) {
+                    var SetData = $('#user');
+                    jQuery('#user').html('');
+                    //debugger;
+                    SetData.append(data);
+            }
+                });
+        })
+
+</script>
+

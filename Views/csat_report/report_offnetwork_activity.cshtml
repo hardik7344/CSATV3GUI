@@ -1,0 +1,1184 @@
+﻿
+@{
+    ViewData["Title"] = "report_offnetwork_activity";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+    <script type="text/javascript">
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+    </script>
+    <script>       
+    $(function () {
+        $('input[name="datetime1"]').daterangepicker({
+
+            autoUpdateInput: true,
+            timePicker: true,
+            timePickerSeconds: true,
+            timePicker24Hour: true,
+            startDate: moment().add(-24, 'hour'),
+            endDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY hh:mm:ss'
+            }
+        });
+
+        $('input[name="datetime"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY hh:mm:ss') + ' - ' + picker.endDate.format('DD/MM/YYYY hh:mm:ss'));
+        });
+
+        $('input[name="datetime"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        $(window).bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear() + "-" + (month) + "-" + (day);
+</script>
+
+<div class="row row_top_margin">
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Off Network Activity </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!--BackSide Generate white form color-->
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--BackSide Generate white form over-->
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3 " name="Branch/Unit" id="DrpOU12">
+                                        <option value='-1'>Select Branch/ Unit</option>
+                                    </select>
+                                </div>
+
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="System" id="drpDevice12">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+
+                                <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-2 col-lg-2 col-md-3" placeholder="" name="ip" id="drpip12">
+                                    @*<select class="form-control col-sm-2 col-lg-2 col-md-3" name="ip adrss" id="drpip12">
+                                        <option value="-1">Select IP Address</option>
+                                    </select>*@
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="nwonoffdatefilter" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " id="date">
+                                </div>
+
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="funoffnetwork_activity()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--Off Network Activity Datatable start-->
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive" id="divoffnwativityreport">
+                        </div>
+                    </div>
+                </div>
+
+                <!--Off Network Activity Datatable end-->
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="space_bottom">
+    &nbsp;
+</div>
+<script>
+
+    var startdate = "";
+    var enddate = "";
+    $('input[name="nwonoffdatefilter"]').val('');
+
+    $(function () {
+        $('input[name="nwonoffdatefilter"]').daterangepicker({
+            autoUpdateInput: true,
+            startDate: moment().startOf('hour').add(-24, 'hour'),
+            endDate: moment().startOf('hour'),
+            timePicker: true,
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD/MM/YYYY hh:mm:ss'
+            }
+        });
+
+        $('input[name="nwonoffdatefilter"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY hh:mm:ss') + ' - ' + picker.endDate.format('DD/MM/YYYY hh:mm:ss'));
+            startdate = picker.startDate.format('DD/MM/YYYY hh:mm:ss');
+            enddate = picker.endDate.format('DD/MM/YYYY hh:mm:ss');
+        });
+
+        $('input[name="nwonoffdatefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+    });
+
+
+
+     $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",   
+            url: url,
+            success: function (data) {
+        var SetData = $('#DrpOU12');
+	    jQuery('#DrpOU12').html('');
+
+        var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+        for (var i = 0; i < data.ou.length; i++) {
+            oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+        }
+        SetData.append(oudata);
+            }
+        });
+    }
+  
+
+    $("#DrpOU12").change(function () {
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+         //debugger;
+        var SetDatadevice = $('#drpDevice12');
+        //var SetDataip = $('#drpip12');
+
+        jQuery('#drpDevice12').html('');
+        //jQuery('#drpip12').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+
+        }
+
+        });
+
+    });
+
+	var ouidvalue="";
+    var systemvalue="";
+    var ipvalue = "";
+    $("#DrpOU12").change(function () {
+        ouidvalue = this.value;
+    });
+
+    $("#drpDevice12").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#drpip12").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+  
+function funoffnetwork_activity()
+{
+    startdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY hh:mm:ss');
+    enddate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY hh:mm:ss');
+  //debugger;
+    ipvalue = document.getElementById("drpip12").value;
+    if(ouidvalue == '')
+    ouidvalue = document.getElementById("DrpOU12").value;
+    $.ajax({
+	type : "POST",
+        url: '@Url.Content("~/csat_report/offnetwork_activity?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&startdate=' + startdate + '&enddate=' + enddate,
+        success: function (data) {
+            //debugger;
+            var Setgriddata = $('#divoffnwativityreport');
+            jQuery('#divoffnwativityreport').html('');
+            var headdata = "<table class='table table-striped table-bordered offnetwork_activity_datatable' style='width:100%'><thead><tr><th class='col-sm-4'>Branch/ Unit</th><th class='col-sm-2'>System Name</th>" +
+                "<th class='col-sm-1'>IP Address</th><th class='col-sm-2'>Network Off Time</th><th class='col-sm-2'>Network On Time</th><th class='icon noExport' data-orderable='false'>Show Activity</th></tr></thead><tbody>";
+            var trdata = "";
+            for (var i = 0; i < data.nwoff.length; i++) {
+                trdata += "<tr>";
+                trdata += "<td class='col-sm-4'>" + data.nwoff[i].ou_nodelinkage_LongName + "</td>";
+                trdata += "<td class='col-sm-2'>" + data.nwoff[i].device_name + "</td>";
+                trdata += "<td class='col-sm-1'>" + data.nwoff[i].ip + "</td>";
+                trdata += "<td class='col-sm-2'>" + data.nwoff[i].e114offTime + "</td>";
+                trdata += "<td class='col-sm-2'>" + data.nwoff[i].e114onTime + "</td>";
+                trdata += "<td class='icon'><i class='glyphicon glyphicon-edit manage_icon' type='button' data-toggle='modal' data-target='#add_activity' title='Add Activity' onclick=funoffnetwork_activity_details_selected('" + data.nwoff[i].device_id + "');funoffnetwork_activity_details(" + data.nwoff[i].device_id + ",'" + encodeURIComponent(startdate) + "','" + encodeURIComponent(enddate) + "');funoffnetwork_activity_dataleakage(" + data.nwoff[i].device_id + ",'" + encodeURIComponent(startdate) + "','" + encodeURIComponent(enddate) + "');funoffnetwork_activity_printer(" + data.nwoff[i].device_id + ",'" + encodeURIComponent(startdate) + "','" + encodeURIComponent(enddate) +"')></i></td>";
+                trdata += "</tr>";
+
+               
+            }
+            Setgriddata.append(headdata + trdata + "</tbody></table>");
+
+            // document.write(today);
+            $(document).ready(function () {
+                $('.offnetwork_activity_datatable').DataTable({
+                    paging: true,
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                    order: [],
+                    columnDefs: [{ orderable: false, targets: [] }],
+                    colReorder: true,
+                    searching: false,
+                    info: false,
+                    responsive: false,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            columns: ':not(.noVis)',
+                        },
+                        {
+                            extend: 'pdf', title: 'Off Network Activity Report' + today,
+                            exportOptions: {
+                                //  columns: ':visible',
+                                columns: "thead th:not(.noExport)",
+                            },
+                            pageSize: 'A4',
+                            customize: function (doc) {
+                                doc.content.splice(0, 1);
+                                var now = new Date();
+                                var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                doc.pageMargins = [20, 60, 20, 30];
+                                doc.defaultStyle.fontSize = 7;
+                                doc.styles.tableHeader.fontSize = 7;
+                                //doc.content.forEach(function (item) {
+                                //    if (item.table) {
+                                //        item.table.widths = ['*', '*', '*']
+                                //    }
+                                //})
+
+                                var OffNetworkActivityReport = 'Report Date :  ' + document.getElementById('date').value;
+                                doc['header'] = (function () {
+                                    return {
+                                        columns: [
+                                            {
+                                                alignment: 'left',
+                                                text: '',
+                                                fontSize: 12,
+                                            },
+                                            {
+                                                alignment: 'center',
+                                                text: 'Off Network Activity Report',
+                                                fontSize: 12,
+                                            },
+                                            {
+                                                margin: [0, 20, 0, 0],
+                                                alignment: 'right',
+                                                italics: true,
+                                                text: OffNetworkActivityReport,
+                                                fontSize: 7,
+                                            },
+                                        ],
+                                        margin: 20
+                                    }
+                                });
+
+                                doc['footer'] = (function (page, pages) {
+                                    return {
+                                        columns: [
+                                            {
+                                                alignment: 'left',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                        margin: 20
+                                    }
+                                });
+
+                                var objLayout = {};
+                                objLayout['hLineWidth'] = function (i) { return .5; };
+                                objLayout['vLineWidth'] = function (i) { return .5; };
+                                objLayout['hLineColor'] = function (i) { return '#ddd'; };
+                                objLayout['vLineColor'] = function (i) { return '#ddd'; };
+                                objLayout['paddingLeft'] = function (i) { return 5; };
+                                objLayout['paddingRight'] = function (i) { return 5; };
+                                doc.content[0].layout = objLayout;
+                            },
+                        },
+                        {
+                            extend: 'excel', title: 'Off Network Activity Report' + today,
+                            exportOptions: {
+                                columns: "thead th:not(.noExport)",
+                            },
+                            customize: function (xlsx) {
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                var numrows = 2;
+                                var clR = $('row', sheet);
+                                //update Row
+                                clR.each(function () {
+                                    var attr = $(this).attr('r');
+                                    var ind = parseInt(attr);
+                                    ind = ind + numrows;
+                                    $(this).attr("r", ind);
+                                });
+
+                                // Create row before data
+                                $('row c ', sheet).each(function () {
+                                    var attr = $(this).attr('r');
+                                    var pre = attr.substring(0, 1);
+                                    var ind = parseInt(attr.substring(1, attr.length));
+                                    ind = ind + numrows;
+                                    $(this).attr("r", pre + ind);
+                                });
+
+                                function Addrow(index, data) {
+                                    msg = '<row r="' + index + '">'
+                                    for (i = 0; i < data.length; i++) {
+                                        var key = data[i].key;
+                                        var value = data[i].value;
+                                        msg += '<c t="inlineStr" r="' + key + index + '">';
+                                        msg += '<is>';
+                                        msg += '<t>' + value + '</t>';
+                                        msg += '</is>';
+                                        msg += '</c>';
+                                    }
+                                    msg += '</row>';
+                                    return msg;
+                                }
+
+                                var r1 = Addrow(1, [{ key: 'B', value: 'Off Network Activity Report - Date : ' + today }]);
+                                var r2 = Addrow(2, [{ key: 'A', value: '' }]);
+
+                                sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + sheet.childNodes[0].childNodes[1].innerHTML;
+                                $('row c[r^="B1"]', sheet).attr('s', '2');
+                            },
+                        }
+                    ],
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            });
+        }
+	});
+}
+
+</script>
+<script>
+    function funoffnetwork_activity_details_selected(device_id) {
+  // debugger;
+        var url1 = '@Url.Content("~/csat_report/offnetwork_activity_select_data?DeviceId=")' + device_id;
+    $.ajax({
+       type: "POST",
+       url: url1,
+       success: function (data) {
+                // debugger;                
+
+                var SetData1 = $('.div_nwactivity_selectdata');
+           jQuery('.div_nwactivity_selectdata').html('');
+           
+                var nwheader = "<table class='table table-striped table-bordered table-hover offnetwork_activity_details'><thead><tr>";
+                nwheader += " <th class='col-sm-4' data-orderable='false'>Branch/ Unit</th>" +
+                    "<th class='col-sm-4' data-orderable='false'>System Name</th>" +                   
+                    "<th class='col-sm-4' data-orderable='false'>IP Address</th></tr></thead><tbody>";
+                var nwrows = "";
+
+           for (var i = 0; i < data.nwoffselectdata.length; i++) {
+                    nwrows += "<tr>";
+                    nwrows += "<td>" + data.nwoffselectdata[i].ouName + "</td>" +
+                   "<td>" + data.nwoffselectdata[i].deviceName + "</td>" +
+                   "<td>" + data.nwoffselectdata[i].ip + "</td>";
+                }
+                nwoffdetails = nwheader + nwrows + "</tr></tbody></table>";
+                SetData1.append(nwoffdetails);
+
+                $(document).ready(function () {
+                    $('.offnetwork_activity_details').DataTable({
+                        paging: false,
+                        order: [],
+                        columnDefs: [{ orderable: false, targets: [] }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                });             
+            }
+        });
+       
+    }
+</script>
+<script>
+    function funoffnetwork_activity_details(device_id, startdate, enddate) {
+       // debugger;
+        var startdate1 = decodeURI(startdate);
+        var enddate1 = decodeURI(enddate);
+        var url1 = '@Url.Content("~/csat_report/offnetwork_activity_report_details?DeviceId=")' + device_id + '&strstartdate=' + startdate1 + '&strenddate=' + enddate1;
+    $.ajax({
+       type: "POST",
+       url: url1,
+       success: function (data) {
+                // debugger;
+
+           var SetData1 = $('#div_nwactivity_details');
+           jQuery('#div_nwactivity_details').html('');
+              
+           var nwheader = "<table class='table table-striped table-bordered table-hover activity_datatable'><thead><tr>";
+           nwheader += " <th class='col-sm-2'>Timestamp</th>" +
+                       "<th class='col-sm-2'>Type</th>" +
+                       "<th class='col-sm-2'>Sub Type</th>" +
+                       "<th class='col-sm-2'>Status</th>" +
+                       "<th class='col-sm-4'>Message</th></tr></thead><tbody>";
+                var nwrows = "";
+
+                for (var i = 0; i < data.nwoffdetails.length; i++) {
+                    nwrows += "<tr>";
+                    nwrows += "<td>" + data.nwoffdetails[i].timestamp + "</td>" +
+                        "<td>" + data.nwoffdetails[i].type + "</td>" +
+                        "<td>" + data.nwoffdetails[i].subType + "</td>" +
+                        "<td>" + data.nwoffdetails[i].status + "</td>" +
+                        "<td>" + data.nwoffdetails[i].details + "</td>";
+                }
+                nwoffdetails = nwheader + nwrows + "</tr></tbody></table>";
+                SetData1.append(nwoffdetails);
+
+           $(document).ready(function () {
+               $('.activity_datatable').DataTable({
+
+
+                   paging: true,
+                   orderCellsTop: true,
+                   fixedHeader: true,
+                   order: [],
+                   columnDefs: [{ orderable: false, targets: [] }],
+                   colReorder: true,
+                   searching: false,
+                   info: false,
+                   responsive: false,
+                   dom: '<"html5buttons"B>lTfgitp',
+                   buttons: [
+                       {
+                           extend: 'colvis',
+                           columns: ':not(.noVis)',
+                       },
+                       {
+                           extend: 'pdf', title: 'Off Network Activity Details Report' + today,
+                           exportOptions: {
+                               //  columns: ':visible',
+                               columns: "thead th:not(.noExport)",
+                           },
+                           pageSize: 'A4',
+                           customize: function (doc) {
+
+                               doc.content.splice(0, 1);
+                               var now = new Date();
+                               var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                               doc.pageMargins = [20, 60, 20, 30];
+                               doc.defaultStyle.fontSize = 7;
+                               doc.styles.tableHeader.fontSize = 7;
+                               //doc.content.forEach(function (item) {
+                               //    if (item.table) {
+                               //        item.table.widths = ['*', '*', '*']
+                               //    }
+                               //})
+
+                               var OffNetworkActivitydetailsReport = 'Report Date :  ' + document.getElementById('date').value;
+                               doc['header'] = (function () {
+                                   return {
+                                       columns: [
+                                           {
+                                               alignment: 'left',
+                                               text: '',
+                                               fontSize: 12,
+                                           },
+                                           {
+                                               alignment: 'center',
+                                               text: 'Off Network Activity Report',
+                                               fontSize: 12,
+                                           },
+                                           {
+                                               margin: [0, 20, 0, 0],
+                                               alignment: 'right',
+                                               italics: true,
+                                               text: OffNetworkActivitydetailsReport,
+                                               fontSize: 7,
+                                           },
+                                       ],
+                                       margin: 20
+                                   }
+                               });
+
+                               doc['footer'] = (function (page, pages) {
+                                   return {
+                                       columns: [
+                                           {
+                                               alignment: 'left',
+                                               text: ['Created on: ', { text: jsDate.toString() }]
+                                           },
+                                           {
+                                               alignment: 'right',
+                                               text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                           }
+                                       ],
+                                       margin: 20
+                                   }
+                               });
+
+                               var objLayout = {};
+                               objLayout['hLineWidth'] = function (i) { return .5; };
+                               objLayout['vLineWidth'] = function (i) { return .5; };
+                               objLayout['hLineColor'] = function (i) { return '#ddd'; };
+                               objLayout['vLineColor'] = function (i) { return '#ddd'; };
+                               objLayout['paddingLeft'] = function (i) { return 5; };
+                               objLayout['paddingRight'] = function (i) { return 5; };
+                               doc.content[0].layout = objLayout;
+
+                           },
+
+                       },
+                       {
+                           extend: 'excel', title: 'Off Network Activity Details Report' + today,
+                           exportOptions: {
+                               columns: "thead th:not(.noExport)",
+
+                           },
+                           customize: function (xlsx) {
+                               var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                               var numrows = 2;
+                               var clR = $('row', sheet);
+                               //update Row
+                               clR.each(function () {
+                                   var attr = $(this).attr('r');
+                                   var ind = parseInt(attr);
+                                   ind = ind + numrows;
+                                   $(this).attr("r", ind);
+                               });
+
+                               // Create row before data
+                               $('row c ', sheet).each(function () {
+                                   var attr = $(this).attr('r');
+                                   var pre = attr.substring(0, 1);
+                                   var ind = parseInt(attr.substring(1, attr.length));
+                                   ind = ind + numrows;
+                                   $(this).attr("r", pre + ind);
+                               });
+
+                               function Addrow(index, data) {
+                                   msg = '<row r="' + index + '">'
+                                   for (i = 0; i < data.length; i++) {
+                                       var key = data[i].key;
+                                       var value = data[i].value;
+                                       msg += '<c t="inlineStr" r="' + key + index + '">';
+                                       msg += '<is>';
+                                       msg += '<t>' + value + '</t>';
+                                       msg += '</is>';
+                                       msg += '</c>';
+                                   }
+                                   msg += '</row>';
+                                   return msg;
+                               }
+
+                               var r1 = Addrow(1, [{ key: 'B', value: 'Off Network Activity Details Report - Date : ' + today }]);
+                               var r2 = Addrow(2, [{ key: 'A', value: '' }]);
+
+                               sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + sheet.childNodes[0].childNodes[1].innerHTML;
+                               $('row c[r^="B1"]', sheet).attr('s', '2');
+                           },
+                       }
+                   ],
+               });
+               $(".table").css({ "width": "100%" });
+               $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+           });
+            }
+        });
+
+    }
+</script>
+<script>
+    function funoffnetwork_activity_dataleakage(device_id, startdate, enddate) {
+       //debugger;
+        var startdate2 = decodeURI(startdate);
+        var enddate2 = decodeURI(enddate);
+        var url1 = '@Url.Content("~/csat_report/offnetwork_activity_dataleakage?DeviceId=")' + device_id + '&strstartdate=' + startdate2 + '&strenddate=' + enddate2;
+         $.ajax({
+         type: "POST",
+         url: url1,
+          success: function (data) {
+           // debugger;
+
+              var SetData1 = $('.div_nwactivity_dataleakage');
+              jQuery('.div_nwactivity_dataleakage').html('');
+
+           var nwheader = "<table class='table table-striped table-bordered table-hover dataleakage_activity_datatable'><thead><tr>";
+           nwheader += " <th class='col-sm-1'>Timestamp</th>" +
+                       "<th class='col-sm-2'>Media</th>" +
+                       "<th class='col-sm-2'>Extension</th>" +   
+                       //"<th class='col-sm-2'>Device Used</th>" + 
+                       "<th class='col-sm-3'>Source Path</th>" +
+                       "<th class='col-sm-3'>Destination Path</th>" +
+                       "<th class='col-sm-1'>Size</th></tr></thead><tbody>";
+              var nwrows = "";
+             
+
+              for (var i = 0; i < data.nwoffdataleakage.length; i++) {
+                  if (data.nwoffdataleakage[i].filetype == 'NA' || data.nwoffdataleakage[i].filetype == null)
+                      data.nwoffdataleakage[i].filetype = '';
+                  if (data.nwoffdataleakage[i].source_path == 'NA' || data.nwoffdataleakage[i].source_path == null)
+                      data.nwoffdataleakage[i].source_path = '';
+                  if (data.nwoffdataleakage[i].destination_path == 'NA' || data.nwoffdataleakage[i].destination_path == null)
+                      data.nwoffdataleakage[i].destination_path = '';
+                    nwrows += "<tr>";
+               nwrows += "<td class='col-sm-1'>" + data.nwoffdataleakage[i].timeStamp + "</td>" +
+                        "<td class='col-sm-2'>" + data.nwoffdataleakage[i].media + "</td>" +
+                        "<td class='col-sm-2'>" + data.nwoffdataleakage[i].filetype + "</td>" +
+                        //"<td class='col-sm-2'>" + data.nwoffdataleakage[i].deviceused + "</td>" +
+                        "<td class='col-sm-3'>" + data.nwoffdataleakage[i].source_path + "</td>" +
+                        "<td class='col-sm-3'>" + data.nwoffdataleakage[i].destination_path + "</td>" +
+                        "<td class='col-sm-1'>" + data.nwoffdataleakage[i].size + "</td>";
+                }
+                nwoffdataleakage = nwheader + nwrows + "</tr></tbody></table>";
+                SetData1.append(nwoffdataleakage);
+
+              $(document).ready(function () {
+                  $('.dataleakage_activity_datatable').DataTable({
+
+
+                      paging: true,
+                      orderCellsTop: true,
+                      fixedHeader: true,
+                      order: [],
+                      columnDefs: [{ orderable: false, targets: [] }],
+                      colReorder: true,
+                      searching: false,
+                      info: false,
+                      responsive: false,
+                      dom: '<"html5buttons"B>lTfgitp',
+                      buttons: [
+                          {
+                              extend: 'colvis',
+                              columns: ':not(.noVis)',
+                          },
+                          {
+                              extend: 'pdf', title: 'Show Data Leakage Activity Detail Report' + today,
+                              exportOptions: {
+                                  //  columns: ':visible',
+                                  columns: "thead th:not(.noExport)",
+                              },
+                              pageSize: 'A4',
+                              customize: function (doc) {
+
+                                  doc.content.splice(0, 1);
+                                  var now = new Date();
+                                  var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                  doc.pageMargins = [20, 60, 20, 30];
+                                  doc.defaultStyle.fontSize = 7;
+                                  doc.styles.tableHeader.fontSize = 7;
+                                  //doc.content.forEach(function (item) {
+                                  //    if (item.table) {
+                                  //        item.table.widths = ['*', '*', '*']
+                                  //    }
+                                  //})
+
+                                  var OffNetworkActivitydataleakageReport = 'Report Date :  ' + document.getElementById('date').value;
+                                  doc['header'] = (function () {
+                                      return {
+                                          columns: [
+                                              {
+                                                  alignment: 'left',
+                                                  text: '',
+                                                  fontSize: 12,
+                                              },
+                                              {
+                                                  alignment: 'center',
+                                                  text: 'Data Leakage Activity Detail Report',
+                                                  fontSize: 12,
+                                              },
+                                              {
+                                                  margin: [0, 20, 0, 0],
+                                                  alignment: 'right',
+                                                  italics: true,
+                                                  text: OffNetworkActivitydataleakageReport,
+                                                  fontSize: 7,
+                                              },
+                                          ],
+                                          margin: 20
+                                      }
+                                  });
+
+                                  doc['footer'] = (function (page, pages) {
+                                      return {
+                                          columns: [
+                                              {
+                                                  alignment: 'left',
+                                                  text: ['Created on: ', { text: jsDate.toString() }]
+                                              },
+                                              {
+                                                  alignment: 'right',
+                                                  text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                              }
+                                          ],
+                                          margin: 20
+                                      }
+                                  });
+
+                                  var objLayout = {};
+                                  objLayout['hLineWidth'] = function (i) { return .5; };
+                                  objLayout['vLineWidth'] = function (i) { return .5; };
+                                  objLayout['hLineColor'] = function (i) { return '#ddd'; };
+                                  objLayout['vLineColor'] = function (i) { return '#ddd'; };
+                                  objLayout['paddingLeft'] = function (i) { return 5; };
+                                  objLayout['paddingRight'] = function (i) { return 5; };
+                                  doc.content[0].layout = objLayout;
+
+                              },
+
+                          },
+                          {
+                              extend: 'excel', title: 'Show Data Leakage Activity Detail Report' + today,
+                              exportOptions: {
+                                  columns: "thead th:not(.noExport)",
+
+                              },
+                              customize: function (xlsx) {
+                                  var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                  var numrows = 2;
+                                  var clR = $('row', sheet);
+                                  //update Row
+                                  clR.each(function () {
+                                      var attr = $(this).attr('r');
+                                      var ind = parseInt(attr);
+                                      ind = ind + numrows;
+                                      $(this).attr("r", ind);
+                                  });
+
+                                  // Create row before data
+                                  $('row c ', sheet).each(function () {
+                                      var attr = $(this).attr('r');
+                                      var pre = attr.substring(0, 1);
+                                      var ind = parseInt(attr.substring(1, attr.length));
+                                      ind = ind + numrows;
+                                      $(this).attr("r", pre + ind);
+                                  });
+
+                                  function Addrow(index, data) {
+                                      msg = '<row r="' + index + '">'
+                                      for (i = 0; i < data.length; i++) {
+                                          var key = data[i].key;
+                                          var value = data[i].value;
+                                          msg += '<c t="inlineStr" r="' + key + index + '">';
+                                          msg += '<is>';
+                                          msg += '<t>' + value + '</t>';
+                                          msg += '</is>';
+                                          msg += '</c>';
+                                      }
+                                      msg += '</row>';
+                                      return msg;
+                                  }
+
+                                  var r1 = Addrow(1, [{ key: 'B', value: 'Show Data Leakage Activity Detail Report - Date : ' + today }]);
+                                  var r2 = Addrow(2, [{ key: 'A', value: '' }]);
+
+                                  sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + sheet.childNodes[0].childNodes[1].innerHTML;
+                                  $('row c[r^="B1"]', sheet).attr('s', '2');
+                              },
+                          }
+                      ],
+                  });
+                  $(".table").css({ "width": "100%" });
+                  $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+              });
+            }
+        });
+
+    }
+</script>
+<script>
+    function funoffnetwork_activity_printer(device_id, startdate, enddate) {
+       //debugger;
+        var startdate3 = decodeURI(startdate);
+        var enddate3 = decodeURI(enddate);
+        var url1 = '@Url.Content("~/csat_report/offnetwork_activity_printer?DeviceId=")' + device_id + '&strstartdate=' + startdate3 + '&strenddate=' + enddate3;
+         $.ajax({
+         type: "POST",
+         url: url1,
+          success: function (data) {
+            //debugger;
+
+              var SetData1 = $('.div_nwactivity_printerdata');
+              jQuery('.div_nwactivity_printerdata').html('');
+
+              var nwheader = "<table class='table table-striped table-bordered table-hover printer_activity_datatable'><thead><tr>";
+           nwheader += " <th class='col-sm-2'>Timestamp</th>" +
+                       "<th class='col-sm-2'>Username</th>" +
+                       "<th class='col-sm-3'>Printer Name</th>" +
+                       "<th class='col-sm-4'>Document Name</th>" +                       
+                       "<th class='col-sm-1'>Pages</th></tr></thead><tbody>";
+                var nwrows = "";
+
+              for (var i = 0; i < data.nwoffprinter.length; i++) {
+                    nwrows += "<tr>";
+                  nwrows += "<td>" + data.nwoffprinter[i].device_timestamp + "</td>" +
+                      "<td>" + data.nwoffprinter[i].user_name + "</td>" +
+                      "<td>" + data.nwoffprinter[i].printer_name + "</td>" +
+                      "<td>" + data.nwoffprinter[i].doc + "</td>" +
+                      "<td>" + data.nwoffprinter[i].total_pages + "</td>";
+              }
+                nwoffprinterdata = nwheader + nwrows + "</tr></tbody></table>";
+                SetData1.append(nwoffprinterdata);
+
+              $(document).ready(function () {
+                  $('.printer_activity_datatable').DataTable({
+
+
+                      paging: true,
+                      orderCellsTop: true,
+                      fixedHeader: true,
+                      order: [],
+                      columnDefs: [{ orderable: false, targets: [] }],
+                      colReorder: true,
+                      searching: false,
+                      info: false,
+                      responsive: false,
+                      dom: '<"html5buttons"B>lTfgitp',
+                      buttons: [
+                          {
+                              extend: 'colvis',
+                              columns: ':not(.noVis)',
+                          },
+                          {
+                              extend: 'pdf', title: 'Show Printer Usage Activity Detail' + today,
+                              exportOptions: {
+                                  //  columns: ':visible',
+                                  columns: "thead th:not(.noExport)",
+                              },
+                              pageSize: 'A4',
+                              customize: function (doc) {
+
+                                  doc.content.splice(0, 1);
+                                  var now = new Date();
+                                  var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                  doc.pageMargins = [20, 60, 20, 30];
+                                  doc.defaultStyle.fontSize = 7;
+                                  doc.styles.tableHeader.fontSize = 7;
+                                 
+                                  var OffNetworkActivityprinterReport = 'Report Date :  ' + document.getElementById('date').value;
+                                  doc['header'] = (function () {
+                                      return {
+                                          columns: [
+                                              {
+                                                  alignment: 'left',
+                                                  text: '',
+                                                  fontSize: 12,
+                                              },
+                                              {
+                                                  alignment: 'center',
+                                                  text: 'Printer Usage Activity Report',
+                                                  fontSize: 12,
+                                              },
+                                              {
+                                                  margin: [0, 20, 0, 0],
+                                                  alignment: 'right',
+                                                  italics: true,
+                                                  text: OffNetworkActivityprinterReport,
+                                                  fontSize: 7,
+                                              },
+                                          ],
+                                          margin: 20
+                                      }
+                                  });
+
+                                  doc['footer'] = (function (page, pages) {
+                                      return {
+                                          columns: [
+                                              {
+                                                  alignment: 'left',
+                                                  text: ['Created on: ', { text: jsDate.toString() }]
+                                              },
+                                              {
+                                                  alignment: 'right',
+                                                  text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                              }
+                                          ],
+                                          margin: 20
+                                      }
+                                  });
+
+                                  var objLayout = {};
+                                  objLayout['hLineWidth'] = function (i) { return .5; };
+                                  objLayout['vLineWidth'] = function (i) { return .5; };
+                                  objLayout['hLineColor'] = function (i) { return '#ddd'; };
+                                  objLayout['vLineColor'] = function (i) { return '#ddd'; };
+                                  objLayout['paddingLeft'] = function (i) { return 5; };
+                                  objLayout['paddingRight'] = function (i) { return 5; };
+                                  doc.content[0].layout = objLayout;
+
+                              },
+
+                          },
+                          {
+                              extend: 'excel', title: 'Show Printer Usage Activity Detail' + today,
+                              exportOptions: {
+                                  columns: "thead th:not(.noExport)",
+
+                              },
+                              customize: function (xlsx) {
+                                  var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                  var numrows = 2;
+                                  var clR = $('row', sheet);
+                                  //update Row
+                                  clR.each(function () {
+                                      var attr = $(this).attr('r');
+                                      var ind = parseInt(attr);
+                                      ind = ind + numrows;
+                                      $(this).attr("r", ind);
+                                  });
+
+                                  // Create row before data
+                                  $('row c ', sheet).each(function () {
+                                      var attr = $(this).attr('r');
+                                      var pre = attr.substring(0, 1);
+                                      var ind = parseInt(attr.substring(1, attr.length));
+                                      ind = ind + numrows;
+                                      $(this).attr("r", pre + ind);
+                                  });
+
+                                  function Addrow(index, data) {
+                                      msg = '<row r="' + index + '">'
+                                      for (i = 0; i < data.length; i++) {
+                                          var key = data[i].key;
+                                          var value = data[i].value;
+                                          msg += '<c t="inlineStr" r="' + key + index + '">';
+                                          msg += '<is>';
+                                          msg += '<t>' + value + '</t>';
+                                          msg += '</is>';
+                                          msg += '</c>';
+                                      }
+                                      msg += '</row>';
+                                      return msg;
+                                  }
+
+                                  var r1 = Addrow(1, [{ key: 'B', value: 'Show Printer Usage Activity Detail - Date : ' + today }]);
+                                  var r2 = Addrow(2, [{ key: 'A', value: '' }]);
+
+                                  sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + sheet.childNodes[0].childNodes[1].innerHTML;
+                                  $('row c[r^="B1"]', sheet).attr('s', '2');
+                              },
+                          }
+                      ],
+                  });
+                  $(".table").css({ "width": "100%" });
+                  $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+              });
+            }
+        });
+
+    }
+</script>
+<!--Show activity model box  Content-->
+<div class="modal fade" id="add_activity" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Show Activity Detail
+                </h6>
+
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="pull-right" style="margin-top:2px;margin-bottom:3px;">
+                        <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#printer_activity">Printer Usage</button>
+                        <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#dataleakage_activity">Data Leakage</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive div_nwactivity_selectdata">
+                        </div>
+                        <div class="table-responsive" id="div_nwactivity_details">                         
+                        </div>
+                        </div>
+
+                    </div>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End -Show activity pop-up model box Content end-->
+<!-- Show Data Leakage Activity Detail model box  Content-->
+<div class="modal fade" id="dataleakage_activity" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Show Data Leakage Activity Detail
+                </h6>
+
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive div_nwactivity_selectdata">                                                     
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive div_nwactivity_dataleakage">                         
+                            @*<table class="table table-striped table-bordered nw_activity_dataleakage" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-2">Timestamp</th>
+                                        <th class="col-sm-1">Media</th>
+                                        <th class="col-sm-1">Extension</th>
+                                        <th class="col-sm-2">Device Used</th>
+                                        <th class="col-sm-3">Source Path</th>
+                                        <th class="col-sm-2">Destination Path</th>
+                                        <th class="col-sm-1">Size</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-sm-2">2018-09-13 04:20:00 </td>
+                                        <td class="col-sm-1">HDD to USB</td>
+                                        <td class="col-sm-1">jpg</td>
+                                        <td class="col-sm-2">Sandisk</td>
+                                        <td class="col-sm-3">192.168.100.103/Users/Desktop/Coreproject-2018</td>
+                                        <td class="col-sm-2">C:/Users/Desktop/Coreproject-2018</td>
+                                        <td class="col-sm-1">30 KB</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-2">2018-09-13 06:30:40 </td>
+                                        <td class="col-sm-1">Share to HDD</td>
+                                        <td class="col-sm-1"> png </td>
+                                        <td class="col-sm-2">Sandisk</td>
+                                        <td class="col-sm-3">192.168.100.104/Users/Document/Coreproject2018/OwnyitCSAT-2018</td>
+                                        <td class="col-sm-2">D:/MyDocument/Coreprojec2018/OwnyitCSAT-2018</td>
+                                        <td class="col-sm-1">125.67 KB</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-2">2018-09-13 06:30:40 </td>
+                                        <td class="col-sm-1">USB to HDD</td>
+                                        <td class="col-sm-1">pdf </td>
+                                        <td class="col-sm-2">Sandisk</td>
+                                        <td class="col-sm-3">192.168.100.104/Users/Download/Coreproject2018/OwnyitSOC-2018</td>
+                                        <td class="col-sm-2">D:/MyDocument/Coreprojec2018/OwnyitSOC-2018</td>
+                                        <td class="col-sm-1">50 KB</td>
+                                    </tr>
+                                </tbody>
+                            </table>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End  Show Data Leakage Activity Detail pop-up model box Content end-->
+<!-- Show Printer Usage Activity Detail model box  Content-->
+<div class="modal fade" id="printer_activity" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Show Printer Usage Activity Detail
+                </h6>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive div_nwactivity_selectdata">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive div_nwactivity_printerdata">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End  Show Printer Usage  Activity Detail pop-up model box Content end-->

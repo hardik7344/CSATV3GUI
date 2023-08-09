@@ -1,0 +1,341 @@
+﻿@using OwnYITCSAT.DataAccessLayer;
+@using OwnYITCSAT.Controllers;
+@{
+    ViewData["Title"] = "csat_settings_page";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+<div class="row">
+    <div class="headerbar">
+        <a href="#" style="padding-left:10px; color:#fff;">Setting</a>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-2 col-md-2 col-lg-2">
+        @{
+            @Html.Partial("csat_settings_page_menu");
+        }
+
+    </div>
+    <div class="col-sm-10 col-md-10 col-lg-10">
+
+        <ul class="breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                @Html.ActionLink("Settings", "csat_settings_page", "csat_settings_page")
+                <i class="icon-angle-right"></i>
+            </li>
+
+        </ul>
+        <div class="row">
+            @{
+                if (OwnYITConstant.DT_SETTINGS_MENU != null)
+                {
+                    foreach (System.Data.DataRow dr in (OwnYITConstant.DT_SETTINGS_MENU.Rows))
+                    {
+                        <div id="CSAT_Agent_Management" class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="x_panel">
+                                <div class="x_title" style="margin-left: 20px; color:#628B9F;">
+                                    @dr["menu_name"]
+                                </div>
+                                <div class="x_content">
+                                    <div class="box-content">
+                                        @{
+
+                                            var result = new csat_settings_pageController().get_Submenu(Convert.ToInt32(dr["menu_id"]));
+                                            if (OwnYITConstant.DT_SETTINGS_SUB_MENU != null)
+                                            {
+                                                foreach (System.Data.DataRow dr1 in ((OwnYITConstant.DT_SETTINGS_SUB_MENU)).DefaultView.Table.Rows)
+                                                {
+
+                                                    <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                                        <a href='@Url.Content("~" + @dr1["menu_url"] + "")' class="quick-button">
+                                                            <div class="@dr1["class"]"></div>
+                                                            <h6>@dr1["menu_name"]</h6>
+                                                        </a>
+                                                    </div>
+
+                                                }
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            @*<div id="CSAT_Agent_Management" class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px; color:#628B9F;">
+                            csat Agent Management
+                        </div>
+                        <div class="x_content">
+
+                            <div class="box-content">
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href='~/csat_settings_page/settings_scaniprange' class="quick-button">
+                                        <div class="scan-ip-range"></div>
+                                        <h6>Scann IP Range</h6>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href='~/csat_settings_page/settings_agentinstallation' class="quick-button">
+                                        <div class="agent-installation"></div>
+                                        <h6>Agent Installation</h6>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href="~/csat_settings_page/settings_agentstatus" class="quick-button">
+                                        <div class="agent-installatin-status"></div>
+                                        <h6>Agent Installation Status</h6>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href="~/csat_settings_page/settings_agentuninstall" class="quick-button">
+                                        <div class="agent-uninstall"></div>
+                                        <h6>Agent Uninstall</h6>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href="~/csat_settings_page/settings_authorizeiprange" class="quick-button">
+                                        <div class="authorize-ip-range"></div>
+                                        <h6>Authorize IP Range</h6>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                    <a href="csat_settings_page/" class="quick-button">
+                                        <div class="agent-realease-license"></div>
+                                        <h6>Agent Release License</h6>
+                                    </a>
+                                </div>
+
+
+                                <div class="clearfix"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Admin_User_Management" class=" col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px;color:#628B9F;">
+                            Organization Structure Management
+                        </div>
+
+
+                        <div class="box-content">
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="branch-level-creation-1"></div>
+                                    <h6>Branch/Unit Level Creation</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="manage-branch-unit"></div>
+                                    <h6>Manage Branch/Unit</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="unlink-agent"></div>
+                                    <h6>Unlink Agent From Branch/Unit</h6>
+                                </a>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="Alert_Notification_Handling" class=" col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px; color:#628B9F;">
+                            Admin User Management
+                        </div>
+
+
+                        <div class="box-content">
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="manage-admin-user"></div>
+                                    <h6>Branch/Unit Level Creation</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="change-user-password"></div>
+                                    <h6>Manage Branch/Unit</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="admin-access-rights"></div>
+                                    <h6>Unlink Agent From Branch/Unit</h6>
+                                </a>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Compliance_Management" class=" col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px;color:#628B9F;">
+                            Alert Notification Handling
+                        </div>
+                        <div class="box-content">
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="create-notification-1"></div>
+                                    <h6>Create Notification</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="apply-notification"></div>
+                                    <h6>Apply Notification</h6>
+                                </a>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px;color:#628B9F;">
+                            Compliance Management
+                        </div>
+
+
+                        <div class="box-content">
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="desired-configuration-mgmt"></div>
+                                    <h6>Desired Configuration Management</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="general-setting"></div>
+                                    <h6>General/Common Setting</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="exclution-ip-for-compliance"></div>
+                                    <h6>Exclusion IP for Compliance</h6>
+                                </a>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Configuration_Management" class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="x_panel">
+                        <div class="x_title" style="margin-left: 20px;color:#628B9F;">
+                            Configuration Management
+                        </div>
+
+
+                        <div class="box-content">
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="agent-configuration"></div>
+                                    <h6>Agent Configuration</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="datetime-format"></div>
+                                    <h6>Date Format Settings</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="authorize-ip-for-accessing-gui"></div>
+                                    <h6>Authorize IP for Accessing GUI</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="agent-patch-upload"></div>
+                                    <h6>Agent Patch Upload</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="manage-process-category"></div>
+                                    <h6>Manage Process Category</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="database-maintanance"></div>
+                                    <h6>Database Maintanance</h6>
+                                </a>
+                            </div>
+
+
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="manage-disk-cleanup"></div>
+                                    <h6>Manage Disk Clean Up</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="setting-for-mail-report"></div>
+                                    <h6>Setting For Mail Report</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="remote-file-execute"></div>
+                                    <h6>Remote File Execution</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="agent-patch-management"></div>
+                                    <h6>Agent Patch Management</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="service-setting"></div>
+                                    <h6>Service Setting</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="mail-server-setting"></div>
+                                    <h6>Mail Server Setting</h6>
+                                </a>
+                            </div>
+
+
+                            <div class="col-md-2 col-sm-4 col-xs-6 qb">
+                                <a href="ScanIPRange.aspx" class="quick-button">
+                                    <div class="configuration-settings"></div>
+                                    <h6>Configuration Setting</h6>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "InvalidLicenseUpload";
+    Layout = "~/Views/Shared/_new_registration_master.cshtml";
+}
+
+<style>
+    .activeted {
+        padding: 20px;
+        border-radius: 50%;
+        background-color: #5c9b66;
+        color: #fff;
+        font-size: 20px;
+    }
+</style>
+<div class="custom-login-panel">
+    <div class="row" style="margin-top:100px">
+        <div class="col-xs-1 col-sm-2 col-md-1 col-lg-3">
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="panel panel-primary loginbox">
+
+                <div class="panel-body">
+                    <div>
+                        @*<div class="icon-box text-center">
+                            <i class="material-icons glyphicon glyphicon-ok activeted"></i>
+                        </div>*@
+                        <h4 class="text-center" style="margin-bottom:10px;">Invalid License File</h4>
+                    </div>
+                    <p class="text-center">Please upload valid license file!</p>
+                    <div class="alert alert-light text-center" role="alert">
+                        @Html.ActionLink("Go to Dashboard", "csat_main_dashboard", "csat_main_dashboard", null, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-0 col-sm-3 col-md-3 col-lg-3">
+        </div>
+    </div>
+</div>

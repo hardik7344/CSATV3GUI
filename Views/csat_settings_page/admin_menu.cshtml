@@ -1,0 +1,24 @@
+﻿
+@*@using OwnYITCSAT.DataAccessLayer;*@
+
+<div class="category-tree mb30">
+    <ul class="subcategories">
+        <li class="130 form_label div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_organization_structure" ? "active" : "")">@Html.ActionLink("Organization Structure", "setting_organization_structure", "csat_settings_page")</li>
+        <li class="134 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_user_mgmt" ? "active" : "")">@Html.ActionLink("User Management", "setting_user_mgmt", "csat_settings_page")</li>
+    </ul>
+</div>
+<script>
+    $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('.category-tree').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,121 @@
+﻿@model file
+@*@model System.Data.DataTable*@
+@using System.Data;
+@using OwnYITCSAT.Models
+@using OwnYITCSAT.DataAccessLayer;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Login</title>
+    @*<script src="~/js/jquery-1.12.4.js"></script>*@
+    <script src="~/js/jquery-3.6.0.js"></script>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/ownyit_csat.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.js"></script>
+    <link href="~/css/OverlayScrollbars.css" rel="stylesheet" />
+    <script src="~/js/OverlayScrollbars.js"></script>
+    <script>
+
+        $(function () {
+            //The passed argument has to be at least a empty object or a object with your desired options
+            $('body').overlayScrollbars({
+                callbacks: {
+                    onInitialized: null,               //null || function
+                    onInitializationWithdrawn: null,   //null || function
+                    onDestroyed: null,                 //null || function
+                    onScrollStart: null,               //null || function
+                    onScroll: null,                    //null || function
+                    onScrollStop: null,                 //null || function
+                    onOverflowChanged: null,           //null || function
+                    onOverflowAmountChanged: null,     //null || function
+                    onDirectionChanged: null,          //null || function
+                    onContentSizeChanged: null,        //null || function
+                    onHostSizeChanged: null,           //null || function
+                    onUpdated: null                    //null || function
+                }
+            });
+            $('.modal-body').overlayScrollbars({
+                className: "os-theme-dark"
+            });
+            //$('.dataTables_scroll').overlayScrollbars({
+            //    className: "os-theme-dark"
+            //});
+
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="modal fade" id="licenseload_offline_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        License Offline Detail
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                                <div class="jumbotron">
+                                    <div class="container">
+                                        <div class="form-group" style="display:none">
+                                            <label for="nameField" class="col-xs-12 form_label" style="text-align:center">  Enter License Key </label>
+                                            <div class="col-sm-12">
+                                                <input type="text" name="enterkey" id="enterkey" class="form-control" placeholder=" XXXX-XXXX-XXXX-XXXX" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group files">
+                                            <label class="col-xs-12 form_label" style="text-align:center"> Upload Your File </label>
+                                            <div class="col-sm-12">
+                                                <input name="file" type="file" id="uploadlicense1" multiple>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-12 form_label">  </label>
+                                            <div class="col-sm-12" style="margin-top:8px;text-align:center">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>                           
+                        </div>
+                    </div>
+                    &nbsp;
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="navbar navbar-default navbar-static-top" style="position:relative;">
+        <div class="container-flued">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                    <img src="~/images/Setting/ownyitcsat_head.png" style="height: 63px;margin-top: 1px;" />
+                    <b style="color:#fff;font-size:25px;">  Cyber Security Audit Tool</b>
+                </a>
+                <ul class="nav navbar-nav navbar-right" style="background-color:transparent;margin-top: 15px;margin-right:10px;">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#conformation_user">New Registration</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" style="margin-top:30px;">
+        @RenderBody()
+    </div>
+    <footer class="foo">
+        <p style="float:right; margin-right:50px; color:#3d93c8;margin-top:3px">&copy; @DateTime.Now.Year - Powered By TectonaS</p>
+    </footer>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+

@@ -1,0 +1,1215 @@
+﻿@using OwnYITCSAT.DataAccessLayer;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using OwnYITCSAT.Controllers;
+@{
+    ViewData["Title"] = "asset_device_list";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script src="~/js/jquery.validate.js"></script>
+
+
+<div class="row">
+    <div class="headerbar">
+        <a href="#">Asset Management</a>
+    </div>
+</div>
+
+<!--main Content-->
+<div class="row" style="margin-top:10px;">
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("asset_system_menu");
+                }
+            </div>
+        </div>
+
+    </div>
+    <!--side menu end-->
+    <!--sub content-->
+    <div class="col-sm-10 col-md-10 col-lg-10">
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="padding:4px;">
+
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>System List</li>
+                </ul>
+
+            </div>
+        </div>
+
+
+        <!--asset device form-->
+        <!--form  content-->
+
+        <div class="ibox float-e-margins" style="margin:0px;">
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post">
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Branch/ Unit</label>
+                                        <div class="col-xs-10">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU">
+                                                <option value="-1">All</option>
+                                                @{
+                                                    if (ViewData["OUList"] != null)
+                                                    {
+                                                        foreach (System.Data.DataRow dr in ((System.Data.DataTable)(ViewData["OUList"])).Rows)
+                                                        {
+
+                                                            @*@Html.DropDownListFor(dr["OUID"], dr["OUName"], "ALL", new { Class = "ddlStyle", onchange = "SelectedIndexChanged()" })*@
+                                                            <option value="@dr["OUID"]">@dr["OUName"]</option>
+                                                            //    var result = new csat_asset_mgmtController().getAllOU(dr["OUID"].ToString());
+
+                                                        }
+                                                    }
+                                                }
+                                                @*    <option>Root</option>
+                                                    <option value="01">Root >> Location</option>
+                                                    <option value="02">Root >> Location >> Department</option>*@
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">System</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="Device">
+                                                <option value="-1">Select System</option>
+                                                @{
+                                                    if (OwnYITConstant.DT_ASSET_DEVICE_LIST1 != null)
+                                                    {
+                                                        @foreach (System.Data.DataRow dr in (OwnYITConstant.DT_ASSET_DEVICE_LIST1).Rows)
+                                                        {
+                                                            <option value="@dr["device_id"]">@dr["ActualName"]</option>
+                                                            @*<option value="01">Mittal</option>
+                                                                <option value="02">sapan</option>*@
+                                                        }
+                                                    }
+                                                }
+                                                @*<option>Select System</option>
+                                                    <option>Upendra</option>
+                                                    <option value="01">Mittal</option>
+                                                    <option value="02">sapan</option>*@
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 text-align-right">IP </label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="IP" id="IP">
+                                                @*<option>Select IP</option>
+                                                    <option>192.168.100.102</option>
+                                                    <option value="01">192.168.100.103</option>
+                                                    <option value="02">192.168.100.104</option>*@
+                                                <option value="-1">Select IP</option>
+                                                @{
+                                                    if (OwnYITConstant.DT_ASSET_DEVICE_LIST1 != null)
+                                                    {
+                                                        @foreach (System.Data.DataRow dr in (OwnYITConstant.DT_ASSET_DEVICE_LIST1).Rows)
+                                                        {
+                                                            <option>@dr["IPAddress"]</option>
+                                                            @*<option value="01">Mittal</option>
+                                                                <option value="02">sapan</option>*@
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 text-align-right">Status</label>
+                                        <div class="col-xs-2">
+                                            @*<select class="form-control col-sm-3 col-lg-12 col-md-3" name="Asset-Status" id="DrpStatus">
+                                                    <option>All</option>
+                                                    <option value="01">Running</option>
+                                                    <option value="02">Warning</option>
+                                                    <option value="03">Present Not Link</option>
+
+                                                </select>*@
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Status" id="Status">
+                                                <option value="-1">Select Status</option>
+                                                <option value="1">Running</option>
+                                                <option value="2">Warning</option>
+                                                <option value="3">Not linked</option>
+                                            </select>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <button type="submit" class="btn btn-default">Refresh</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!--form  content end-->
+                <!--asset device form end-->
+                <!--asset device Datatable start-->
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered asset_datatable" style="width:100%" id="asset_datatable">
+                                <thead>
+                                    <tr>
+                                        <th class="select" data-orderable="false"><input type="checkbox" name="select_device" id="gridallcheck" onclick="toggle(this);" /></th>
+                                        @*<th class="icon" data-orderable="false"><i class="glyphicon glyphicon-record"></i></th>*@
+                                        <th class="icon" data-orderable="false"><img src="~/images/status.png" /> </th>
+                                        <th class="system_name">System Name</th>
+                                        <th class="ip">IP</th>
+                                        <th class="system_os">OS Name</th>
+                                        <th class="date_time">Last Poll Time</th>
+                                        <th class="ou">Branch/ Unit</th>
+                                        @*<th class="icon" data-orderable="false">&nbsp;</th>*@
+                                        <th class="icon" data-orderable="false"><img src="~/images/popup.png" /></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+
+                                        if (OwnYITConstant.DT_ASSET_DEVICE_LIST != null)
+                                        {
+                                            foreach (System.Data.DataRow dr in (OwnYITConstant.DT_ASSET_DEVICE_LIST).Rows)
+                                            {
+                                                <tr class="gradeA">
+                                                    @*<td class="select"><input type="checkbox" name="select_device" id="gridrawcheck" value=@dr["device_id"]  onclick='UncheckMain(this,@dr["device_id"])'  /></td>*@
+                                                    <td class="select"><input type="checkbox" name="select_device" id="gridrawcheck" value=@dr["device_id"] onchange='UncheckMain(this)' /></td>
+
+                                                    <td><img src='@Url.Content( "~" + @dr["ImagesStatus"] + "")' /></td>
+                                                    @*<td>@dr["ImagesStatus"] </td>*@
+                                                    @*<td><img src="~/images/running.gif" /></td>*@
+                                                    @*<td><img src='@Url.Content( "~" + @dr["ImagesStatus"] + "")' /></td>*@
+                                                    <td>
+                                                        <a href="@Url.Action("asset_system_detail", "csat_asset_mgmt")?device_id=@dr["device_id"]">@dr["Virtual_Name"]</a>
+                                                    </td>
+                                                    @*<td>@dr["ActualName"] </td>*@
+                                                    <td>@dr["IPAddress"]</td>
+                                                    <td>@dr["os"]</td>
+                                                    @*<td>@dr["mac"]</td>*@
+                                                    <td>@dr["Performance"]</td>
+                                                    <td>@dr["OUName"] </td>
+                                                    <td class="icon" data-orderable="false">
+                                                        <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                            <span class="popup_text">
+                                                                <label class="system_label"> MAC</label><label class="system_label2 system_mac">: @dr["mac"]</label>
+                                                                <label class="system_label ">Login User</label><label class="system_label2 system_user">:  @dr["LoginUser"]</label>
+                                                                <label class="system_label ">Client Version</label><label class="system_label2 system_client">: @dr["ClientVersion"] </label>
+
+                                                            </span>
+                                                        </i>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+
+
+
+                                    @*<tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Upendra Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.104</td>
+                                            <td class="system_os">Microsoft Windows 7 Enterprise 32-bit</td>
+                                            <td class="center date_time">2018-04-25 16:31:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Upendra Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Rajesh Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.101</td>
+                                            <td class="system_os">Microsoft Windows 8.1 Enterprise64-bit</td>
+                                            <td class="center date_time">2018-04-25 16:35:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Rajesh Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Ajay Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.120</td>
+                                            <td class="system_os">Microsoft Windows 10 Enterprise64-bit</td>
+                                            <td class="center date_time">2018-04-23 15:22:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Ajay Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Matang bhatt", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.103</td>
+                                            <td class="system_os">Microsoft Windows 10 Enterprise32-bit</td>
+                                            <td class="center date_time">2018-04-20 12:05:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Matang bhatt</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Upendra Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.103</td>
+                                            <td class="system_os">Microsoft Windows 7 Ultimate 64-bit</td>
+                                            <td class="center date_time">2018-04-24 10:27:30</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Upendra Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Upendra Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.103</td>
+                                            <td class="system_os">Microsoft Windows 8.1 Enterprise32-bit</td>
+                                            <td class="center date_time">2018-04-21 16:31:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Upendra Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>
+                                        <tr class="gradeA">
+                                            <td class="select"><input type="checkbox" name="select_device" id="allcheck" /></td>
+                                            <td class="system_name">@Html.ActionLink("Upendra Patel", "asset_system_detail", "csat_asset_mgmt")</td>
+                                            <td class="ip">192.168.100.103</td>
+                                            <td class="system_os">Microsoft Windows 8.1 Enterprise64-bit</td>
+                                            <td class="center date_time">2018-04-19 12:31:20</td>
+                                            <td class="center ou">Ahmedabad</td>
+                                            <td class="icon" data-orderable="false">
+                                                <i class="glyphicon glyphicon-comment popup " style="color:#74b1f4;font-size:15px;">
+                                                    <span class="popup_text">
+                                                        <label class="system_label"> MAC</label><label class="system_label2 system_mac">: FC-AA-14-B2-DF-EB </label>
+                                                        <label class="system_label ">Login User</label><label class="system_label2 system_user">: Upendra Patel</label>
+                                                        <label class="system_label ">Client Version</label><label class="system_label2 system_client">: 10.2018.02.100 </label>
+
+                                                    </span>
+                                                </i>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <!--asset device Datatable end-->
+
+
+
+            </div>
+        </div>
+
+
+    </div>  <!--sub content end-->
+    <div class="space_bottom">&nbsp;</div>
+</div> <!--main Content end-->
+<!-- System sendmsg_popup model box  Content-->
+
+<div class="modal fade" id="sendmsg_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Send Messages
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" data-toggle="validator">
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3">Enter Message</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="text" name="msg" id="lblsendmsg" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-3"></label>
+                                <div class="col-xs-6">
+
+                                    <input type="button" class="btn btn-primary" name="send" value="Send" id="btnsendmsg" onclick="SystemAction('lblsendmsg','SendMessage')" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- End  System sendmsg_popup  pop-up model box Content end-->
+<!-- System Execute Command popup model box  Content-->
+
+<div class="modal fade" id="execute_command_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Execute Command
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" data-toggle="validator">
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Enter Command</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="text" name="command " id="lblcommand" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="execute" value="Execute" onclick="SystemAction('lblcommand','ExecuteCommand')" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- End Execute Command  pop-up model box Content end-->
+<!--  Manage System popup model box  Content-->
+<div class="modal fade" id="manage_system_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Manage System
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="form">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2">Shutdown</label>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="action" value="shutdowngracefully" id="shutdownG"> Gracefully </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="action" value="shutdownforcefully" id="shutdownF"> Forcefully </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2">Restart</label>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="action" value="restrartgracefully" id="restrartG"> Gracefully </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="action" value="restrartforcefully" id="restrartF"> Forcefully </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2">Log off</label>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input type="radio" name="action" value="Logoffgracefully" id="LogoffG"> Gracefully </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label><input type="radio" name="action" value="Logoffforcefully" id="LogoffF"> Forcefully </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="submit" value="Submit" onclick="return manage_system();" />
+                                    <input type="submit" class="btn btn-default" name="close" value="Close" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Manage System pop-up model box Content end-->
+<!-- System fetch all data popup model box  Content-->
+
+<div class="modal fade" id="fetch_alldata_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Fetch All Data
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" name="allselect" onclick="fetchdata(this);" /><b>Select all</b></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="checkbox">
+                                        <label> <input type="checkbox" name="data" id="alldata1" value="Hardware" onclick="fetchdataone();" />Hardware </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="checkbox">
+                                        <label> <input type="checkbox" name="data" id="alldata1" value="Software" onclick="fetchdataone();" />Software </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="data" id="alldata1" value="Process" onclick="fetchdataone();" />Process</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="data" id="alldata1" value="Service" onclick="fetchdataone();" />Service</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="submit" value="Submit" onclick="evalGroup()" />
+                                    <input type="submit" class="btn btn-default" name="close" value="Close" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- End fetch all data  pop-up model box Content end-->
+<!-- System Clean Temp File popup model box  Content-->
+
+<div class="modal fade" id="clean_tempfile_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Clean Temp Files
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-10">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-12">
+                                    <i class="glyphicon glyphicon-exclamation-sign" style="color:#74b1f4;font-size:20px;position:absolute;"></i>
+                                    <span style="font-weight:normal;margin-left:30px;">Are you sure you want to clean temp files ?</span>
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btntempyes" />
+                                    <input type="submit" class="btn btn-default" name="no" value="No" />
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- End clean Temp File  pop-up model box Content end-->
+<!-- Set Uninstall Password popup model box  Content-->
+<script>
+    function checkPasswordMatch() {
+        //alert('1');
+        var password = $("#txt_uninstall_new_password").val();
+        var confirmPassword = $("#txt_uninstall_confirm_password").val();
+        if (password != confirmPassword) {
+            alert("Passwords do not match!");
+            return false;
+        }
+        else {
+            //alert("Passwords match.");
+            submit_uninstall_password();
+            return (true);
+        }
+    }
+
+</script>
+<div class="modal fade" id="set_unistall_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Set Uninstall Password
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"> Current Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control " id="txt_uninstall_old_password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">New Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="txt_uninstall_new_password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Confirm Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="txt_uninstall_confirm_password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-4">
+                                    <input type="button" class="btn btn-primary" name="Ok" value="Ok" onclick="return(checkPasswordMatch());" />
+                                    <input type="button" class="btn btn-primary" name="Cancel" value="Cancle" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Set Uninstall Password  pop-up model box Content end-->
+
+<!--manage Agent registry popup start-->
+<script>
+   
+  
+
+</script>
+
+<div class="modal fade" id="manage_agent_registry" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="reset" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Manage Agent Registry
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" name="agent" method="post" id="Agent_Registry">
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Path</label>
+                                <div class="col-xs-5">
+                                    <input class="form-control required" type="text" name="path" id="pathset" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Key</label>
+                                <div class="col-xs-5">
+                                    <input class="form-control required" type="text" name="Key" id="keyset" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Key Type</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" id="keytype">
+                                        <option value="-1">Select Key</option>
+                                        <option value="0">String</option>
+                                        <option value="1">Integer</option>
+                                        <option value="2">Binary</option>
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 text-align-right">Action</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" id="keyaction">
+                                        <option value="-1">Select Action</option>
+                                        <option value="1">New</option>
+                                        <option value="2">Modify</option>
+                                        <option value="0">Delete</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Key Value</label>
+                                <div class="col-xs-5">
+                                    <input class="form-control required" type="text" id="key_valueset" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1"></label>
+                                <div class="col-xs-2">
+                                    <input type="button" class="btn btn-primary" name="Save" value="Save" onclick="manage_agent();" />
+                                    <input type="reset" class="btn btn-primary" name="Clear" value="Clear" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive" id="divmanagereg">
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--manage Agent registry popup end-->
+
+
+<script type="text/javascript">
+
+    $("#DrpOU").change(function () {
+       // debugger;
+        var url = '@Url.Content("~/csat_asset_mgmt/getAllOU?OUID=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                //alert('S');
+            }
+
+            })
+
+    });
+
+    $("#Device").change(function () {
+        //debugger;
+        var url = '@Url.Content("~/csat_asset_mgmt/GetDataDeviceWise?DeviceID=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                //alert('S');
+            }
+
+            })
+
+    });
+    $("#IP").change(function () {
+      // debugger;
+        var url = '@Url.Content("~/csat_asset_mgmt/GetDataIPWise?IP=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                //alert('S');
+            }
+
+            })
+
+    });
+
+    $("#Status").change(function () {
+        //debugger;
+        var url = '@Url.Content("~/csat_asset_mgmt/GetDataStatusWise?Status=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                //alert('S');
+            }
+
+            })
+
+    });
+
+
+</script>
+<script type="text/javascript">
+
+  function checkselect(id) {
+	 // debugger;
+	   var atLeastOneIsChecked = $('input[id="gridrawcheck"]:checked').length > 0;
+	    if (atLeastOneIsChecked == true)
+		{
+		      $('#'+id).modal('show');
+
+	   }
+		else
+	    {
+        alert("Select any one system !");
+		$('#'+id).modal('hide');
+		}
+
+    }
+   var deviceidall="";
+	 function toggle(source) {
+	//debugger;
+	  deviceidall="";
+        var checkboxes = document.querySelectorAll('input[id="gridrawcheck"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+			{
+			//debugger;
+                checkboxes[i].checked = source.checked;
+				deviceidall+=","+ checkboxes[i].value;
+			}
+			else
+			{
+
+			}
+
+        }
+		//alert(deviceidall);
+    }
+	var deviceid="";
+	 function UncheckMain(flag, device_id) {
+      // debugger;
+	   deviceid="";
+	   var checkboxes = document.querySelectorAll('input[id="gridrawcheck"]');
+	   for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked == true) {
+          deviceid += "," + checkboxes[i].value;
+        }
+		else
+		{
+
+		}
+
+		}
+		//alert(deviceid);
+    }
+	// $('#btnsendmsg').on('click', function () {
+	function SystemAction(id,Type)
+	{
+     // debugger;
+      var Svalue = document.getElementById(id);
+	  if (Svalue.value == "")
+            return alert("Please enter any value.");
+	  var device="";
+	  if(deviceid != "")
+	  {
+	  device=deviceid;
+	  }
+	  if(deviceidall != "")
+	  {
+	   device=deviceidall;
+	  }
+      //alert(Svalue.value);
+	  // alert(device);
+	     var url = '@Url.Content("~/csat_asset_mgmt/Get_System_Action?deviceid=")' + device + '&strvalue=' + Svalue.value+ '&ActionType='+Type;
+		  document.getElementById(id).value = ''
+		  // document.getElementById('gridrawcheck').checked = false;
+		   $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+			  // debugger;
+			   window.location.href = '@Url.Content("~/csat_asset_mgmt/asset_system_list")';
+			}
+			});
+ //});
+ }
+
+	var managesystemvalue="";
+	$('input[type=radio]').change( function() {
+   //alert("test");
+   managesystemvalue= this.value;
+//  alert(this.value);
+});
+    function manage_system() {
+	if (managesystemvalue == "")
+            return alert("You must choose an option.");
+	//  debugger;
+        if (confirm("Are you sure?")) {
+		 //debugger;
+		  var device="";
+	  if(deviceid != "")
+	  {
+	  device=deviceid;
+	  }
+	  if(deviceidall != "")
+	  {
+	   device=deviceidall;
+	  }
+	  var action="";
+	  var actionvalue="";
+	 if(managesystemvalue == "shutdowngracefully")
+	  {
+	     action="shutdown";
+		 actionvalue="1";
+	   }
+	   else if(managesystemvalue == "shutdownforcefully")
+	   {
+	     action="shutdown";
+		 actionvalue="0";
+	   }
+	   else if(managesystemvalue == "restrartgracefully")
+	   {
+	     action="Restart";
+		 actionvalue="1";
+	   }
+	   else if(managesystemvalue == "restrartforcefully")
+	   {
+	    action="Restart";
+		 actionvalue="0";
+	   }
+	    else if(managesystemvalue == "Logoffgracefully")
+	   {
+	     action="Logoff";
+		 actionvalue="1";
+	   }
+	   else if(managesystemvalue == "Logoffforcefully")
+	   {
+	    action="Logoff";
+		 actionvalue="0";
+	   }
+
+		  var url = '@Url.Content("~/csat_asset_mgmt/Get_System_Action?deviceid=")' + device + '&strvalue=' + actionvalue + '&ActionType='+action;
+		  //document.getElementById(id).value = ''
+		   $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+			   //debugger;
+			   window.location.href = '@Url.Content("~/csat_asset_mgmt/asset_system_list")';
+			}
+			});
+
+        } else {
+        }
+        document.getElementById("msg");
+    }
+		var Fetchvalue="";
+
+   function fetchdata(source) {
+   Fetchvalue="";
+        var checkboxes = document.querySelectorAll('input[id=alldata1]');
+		//debugger;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+             {
+			// debugger;
+                checkboxes[i].checked = source.checked;
+
+			  }
+			 else
+				{
+				}
+
+				if (checkboxes[i].checked == true) {
+				Fetchvalue += "," + checkboxes[i].value;
+				}
+        }
+		//alert(Fetchvalue);
+    }
+
+    function fetchdataone() {
+	Fetchvalue="";
+	 var checkboxes = document.querySelectorAll('input[id=alldata1]');
+		//debugger;
+        for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked == true) {
+				Fetchvalue += "," + checkboxes[i].value;
+				}
+
+		}
+		//alert(Fetchvalue);
+	}
+	function evalGroup() {
+		if(Fetchvalue == "")
+		   return alert("You must choose an option.");
+		var device="";
+	  if(deviceid != "")
+	  {
+	  device=deviceid;
+	  }
+	  if(deviceidall != "")
+	  {
+	   device=deviceidall;
+	  }
+		   var url = '@Url.Content("~/csat_asset_mgmt/Get_System_Action?deviceid=")' + device + '&strvalue=' + Fetchvalue + '&ActionType=FatchAll';
+		   $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+			   //debugger;
+			   window.location.href = '@Url.Content("~/csat_asset_mgmt/asset_system_list")';
+			}
+			});
+		//}
+
+
+    }
+	 $('#btntempyes').on('click', function () {
+	// debugger;
+	 var device="";
+	  if(deviceid != "")
+	  {
+	  device=deviceid;
+	  }
+	  if(deviceidall != "")
+	  {
+	   device=deviceidall;
+	  }
+		   var url = '@Url.Content("~/csat_asset_mgmt/Get_System_Action?deviceid=")' + device + '&ActionType=CleanTempFile';
+		   $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+			   window.location.href = '@Url.Content("~/csat_asset_mgmt/asset_system_list")';
+			}
+			});
+    });
+
+    // Set Uninstall Password
+    function open_set_unstall_password() {
+        $('#set_unistall_password').modal("show");
+    }
+    function submit_uninstall_password() {
+        var oldpassword = document.getElementById("txt_uninstall_old_password").value;
+        var newpassword = document.getElementById("txt_uninstall_new_password").value;
+        var url = '@Url.Content("~/csat_asset_mgmt/set_unstall_password?oldpassword=")' + oldpassword + '&newpassword=' + newpassword;
+		   $.ajax({
+            type: "POST",
+            url: url,
+               success: function (data) {
+                   alert(data);
+                   document.getElementById("txt_uninstall_old_password").value = "";
+                   document.getElementById("txt_uninstall_new_password").value = "";
+                   document.getElementById("txt_uninstall_confirm_password").value = "";
+                   $('#set_unistall_password').modal("hide");
+			}
+			});
+    }
+
+    // Manage Agent Registry
+    function checkselectagent(id) {
+        var atLeastOneIsChecked = $('input[id="gridrawcheck"]:checked').length > 0;
+        if (atLeastOneIsChecked == true) {
+            $('#' + id).modal('show');
+            var device = "";
+            if (deviceid != "") {
+                device = deviceid;
+            }
+            if (deviceidall != "") {
+                device = deviceidall;
+            }
+            var url = '@Url.Content("~/csat_asset_mgmt/GetDeviceRegistry?deviceid=")' + device;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var Setgriddata = $('#divmanagereg');
+                    jQuery('#divmanagereg').html('');
+                    var headdata = "<table class='table table-striped table-bordered agent_registry_datatable' style='width:100%'><thead><tr><th class='col-sm-2'>Branch/ Unit</th><th class='col-sm-2'>System Name</th>" +
+                        "<th class='col-sm-1'>IP Address</th><th class='col-sm-2'>Timestamp</th><th class='col-sm-3'>Path</th><th class='col-sm-1'>Key</th><th class='col-sm-1'>Key Value</th><th class='col-sm-1'>key Type</th><th class=''>Action</th><th>Status</th></tr></thead><tbody>";
+                    var trdata = "";
+                    for (var i = 0; i < data.deviceregistry.length; i++) {
+                        trdata += "<tr>";
+                        trdata += "<td>" + data.deviceregistry[i].ou_node_name + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].device_name + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].ip + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].timestamp + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].c057path + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].c057key + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].c057keyvalue + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].keytype + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].action + "</td>";
+                        trdata += "<td>" + data.deviceregistry[i].status + "</td>";
+                        trdata += "</tr>";
+                    }
+                    Setgriddata.append(headdata + trdata + "</tbody></table>");
+                    $(document).ready(function () {
+                        $('.agent_registry_datatable').DataTable({
+                            paging: false,
+                            order: [],
+                            columnDefs: [{ orderable: false, targets: [] }],
+                            searching: false,
+                            info: false,
+                            responsive: false,
+
+                        });
+                    });
+                }
+            });
+
+        }
+        else {
+            alert("Select any one system !");
+            $('#' + id).modal('hide');
+        }
+
+    }
+
+
+    function manage_agent() {
+
+        if (document.getElementById("pathset").value == "") {
+            alert("Please provide path !");
+            document.getElementById("pathset").focus();
+            return false;
+        }
+        else if (document.getElementById("keyset").value == "") {
+            alert("Please provide key !");
+            document.getElementById("keyset").focus();
+            return false;
+        }
+        else if (document.getElementById("keytype").value == "-1") {
+            alert("Please select key Type !");
+            document.getElementById("keytype").focus();
+            return false;
+        }
+        else if (document.getElementById("keyaction").value == "-1") {
+            alert("Please select key Action !");
+            document.getElementById("keyaction").focus();
+            return false;
+        }
+        else if (document.getElementById("key_valueset").value == "") {
+            alert("Please provide key value !");
+            document.getElementById("key_valueset").focus();
+            return false;
+        }
+        else
+            Add_DeviceRegistry();
+
+    }
+    function Add_DeviceRegistry() {
+     //   debugger;
+        var device = "";
+        if (deviceid != "") 
+            device = deviceid;
+        if (deviceidall != "") 
+            device = deviceidall;
+            var key = document.getElementById("keyset").value;
+            var keyvalue = document.getElementById("key_valueset").value;
+            var path = document.getElementById("pathset").value;
+            var keytype = document.getElementById("keytype").value;
+            var keyaction = document.getElementById("keyaction").value;
+        var url = '@Url.Content("~/csat_asset_mgmt/AddDeviceRegistry?deviceid=")' + device + '&key=' + key + '&keytype=' + keytype + '&keyvalue=' + keyvalue + '&keyaction=' + keyaction + '&path=' + path ;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    alert(data);
+                    checkselectagent('manage_agent_registry');
+                    cleardata();
+                }
+            });
+    }
+    function cleardata() {
+        document.getElementById("keyset").value = "";
+        document.getElementById("key_valueset").value = "";
+        document.getElementById("pathset").value = "";
+        document.getElementById("keyaction").value = "-1";
+        document.getElementById("keytype").value = "-1";
+        document.getElementById("key_valueset").value = "";
+    }
+
+</script>

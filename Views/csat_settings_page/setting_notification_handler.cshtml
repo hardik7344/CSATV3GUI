@@ -1,0 +1,2622 @@
+﻿
+@{
+    ViewData["Title"] = "setting_notification_handler";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+@*<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.simple_datatable').DataTable({
+            paging: false,
+            order: [],
+            columnDefs: [{ orderable: false, targets: [] }],
+            searching: false,
+            info: false,
+            responsive: false,
+
+        });
+
+    });
+    </script>*@
+@*<script type="text/javascript">
+    $(document).ready(function () {
+        $('#create_notif_datatable').DataTable({
+            paging: false,
+            order: [],
+            columnDefs: [{ orderable: false, targets: [] }],
+            searching: false,
+            info: false,
+            responsive: false,
+
+        });
+
+    });
+    </script>*@
+<script type="text/javascript">
+    datatable_simple();
+    //$(document).ready(function () {
+    //    $('.apply_datatable33').DataTable({
+    //        paging: false,
+    //        order: [],
+    //        columnDefs: [{ orderable: false, targets: [] }],
+    //        searching: false,
+    //        info: false,
+    //        responsive: false,
+
+    //    });
+
+    //});
+    //$(document).ready(function () {
+    //    $('#create_notif_datatable1').DataTable({
+    //        paging: false,
+    //        order: [],
+    //        columnDefs: [{ orderable: false, targets: [] }],
+    //        searching: false,
+    //        info: false,
+    //        responsive: false,
+
+    //    });
+
+    //});
+    //$(document).ready(function () {
+    //    $('.edit_notif_datatable').DataTable({
+    //        paging: false,
+    //        order: [],
+    //        columnDefs: [{ orderable: false, targets: [] }],
+    //        searching: false,
+    //        info: false,
+    //        responsive: false,
+
+    //    });
+
+    //});
+</script>
+@*<script type="text/javascript">
+    $(document).ready(function () {
+        $('#edit_notif_datatable').DataTable({
+            paging: false,
+            order: [],
+            columnDefs: [{ orderable: false, targets: [] }],
+            searching: false,
+            info: false,
+            responsive: false,
+
+        });
+
+    });
+
+    </script>*@
+<script>
+
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+        parent.prop('checked', false);
+        if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+            parent.prop('checked', true);
+        }
+
+        parent.change(function () {  //"select all" change
+            // debugger;
+            $(group).prop('checked', parent.prop("checked"));
+
+
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+</script>
+
+<style>
+    .calendar-table {
+        display: none;
+    }
+
+    .table-condensed > thead {
+        display: none;
+    }
+
+    .table-condensed {
+        width: 100%;
+    }
+</style>
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/js/moment.min.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('input[name="time"]').daterangepicker({
+
+            autoUpdateInput: true,
+            // singleDatePicker: true,
+            timePicker: true,
+            startDate: moment().add(24, 'hour'),
+            endDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'hh:mm A',
+            }
+        });
+
+        $('input[name="time"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format(' hh:mm A') + ' - ' + picker.endDate.format(' hh:mm A'));
+        });
+
+        $('input[name="time"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+    });
+    function Check1() {
+        if (document.getElementById('SIEM').checked) {
+            document.getElementById('drpselect').disabled = true;
+            document.getElementById('drpselect1').disabled = true;
+            document.getElementById('drpselect2').disabled = true;
+            document.getElementById('drpselect3').disabled = true;
+            document.getElementById('drpselect4').disabled = true;
+            document.getElementById('drpselect5').disabled = true;
+            document.getElementById('drpselect6').disabled = true;
+            document.getElementById('drpselect7').disabled = true;
+            document.getElementById('drpselect8').disabled = true;
+            document.getElementById('drpselect9').disabled = true;
+            document.getElementById('siem_info').style.display = 'block';
+            document.getElementById('single_info').style.display = 'none';
+        }
+
+        if (document.getElementById('single').checked) {
+            document.getElementById('drpselect').disabled = false;
+            document.getElementById('drpselect1').disabled = false;
+            document.getElementById('drpselect2').disabled = false;
+            document.getElementById('drpselect3').disabled = false;
+            document.getElementById('drpselect4').disabled = false;
+            document.getElementById('drpselect5').disabled = false;
+            document.getElementById('drpselect6').disabled = false;
+            document.getElementById('drpselect7').disabled = false;
+            document.getElementById('drpselect8').disabled = false;
+            document.getElementById('drpselect9').disabled = false;
+            document.getElementById('single_info').style.display = 'block';
+            document.getElementById('siem_info').style.display = 'none';
+
+        }
+        if (document.getElementById('SIEM1').checked) {
+            document.getElementById('siem_info1').style.display = 'block';
+            document.getElementById('single_info1').style.display = 'none';
+        }
+
+        if (document.getElementById('single1').checked) {
+            document.getElementById('single_info1').style.display = 'block';
+            document.getElementById('siem_info1').style.display = 'none';
+
+        }
+    }
+
+    function validateForm() {
+        var x = document.forms["siem_form"]["description"].value;
+        var y = document.forms["siem_form"]["subject"].value;
+
+
+        if (x == "") {
+
+            alert("Please enter common description !");
+            siem_form.description.focus();
+            return false;
+        }
+        if (y == "") {
+
+            alert("Please enter common subject !");
+            siem_form.subject.focus();
+            return false;
+        }
+
+    }
+</script>
+
+<div class="row">
+
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <div class="pull-right form_label btn_top_margin">
+                <button class="btn btn-primary btn-md day" data-toggle="modal" onclick="ApplyNotification()">Apply Notification </button>
+                <button class="btn btn-primary btn-md day" data-toggle="modal" onclick="Showaddnotification()">Create Notification</button>
+            </div>
+
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>Notification Configuration </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_settings_page_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin:0px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        @*<button type="button" data-toggle="modal" class="btn btn-primary pull-right " onclick="ApplyNotification()" style="margin-bottom: 5px;">Apply Notification <b style="font-weight:bolder;">+</b></button>*@
+                        <div class="table-responsive" id="divtemplate">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="space_bottom">&nbsp;</div>
+    </div>
+</div>
+<!--delete_notification  model  content-->
+
+<div class="modal fade" id="delete_notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Conformation
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-10">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-12">
+                                    <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                    <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                    <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--delete_notification  model  content-->
+<!--Apply Notification form content-->
+<div class="modal fade" id="apply_notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="Uncheckall()">&times;</button>
+                <h6 class="modal-title">Apply Notification </h6>
+            </div>
+            <div class="modal-body">
+                <!--form  content-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Notification on</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="notification_type" id="notification_type">
+                                                <option value="01">Branch/ Unit</option>
+                                                <option value="02">System</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Notification Template</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="template" id="applytemplate">
+                                                <option value="-1">Select Template </option>
+                                                @*<option>Default</option>
+                                                    <option value="01">Hardware</option>
+                                                    <option value="02">Software</option>*@
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="GetTemplateOU">
+
+                                    </div>
+
+                                    <div class="form-group model-button">
+                                        <div class="col-xs-7 pull-right ">
+                                            <input type="button" class="btn btn-primary" value="Apply" name="apply" onclick="ApplyTemplate()" />
+                                            <input type="button" class="btn btn-default" value="Cancel" name="Add cancel1" onclick="Uncheckall()" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!--form  content end-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div> <!--Apply Notification form content End-->
+<!--create Notification form content-->
+<div class="modal fade" id="create_notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                <h6 class="modal-title">Create Notification </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <!--form  content-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post" id="frm_notification_create" name="frm_notification_create">
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Template Name</label>
+                                        <div class="col-xs-6">
+                                            <input type="text" name="tempname" class="form-control " id="tempname" placeholder="Enter Template" />
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Email-ID</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" name="email" class="form-control " placeholder="Enter Email-ID" />
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">To</label>
+                                        <div class="col-xs-6">
+                                            <input type="email" name="txtemailto" id="txtemailto" class="form-control " placeholder="Enter Email-ID To" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">CC</label>
+                                        <div class="col-xs-6">
+                                            <input type="email" name="txtemailcc" id="txtemailcc" class="form-control " placeholder="Enter Email-ID CC" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Select Username</label>
+                                        <div class="col-xs-3">
+                                            <div class="table-responsive" id="divuser">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered tbldemo" style="width:100%">
+                                                    <thead style="display:none">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="parent" data-group=".group3" name="systemstatusall1" /></td>
+                                                            <td class="col-sm-2">All</td>
+                                                            <td class="col-sm-6"></td>
+                                                            <td class="col-sm-5">
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-4">&nbsp; <input type="checkbox" id="autoticket" value="Ticket" name="ticket" />  Auto Ticket :</label>
+                                                                    <div class="col-xs-4" style="display:none">
+                                                                        <div class="radio">
+                                                                            <label> <input type="radio" name="category" id="SIEM" value="SIEM " onclick="javascript: Check1();"> SIEM  </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3" style="display:none">
+                                                                        <div class="radio">
+                                                                            <label> <input type="radio" name="category" id="single" value="Single" checked onclick="javascript: Check1();"> Single </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="siem_info" style="display:none">
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Category</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Category" id="Category">
+                                                                                <option>Select Category</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Sub Category</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Sub Category" id="Sub Category">
+                                                                                <option>Select Sub Category</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Item</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Item" id="Item">
+                                                                                <option>Select Item</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <div class="col-xs-7 pull-right ">
+                                                                            <input type="button" class="btn btn-primary" value="Ticket Config" name="ticket" data-toggle="modal" data-target="#siem_ticket" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="single_info"></div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatussecurity1" id="systemstatussecurity1" data-group=".group4" /></td>
+                                                            <td class="col-sm-2">System Security</td>
+                                                            <td class="col-sm-6">
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> Status :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group4" name="systemstatus" id="Running" value="2"> Running </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group4" name="systemstatus" id="Down" value="0"> Down </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> IP Address : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class=" group3 group4" name="systemstatus" id="change" value="12"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Unauthorise IP  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group4" name="systemstatus" id="Access" value="5"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Firewall  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group4" name="systemstatus" id="Disable" value="8"> Disable </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Compliance  : </label>
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group4" name="systemstatus" id="AccessCom" value="5"> Comply/Non-Comply </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect"></select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatushardware1" data-group=".group5" /></td>
+                                                            <td class="col-sm-2">Hardware</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group5" name="systemstatus" id="HWAdded" value="1"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group5" name="systemstatus" id="HWRemoved" value="-1"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    @*<div class="col-xs-3">
+                                                                            <div class="radio">
+                                                                                <label> <input type="checkbox" class="group3 group5" name="systemstatus" id="Change"  onchange='GetCheckmenu(this.id)' value="Change"> Change </label>
+                                                                            </div>
+                                                                        </div>*@
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect1"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group6" /></td>
+                                                            <td class="col-sm-2">Software</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group6" name="systemstatus" id="SWAdded" value="1"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class=" group3 group6" name="systemstatus" id="SWRemoved" value="-1"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect2"></select>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group7" /></td>
+                                                            <td class="col-sm-2">Share</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group7" name="systemstatus" id="ShareAdded" value="1"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group7" name="systemstatus" id="ShareRemoved" value="-1"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    @*<div class="col-xs-3">
+                                                                            <div class="radio">
+                                                                                <label> <input type="checkbox" class="group3 group7" name="systemstatus" id="ShareChange" value="Change"> Change </label>
+                                                                            </div>
+                                                                        </div>*@
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect3"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group8" /></td>
+                                                            <td class="col-sm-2">Performance Monitoring</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group8" name="systemstatus" id="PerformanceNotification" value="Performance Notification"> Performance Notification </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group8" name="systemstatus" id="ApplicationMonitoring" value="5"> Application Monitoring Rules </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect4"></select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group9" /></td>
+                                                            <td class="col-sm-2">System Tools</td>
+                                                            <td class="col-sm-6">
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> System folder :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group9" name="systemstatus" id="Systemfol" value="10"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <label for="nameField" class="col-xs-2 text-align-right">Registry : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group9" name="systemstatus" id="Registry" value="10"> Access </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> Control Panel : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group9" name="systemstatus" id="ControlPanel" value="10"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <label for="nameField" class="col-xs-2 text-align-right">Services  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group9" name="systemstatus" id="Services" value="10"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect5"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group10" /></td>
+                                                            <td class="col-sm-2">User</td>
+                                                            <td class="col-sm-6">
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-4 text-align-right"> Unsuccessfull Login :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="unsuclogin" value="11"> Attempt </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-2 text-align-right"> User : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="User_add" value="1"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="User_remove" value="-1"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="User_change" value="2"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-2 text-align-right"> </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="user_enabled" value="3"> Enabled </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group10" name="systemstatus" id="user_Disabled" value="4"> Disabled </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect6"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group11" /></td>
+                                                            <td class="col-sm-2">Policy Information</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group11" name="systemstatus" id="policyApply" value="9"> Apply </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group11" name="systemstatus" id="PolicyRemoved" value="10"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group11" name="systemstatus" id="policyVioletion" value="11"> Violation </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect7"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group12" /></td>
+                                                            <td class="col-sm-2">Remote Access</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-4">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group12" name="systemstatus" id="RemoteNotification" value="10"> Notification </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect8"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group3 parent" name="systemstatus1" data-group=".group13" /></td>
+                                                            <td class="col-sm-2">OwnyitCSAT/ Ownyit Agent</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-4">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group3 group13" name="systemstatus" id="csatNotification" value="-1"> Notification </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpselect9"></select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group model-button">
+                                        <div class="col-xs-7 pull-right ">
+                                            <input type="button" class="btn btn-primary" value="Submit" onclick="AddTemplatedata()" name="submit" />
+                                            <input type="button" class="btn btn-default" value="Cancel" name=" cancel" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!--form  content end-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div> <!--create Notification form content End-->
+<!--edit Notification form content-->
+
+<div class="modal fade" id="edit_notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                <h6 class="modal-title">Edit Notification </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <!--form  content-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post" id="frm_notification_edit" name="frm_notification_edit">
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Template Name</label>
+                                        <div class="col-xs-6">
+                                            <input type="text" name="edittempname" id="edittempname" class="form-control " placeholder="Enter Template" />
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Email-ID</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" name="email1" class="form-control " placeholder="Enter Email-ID"  />
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">To</label>
+                                        <div class="col-xs-6">
+                                            <input type="email" name="txteditemailto" id="txteditemailto" class="form-control " placeholder="Enter Email-ID To" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">CC</label>
+                                        <div class="col-xs-6">
+                                            <input type="email" name="txteditemailcc" class="form-control" id="txteditemailcc" placeholder="Enter Email-ID CC" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-2">Select Username</label>
+                                        <div class="col-xs-3">
+                                            <div class="table-responsive" id="editdivuser">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="col-xs-11">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered tbldemo" style="width:100%">
+                                                    <thead style="display:none">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="parent" data-group=".group33" name="editsystemstatusall" /></td>
+                                                            <td class="col-sm-2">All</td>
+                                                            <td class="col-sm-6"></td>
+                                                            <td class="col-sm-5">
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-5">&nbsp; <input type="checkbox" value="Ticket" name="ticket" />  Auto Ticket :</label>
+                                                                    <div class="col-xs-4" style="display:none">
+                                                                        <div class="radio">
+                                                                            <label> <input type="radio" name="category1" id="SIEM1" value="SIEM " onclick="javascript: Check1();"> SIEM  </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3" style="display:none">
+                                                                        <div class="radio">
+                                                                            <label> <input type="radio" name="category1" id="single1" value="Single" checked onclick="javascript: Check1();"> Single </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="siem_info1" style="display:none">
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Category</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Category1" id="Category1">
+                                                                                <option>Select Category</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Sub Category</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Sub Category1" id="Sub Category1">
+                                                                                <option>Select Sub Category</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <label for="nameField" class="col-xs-5 text-align-right">&nbsp;Item</label>
+                                                                        <div class="col-xs-6">
+                                                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Item1" id="Item1">
+                                                                                <option>Select Item</option>
+                                                                                <option value="1"></option>
+                                                                                <option value="2"></option>
+                                                                                <option value="3"></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <div class="col-xs-7 pull-right ">
+                                                                            <input type="button" class="btn btn-primary" value="Ticket Config" name="ticket" data-toggle="modal" data-target="#siem_ticket" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="single_info1"></div>
+                                                            </td>
+                                                        </tr>
+
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" data-group=".group44" name="editsystemstatussecurity" /></td>
+                                                            <td class="col-sm-2">System Security</td>
+                                                            <td class="col-sm-6">
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> Status :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="checkbox" class="group33 group44" name="editsystemstatus" id="Running1" value="2"> Running
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group44" name="editsystemstatus" id="Down1" value="Down"> Down </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> IP Address : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class=" group33 group44" name="editsystemstatus" id="change1" value="change"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Unauthorise IP  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group44" name="editsystemstatus" id="Access1" value="Access"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Firewall  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group44" name="editsystemstatus" id="Disable1" value="Access"> Disable </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right">Compliance  : </label>
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group44" name="editsystemstatus" id="AccessCom1" value="Access"> Comply/Non-Comply </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatushardware" data-group=".group55" /></td>
+                                                            <td class="col-sm-2">Hardware</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group55" name="editsystemstatus" id="HWAdded1" value="Added"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group55" name="editsystemstatus" id="HWRemoved1" value="Removed"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group55" name="editsystemstatus" id="Change1" value="Change"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect1">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group66" /></td>
+                                                            <td class="col-sm-2">Software</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group66" name="editsystemstatus" id="SWAdded1" value="Added"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class=" group33 group66" name="editsystemstatus" id="SWRemoved1" value="Removed"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect2">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group77" /></td>
+                                                            <td class="col-sm-2">Share</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group77" name="editsystemstatus" id="ShareAdded1" value="Added"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group77" name="editsystemstatus" id="ShareRemoved1" value="Removed"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group77" name="editsystemstatus" id="ShareChange1" value="Change"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect3">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group88" /></td>
+                                                            <td class="col-sm-2">Performance Monitoring</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group88" name="editsystemstatus" id="PerformanceNotification1" value="Performance Notification"> Performance Notification </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group88" name="editsystemstatus" id="ApplicationMonitoring1" value="Application Monitoring"> Application Monitoring Rules </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect4">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group99" /></td>
+                                                            <td class="col-sm-2">System Tools</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> System  folder :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group99" name="editsystemstatus" id="Systemfol1" value="System"> Access </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <label for="nameField" class="col-xs-2 text-align-right">Registry : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group99" name="editsystemstatus" id="Registry1" value="Registry"> Access </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-3 text-align-right"> Control Panel : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group99" name="editsystemstatus" id="ControlPanel1" value="Control Panel"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <label for="nameField" class="col-xs-2 text-align-right">Services  : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group99" name="editsystemstatus" id="Services1" value="Services"> Access </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect5">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group110" /></td>
+                                                            <td class="col-sm-2">User</td>
+                                                            <td class="col-sm-6">
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-4 text-align-right"> Unsuccessfull Login :</label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="unsuclogin1" value="Attemt"> Attempt </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-2 text-align-right"> User : </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="User_add1" value="User_add"> Added </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="User_remove1" value="User_removed"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="User_change1" value="Change"> Change </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <label for="nameField" class="col-xs-2 text-align-right"> </label>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="user_enabled1" value="enabled"> Enabled </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group110" name="editsystemstatus" id="user_Disabled1" value="Disabled"> Disabled </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect6">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </td>
+
+                                                        </tr>
+
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group111" /></td>
+                                                            <td class="col-sm-2">Policy Information</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group111" name="editsystemstatus" id="policyApply1" value="Apply"> Apply </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group111" name="editsystemstatus" id="PolicyRemoved1" value="PolicyRemoved"> Removed </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xs-3">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group111" name="editsystemstatus" id="policyVioletion1" value="Violetion"> Violetion </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect7">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group112" /></td>
+                                                            <td class="col-sm-2">Remote Access</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-4">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group112" name="editsystemstatus" id="RemoteNotification1" value="RemoteNotification"> Notification </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect8">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+
+                                                        <tr>
+                                                            <td class="select"><input type="checkbox" class="group33 parent" name="editsystemstatus1" data-group=".group113" /></td>
+                                                            <td class="col-sm-2">OwnyitCSAT/ Ownyit Agent</td>
+                                                            <td class="col-sm-6">
+                                                                <div class="row">
+                                                                    <div class="col-xs-5">
+                                                                        <div class="radio">
+                                                                            <label> <input type="checkbox" class="group33 group113" name="editsystemstatus" id="csatNotification1" value="csatNotification"> Notification </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-5">
+                                                                <div class="col-xs-7">
+                                                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Select" id="drpeditselect9">
+                                                                        <option>NA</option>
+                                                                        <option value="1"></option>
+                                                                        <option value="2"></option>
+                                                                        <option value="3"></option>
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group model-button">
+                                        <div class="col-xs-7 pull-right ">
+                                            <input type="button" class="btn btn-primary" id="idupdate" value="Submit" name="submit edit" />
+                                            <input type="button" class="btn btn-default" id="idEditcancel" value="Cancel" name=" cancel edit " data-dismiss="modal" />
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!--form  content end-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div> <!--edit Notification form content End-->
+<!--siem_tickete form content-->
+<div class="modal fade" id="siem_ticket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class="modal-title">SIEM Ticket Configuration</h6>
+            </div>
+            <div class="modal-body">
+                <!--form  content-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post" name="siem_form" onsubmit="return validateForm();">
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Common Description</label>
+                                        <div class="col-xs-5">
+                                            <input type="text" id="description" class="form-control " placeholder="Enter Common Description" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Common Subject</label>
+                                        <div class="col-xs-5">
+                                            <input type="text" id="subject" class="form-control " placeholder="Enter Common Subject" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Main Ticket</label>
+                                        <div class="col-xs-5">
+                                            <div class="radio">
+                                                <label> <input type="checkbox" name="Main Ticket" id="PolicyRemoved" value="Main Ticket">  Merge With Existing Main Ticket? </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Category</label>
+                                        <div class="col-xs-5">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Category" id="Category">
+                                                <option>Select Category</option>
+                                                <option value="1"></option>
+                                                <option value="2"></option>
+                                                <option value="3"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Sub Category</label>
+                                        <div class="col-xs-5">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Sub Category" id="Sub Category">
+                                                <option>Select Sub Category</option>
+                                                <option value="1"></option>
+                                                <option value="2"></option>
+                                                <option value="3"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-3">Time</label>
+                                        <div class="col-xs-5">
+                                            <input type="text" id="timer" class="form-control" placeholder="hh:mm A - hh:mm A " name="time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group model-button">
+                                        <div class="col-xs-7 pull-right ">
+                                            <input type="submit" class="btn btn-primary" value="Submit" name="submit form" />
+                                            <input type="button" class="btn btn-default" value="Cancel" name="cancel" data-dismiss="modal" />
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!--form  content end-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered tbldemo" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-1" data-orderable="false"><input type="checkbox" class="parent" data-group=".group1" /></th>
+                                        <th class="col-sm-2">Template Name</th>
+                                        <th class="col-sm-2">Alert Category</th>
+                                        <th class="col-sm-2">Alert Sub Category</th>
+                                        <th class="col-sm-1">Start Time</th>
+                                        <th class="col-sm-1">End Time</th>
+                                        <th class="col-sm-2">Main Ticket</th>
+                                        <th class="col-sm-1 icon" data-orderable="false">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" /></td>
+                                        <td class="col-sm-2">Default</td>
+                                        <td class="col-sm-2">System</td>
+                                        <td class="col-sm-2">IP Address</td>
+                                        <td class="col-sm-1">10</td>
+                                        <td class="col-sm-1">10</td>
+                                        <td class="col-sm-2">Yes</td>
+                                        <td class="icon">
+                                            <i class=" glyphicon glyphicon-trash manage_icon " type="button" data-toggle="modal" data-target="#delete_siem" title="Delete"></i>&nbsp;
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                &nbsp;&nbsp;
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div> <!--siem_ticket form content End-->
+<!--delete_siem  model  content-->
+
+<div class="modal fade" id="delete_siem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Conformation
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-10">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-12">
+                                    <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                    <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="yes" value="Yes" />
+                                    <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--delete_siem device model  content-->
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_notification_create");
+        validateSingleForm("#frm_notification_edit");
+    });
+</script>
+
+
+<script>
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.prop('checked', false);
+        if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+            parent.prop('checked', true);
+        }
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+    $('.tree-toggle').click(function () {
+        $(this).parent().children('ul.tree').toggle(200);
+    });
+    $(function () {
+        $('.tree-toggle').parent().children('ul.tree').toggle(200);
+    })
+</script>
+<script>
+  $.get(null, null, shownotificationtemp);
+        function shownotificationtemp() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetNotificationTemp")',
+            success: function (data) {
+               //  debugger;
+                var Setgriddata = $('#divtemplate');
+                jQuery('#divtemplate').html('');
+                var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr>" +
+                    "<th class='col-sm-10'>Template Name</th><th class='col-sm-1 icon' data-orderable='false'>Edit</th><th class='col-sm-1 icon' data-orderable='false'>Delete</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.notificationtemp.length; i++) {
+                    trdata += "<td class='col-sm-10'>" + data.notificationtemp[i].c050templatename + "</td>";
+                    trdata += "<td class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick=EditTemplateData('" + data.notificationtemp[i].template_id + "','" + data.notificationtemp[i].c050templatename + "') title='Edit'></i></td>";
+                    if (data.notificationtemp[i].c050templatename.toUpperCase() != 'DEFAULT') {
+                        trdata += "<td class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  onclick=DeleteTemplateData('" + data.notificationtemp[i].template_id + "') title='Delete'></i>&nbsp;</td></tr>";
+                    }
+                    else
+                        trdata += "<td>&nbsp;</td></tr>";
+
+                            }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_simple();
+
+
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+
+
+    function Showaddnotification() {
+        $("#create_notification").modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/bindusercategory")',
+            success: function (data) {
+             //  debugger;
+                // User fill
+                var SetUserData = $('#divuser');
+                jQuery('#divuser').html('');
+                var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr>" +
+                    "<th class='col-sm-1 select' data-orderable='false'><input type='checkbox' name='chkuser'   onclick='fetchdata(this);' class='parent' data-group='.group2' /></th><th class='col-sm-11'>Username</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.binduser.length; i++) {
+                    trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='chkuser' value='" + data.binduser[i].user_id + "' onchange='GetCheckmenu1()' /></td>";
+                    trdata += "<td class='col-sm-11'>" + data.binduser[i].user_name + "</td></tr>";
+                }
+                SetUserData.append(headdata + trdata + "</tbody></table>");
+                datatable_simple();
+                // Category fill
+                var SetcategoryData = $('#drpselect');
+                jQuery('#drpselect').html('');
+                var SetcategoryData1 = $('#drpselect1');
+                jQuery('#drpselect1').html('');
+                var SetcategoryData2 = $('#drpselect2');
+                jQuery('#drpselect2').html('');
+                var SetcategoryData3 = $('#drpselect3');
+                jQuery('#drpselect3').html('');
+                var SetcategoryData4 = $('#drpselect4');
+                jQuery('#drpselect4').html('');
+                var SetcategoryData5 = $('#drpselect5');
+                jQuery('#drpselect5').html('');
+                var SetcategoryData6 = $('#drpselect6');
+                jQuery('#drpselect6').html('');
+                var SetcategoryData7 = $('#drpselect7');
+                jQuery('#drpselect7').html('');
+                var SetcategoryData8 = $('#drpselect8');
+                jQuery('#drpselect8').html('');
+                var SetcategoryData9 = $('#drpselect9');
+                jQuery('#drpselect9').html('');
+                var categorydata = "<option value='-1'>NA</option>";
+                var categorydata1 = "<option value='-1'>NA</option>";
+                var categorydata2 = "<option value='-1'>NA</option>";
+                var categorydata3 = "<option value='-1'>NA</option>";
+                var categorydata4 = "<option value='-1'>NA</option>";
+                var categorydata5 = "<option value='-1'>NA</option>";
+                var categorydata6 = "<option value='-1'>NA</option>";
+                var categorydata7 = "<option value='-1'>NA</option>";
+                var categorydata8 = "<option value='-1'>NA</option>";
+                var categorydata9 = "<option value='-1'>NA</option>";
+
+                for (var i = 0; i < data.bindcategory.length; i++) {
+                    categorydata += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata1 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata2 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata3 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata4 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata5 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata6 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata7 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata8 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    categorydata9 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                }
+                SetcategoryData.append(categorydata);
+                SetcategoryData1.append(categorydata1);
+                SetcategoryData2.append(categorydata2);
+                SetcategoryData3.append(categorydata3);
+                SetcategoryData4.append(categorydata4);
+                SetcategoryData5.append(categorydata5);
+                SetcategoryData6.append(categorydata6);
+                SetcategoryData7.append(categorydata7);
+                SetcategoryData8.append(categorydata8);
+                SetcategoryData9.append(categorydata9);
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+
+                    parent.change(function () {  //"select all" change
+                      //  debugger;
+                        $(group).prop('checked', parent.prop("checked"));
+
+
+                    });
+                    $(group).change(function () {
+                       // debugger;
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+
+
+            }
+
+        });
+    }
+
+
+    //System Security
+    var syssec = false;
+    var syssecidall = "";
+    var syssecid = "";
+    var syssecvalue = "";
+
+    // Check User
+    var chkuserall = "";
+    var chkuserid = "";
+    function fetchdata(source) {
+       // debugger;
+        chkuserall = "";
+        var checkboxes = document.querySelectorAll('input[name="chkuser"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source) {
+                checkboxes[i].checked = source.checked;
+                chkuserall += "," + checkboxes[i].value;
+            }
+            else {
+                chkuserall = "";
+
+            }
+        }
+    }
+    function GetCheckmenu1() {
+        //  debugger;
+        chkuserall = "";
+        chkuserid = "";
+        var checkboxes = document.querySelectorAll('input[name="chkuser"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkuserid += "," + checkboxes[i].value;
+            }
+            else {
+
+            }
+
+        }
+    }
+
+    var drpselectdevice = "";
+    $("#drpselect").change(function () {
+        drpselectdevice = this.value;
+    });
+
+    var drpselectdevice1 = "";
+    $("#drpselect1").change(function () {
+        drpselectdevice1 = this.value;
+    });
+
+    var drpselectdevice2 = "";
+    $("#drpselect2").change(function () {
+        drpselectdevice2 = this.value;
+    });
+
+    var drpselectdevice3 = "";
+    $("#drpselect3").change(function () {
+        drpselectdevice3 = this.value;
+    });
+
+    var drpselectdevice4 = "";
+    $("#drpselect4").change(function () {
+        drpselectdevice4 = this.value;
+    });
+
+    var drpselectdevice5 = "";
+    $("#drpselect5").change(function () {
+        drpselectdevice5 = this.value;
+    });
+
+    var drpselectdevice6 = "";
+    $("#drpselect6").change(function () {
+        drpselectdevice6 = this.value;
+    });
+
+    var drpselectdevice7 = "";
+    $("#drpselect7").change(function () {
+        drpselectdevice7 = this.value;
+    });
+
+    var drpselectdevice8 = "";
+    $("#drpselect8").change(function () {
+        drpselectdevice8 = this.value;
+    });
+
+    var drpselectdevice9 = "";
+    $("#drpselect9").change(function () {
+        drpselectdevice9 = this.value;
+    });
+
+    function AddTemplatedata() {
+        // debugger;
+        var $valid = $('#frm_notification_create').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            syssecid = "";
+            var checkboxes = document.querySelectorAll('input[name="systemstatus"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked == true) {
+                    syssec = true;
+                    syssecid += "," + checkboxes[i].id;
+                    //   syssecvalue += "," + checkboxes[i].value;
+                }
+                else {
+
+                }
+            }
+            var tempname = document.getElementById("tempname").value;
+            var emailto = document.getElementById("txtemailto").value;
+            var emailcc = document.getElementById("txtemailcc").value;
+            var chkuserfinal = "";
+            if (chkuserid != "") {
+                chkuserfinal = chkuserid;
+            }
+            if (chkuserall != "") {
+                chkuserfinal = chkuserall;
+            }
+
+
+            var syssecfinal = "";
+            if (syssecid != "") {
+                syssecfinal = syssecid;
+            }
+            if (syssecidall != "") {
+                syssecfinal = syssecidall;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/AddTemplatedata?Temname=")' + tempname + '&syssec=' + syssec + '&syssecid=' + syssecfinal + '&drpselectdevice=' + drpselectdevice + '&drpselectdevice1=' + drpselectdevice1 + '&drpselectdevice2=' + drpselectdevice2 + '&drpselectdevice3=' + drpselectdevice3 + '&drpselectdevice4=' + drpselectdevice4 + '&drpselectdevice5=' + drpselectdevice5 + '&drpselectdevice6=' + drpselectdevice6 + '&drpselectdevice7=' + drpselectdevice7 + '&drpselectdevice8=' + drpselectdevice8 + + '&drpselectdevice9=' + drpselectdevice9 + '&emailto=' + emailto + '&emailcc=' + emailcc + '&chkuserfinal=' + chkuserfinal,
+                success: function (data) {
+                    alert(data);
+                    shownotificationtemp();
+                    $("#create_notification").modal('hide');
+                }
+            });
+    }
+    }
+
+
+
+    function editcategorydata() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/bindusercategory")',
+            success: function (data) {
+                var SeteditcategoryData = $('#drpeditselect');
+                jQuery('#drpeditselect').html('');
+                var SeteditcategoryData1 = $('#drpeditselect1');
+                jQuery('#drpeditselect1').html('');
+                var SeteditcategoryData2 = $('#drpeditselect2');
+                jQuery('#drpeditselect2').html('');
+                var SeteditcategoryData3 = $('#drpeditselect3');
+                jQuery('#drpeditselect3').html('');
+                var SeteditcategoryData4 = $('#drpeditselect4');
+                jQuery('#drpeditselect4').html('');
+                var SeteditcategoryData5 = $('#drpeditselect5');
+                jQuery('#drpeditselect5').html('');
+                var SeteditcategoryData6 = $('#drpeditselect6');
+                jQuery('#drpeditselect6').html('');
+                var SeteditcategoryData7 = $('#drpeditselect7');
+                jQuery('#drpeditselect7').html('');
+                var SeteditcategoryData8 = $('#drpeditselect8');
+                jQuery('#drpeditselect8').html('');
+                var SeteditcategoryData9 = $('#drpeditselect9');
+                jQuery('#drpeditselect9').html('');
+                var editcategorydata = "<option value='0'>NA</option>";
+                var editcategorydata1 = "<option value='0'>NA</option>";
+                var editcategorydata2 = "<option value='0'>NA</option>";
+                var editcategorydata3 = "<option value='0'>NA</option>";
+                var editcategorydata4 = "<option value='0'>NA</option>";
+                var editcategorydata5 = "<option value='0'>NA</option>";
+                var editcategorydata6 = "<option value='0'>NA</option>";
+                var editcategorydata7 = "<option value='0'>NA</option>";
+                var editcategorydata8 = "<option value='0'>NA</option>";
+                var editcategorydata9 = "<option value='0'>NA</option>";
+                for (var i = 0; i < data.bindcategory.length; i++) {
+                    editcategorydata += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata1 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata2 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata3 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata4 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata5 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata6 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata7 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata8 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                    editcategorydata9 += "<option value='" + data.bindcategory[i].category_id + "'>" + data.bindcategory[i].category_name + "</option>";
+                }
+                SeteditcategoryData.append(editcategorydata);
+                SeteditcategoryData1.append(editcategorydata1);
+                SeteditcategoryData2.append(editcategorydata2);
+                SeteditcategoryData3.append(editcategorydata3);
+                SeteditcategoryData4.append(editcategorydata4);
+                SeteditcategoryData5.append(editcategorydata5);
+                SeteditcategoryData6.append(editcategorydata6);
+                SeteditcategoryData7.append(editcategorydata7);
+                SeteditcategoryData8.append(editcategorydata8);
+                SeteditcategoryData9.append(editcategorydata9);
+
+
+            }
+        });
+
+    }
+
+    function edituserdata(template_id) {
+
+         $.ajax({
+            type: "POST",
+             url: '@Url.Content("~/csat_settings_page/bindedituser?template_id=")' + template_id,
+            success: function (data) {
+              //  debugger;
+                // Edit User Fill
+                var SeteditUserData = $('#editdivuser');
+                jQuery('#editdivuser').html('');
+                var headdata = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr>" +
+                    "<th class='col-sm-1 select' data-orderable='false'><input type='checkbox' id='chkedituserhead' name='chkedituser'  onclick='fetchdata1(this);' class='parent' data-group='.group2' /></th><th class='col-sm-11'>Username</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.bindedituser.length; i++) {
+                    trdata += "<tr><td class='col-sm-1 select'><input type='checkbox' class='group2' name='chkedituser' value='" + data.bindedituser[i].user_id + "' " + data.bindedituser[i].userid + "  onchange='GetCheckmenu2()' /></td>";
+                    trdata += "<td class='col-sm-11'>" + data.bindedituser[i].user_name + "</td></tr>";
+                }
+                SeteditUserData.append(headdata + trdata + "</tbody></table>");
+                datatable_simple();
+
+                $(".parent").each(function (index) {
+                    var group = $(this).data("group");
+                    var parent = $(this);
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+                    parent.change(function () {  //"select all" change
+                        // debugger;
+                        $(group).prop('checked', parent.prop("checked"));
+                        UncheckMain2();
+                    });
+                    $(group).change(function () {
+                        //debugger;
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+
+
+            }
+        });
+
+    }
+    var edittempid = "";
+    function EditTemplateData(template_id,c050templatename) {
+        $("#edit_notification").modal('show');
+        edittempid = template_id;
+        edituserdata(template_id);
+        editcategorydata();
+        document.getElementById("edittempname").value = c050templatename;
+        var url1 = '@Url.Content("~/csat_settings_page/GetTemplatedetail?edittempid=")' + edittempid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+             //  debugger;
+                for (var i = 0; i < data.emailtemplatedetail.length; i++) {
+                    if (data.emailtemplatedetail[i].c052notificationcomtype == 1)
+                        document.getElementById("txteditemailto").value = data.emailtemplatedetail[i].c052address;
+                    if (data.emailtemplatedetail[i].c052notificationcomtype == 2)
+                        document.getElementById("txteditemailcc").value = data.emailtemplatedetail[i].c052address;
+                }
+                for (var i = 0; i < data.templatedetail.length; i++) {
+
+                    if (data.templatedetail[i].c053category == 1 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 2 ) {
+                        document.getElementById("Running1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                        document.getElementById("drpeditselect").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 1 && data.templatedetail[i].c053subcategory == 101 && data.templatedetail[i].c053status == 12 ) {
+                        document.getElementById("change1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 1 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 0 ) {
+                        document.getElementById("Down1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 1 && data.templatedetail[i].c053subcategory == 104 && data.templatedetail[i].c053status == 8 ) {
+                        document.getElementById("Disable1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 1 && data.templatedetail[i].c053subcategory == 108 && data.templatedetail[i].c053status == 5 ) {
+                        document.getElementById("AccessCom1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                     // Hardware
+                    if (data.templatedetail[i].c053category == 11 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 1 ) {
+                        document.getElementById("HWAdded1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect1").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 11 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == -1 ) {
+                        document.getElementById("HWRemoved1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect1").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                      // Software
+                    if (data.templatedetail[i].c053category == 12 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 1 ) {
+                        document.getElementById("SWAdded1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect2").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 12 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == -1 ) {
+                        document.getElementById("SWRemoved1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect2").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                     // Share
+                    if (data.templatedetail[i].c053category == 20 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 1 ) {
+                        document.getElementById("ShareAdded1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect3").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 20 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == -1 ) {
+                        document.getElementById("ShareRemoved1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect3").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    // Performance Monitoring
+                    if (data.templatedetail[i].c053category == 13 && data.templatedetail[i].c053subcategory == 111 && data.templatedetail[i].c053status == 5 ) {
+                        document.getElementById("PerformanceNotification1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect4").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 13 && data.templatedetail[i].c053subcategory == 112 && data.templatedetail[i].c053status == 5 ) {
+                        document.getElementById("PerformanceNotification1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect4").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 14 && data.templatedetail[i].c053subcategory == 122 && data.templatedetail[i].c053status == 5 ) {
+                        document.getElementById("PerformanceNotification1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect4").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 18 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 5 ) {
+                        document.getElementById("ApplicationMonitoring1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect4").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    // System Tools
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 131 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("Systemfol1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect5").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 132 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("ControlPanel1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect5").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 133 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("Registry1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect5").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 135 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("Services1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect5").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    // User
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 134 && data.templatedetail[i].c053status == 11 ) {
+                        document.getElementById("unsuclogin1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 1 ) {
+                        document.getElementById("User_add1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == -1 ) {
+                        document.getElementById("User_remove1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 2 ) {
+                        document.getElementById("User_change1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 3 ) {
+                        document.getElementById("user_enabled1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 15 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 4 ) {
+                        document.getElementById("user_Disabled1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect6").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                        // Policy Information
+                    if (data.templatedetail[i].c053category == 2 && data.templatedetail[i].c053subcategory == 11 && data.templatedetail[i].c053status == 9 ) {
+                        document.getElementById("policyApply1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect7").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 2 && data.templatedetail[i].c053subcategory == 11 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("PolicyRemoved1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect7").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    if (data.templatedetail[i].c053category == 2 && data.templatedetail[i].c053subcategory == 11 && data.templatedetail[i].c053status == 11 ) {
+                        document.getElementById("policyVioletion1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect7").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    // Remote Notification
+                    if (data.templatedetail[i].c053category == 10 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == 10 ) {
+                        document.getElementById("RemoteNotification1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect8").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                    // OwnyitCSAT / Ownyit Agent
+                    if (data.templatedetail[i].c053category == 9 && data.templatedetail[i].c053subcategory == 0 && data.templatedetail[i].c053status == -1 ) {
+                        document.getElementById("csatNotification1").checked = true;
+                        if (data.templatedetail[i].c053ticketcategory != 0)
+                            document.getElementById("drpeditselect9").value = data.templatedetail[i].c053ticketcategory;
+                    }
+                }
+
+                $(".parent").each(function (index) {
+                    //   debugger;
+                    var group = $(this).data("group");
+                    var parent = $(this);
+                    parent.prop('checked', false);
+                    if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                        parent.prop('checked', true);
+                    }
+                    parent.change(function () {  //"select all" change
+                        // debugger;
+                        $(group).prop('checked', parent.prop("checked"));
+                        UncheckMain2();
+                    });
+                    $(group).change(function () {
+                        //debugger;
+                        parent.prop('checked', false);
+                        if ($(group + ':checked').length == $(group).length) {
+                            parent.prop('checked', true);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+
+    function cleardata() {
+        $('input[type="checkbox"]:checked').prop('checked', false);
+        document.getElementById("tempname").value = '';
+        document.getElementById("txtemailto").value = '';
+        document.getElementById("txtemailcc").value = '';
+        document.getElementById("drpselect").value = 0;
+        document.getElementById("drpselect1").value = 0;
+        document.getElementById("drpselect2").value = 0;
+        document.getElementById("drpselect3").value = 0;
+        document.getElementById("drpselect4").value = 0;
+        document.getElementById("drpselect5").value = 0;
+        document.getElementById("drpselect6").value = 0;
+        document.getElementById("drpselect7").value = 0;
+        document.getElementById("drpselect8").value = 0;
+        document.getElementById("drpselect9").value = 0;
+
+        document.getElementById("edittempname").value = '';
+        document.getElementById("txteditemailto").value = '';
+        document.getElementById("txteditemailcc").value = '';
+        document.getElementById("drpeditselect").value = 0;
+        document.getElementById("drpeditselect1").value = 0;
+        document.getElementById("drpeditselect2").value = 0;
+        document.getElementById("drpeditselect3").value = 0;
+        document.getElementById("drpeditselect4").value = 0;
+        document.getElementById("drpeditselect5").value = 0;
+        document.getElementById("drpeditselect6").value = 0;
+        document.getElementById("drpeditselect7").value = 0;
+        document.getElementById("drpeditselect8").value = 0;
+        document.getElementById("drpeditselect9").value = 0;
+    }
+
+    // Get Edit Category Data
+
+    var drpeditselectdevice = "";
+    $("#drpeditselect").change(function () {
+        drpeditselectdevice = this.value;
+    });
+
+    var drpeditselectdevice1 = "";
+    $("#drpeditselect1").change(function () {
+        drpeditselectdevice1 = this.value;
+    });
+
+    var drpeditselectdevice2 = "";
+    $("#drpeditselect2").change(function () {
+        drpeditselectdevice2 = this.value;
+    });
+
+    var drpeditselectdevice3 = "";
+    $("#drpeditselect3").change(function () {
+        drpeditselectdevice3 = this.value;
+    });
+
+    var drpeditselectdevice4 = "";
+    $("#drpeditselect4").change(function () {
+        drpeditselectdevice4 = this.value;
+    });
+
+    var drpeditselectdevice5 = "";
+    $("#drpeditselect5").change(function () {
+        drpeditselectdevice5 = this.value;
+    });
+
+    var drpeditselectdevice6 = "";
+    $("#drpeditselect6").change(function () {
+        drpeditselectdevice6 = this.value;
+    });
+
+    var drpeditselectdevice7 = "";
+    $("#drpeditselect7").change(function () {
+        drpeditselectdevice7 = this.value;
+    });
+
+    var drpeditselectdevice8 = "";
+    $("#drpeditselect8").change(function () {
+        drpeditselectdevice8 = this.value;
+    });
+
+    var drpeditselectdevice9 = 0;
+    $("#drpeditselect9").change(function () {
+        drpeditselectdevice9 = this.value;
+    });
+
+
+    // Get Edit User data
+    // Check User
+    var chkedituserall = "";
+    var chkedituserid = "";
+    function fetchdata1(source) {
+        //   debugger;
+        chkedituserall = "";
+        var checkboxes = document.querySelectorAll('input[name="chkedituser"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source) {
+                checkboxes[i].checked = source.checked;
+                chkedituserall += "," + checkboxes[i].value;
+            }
+            else {
+                chkedituserall = "";
+
+            }
+        }
+    }
+
+    function GetCheckmenu2() {
+        //  debugger;
+        chkedituserall = "";
+        chkedituserid = "";
+        var checkboxes = document.querySelectorAll('input[name="chkedituser"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkedituserid += "," + checkboxes[i].value;
+            }
+            else {
+
+            }
+
+        }
+    }
+
+    // Get Edit events data
+    // System Security
+    var syseditsec = false;
+    var syseditsecidall = "";
+    var syseditsecid = "";
+
+    $('#idEditcancel').on('click', function () {
+        $('#edit_notification').modal('hide');
+    });
+    $('#idupdate').on('click', function () {
+        var $valid = $('#frm_notification_edit').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            syseditsecid = "";
+            var checkboxes = document.querySelectorAll('input[name="editsystemstatus"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked == true) {
+                    syseditsec = true;
+                    syseditsecid += "," + checkboxes[i].id;
+                    //   syssecvalue += "," + checkboxes[i].value;
+                }
+                else {
+
+                }
+            }
+
+            var edittempname = document.getElementById("edittempname").value;
+            var editemailto = document.getElementById("txteditemailto").value;
+            var editemailcc = document.getElementById("txteditemailcc").value;
+            var chkedituserfinal = "";
+            if (chkedituserid != "") {
+                chkedituserfinal = chkedituserid;
+            }
+            if (chkedituserall != "") {
+                chkedituserfinal = chkedituserall;
+            }
+            var syseditsecfinal = "";
+            if (syseditsecid != "") {
+                syseditsecfinal = syseditsecid;
+            }
+            //if (syseditsecidall != "") {
+            //    syseditsecfinal = syseditsecidall;
+            //}
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/UpdateTemplatedata?editTemname=")' + edittempname + '&syseditsec=' + syseditsec + '&syseditsecid=' + syseditsecfinal + '&drpeditselectdevice=' + drpeditselectdevice + '&drpeditselectdevice1=' + drpeditselectdevice1 + '&drpeditselectdevice2=' + drpeditselectdevice2 + '&drpeditselectdevice3=' + drpeditselectdevice3 + '&drpeditselectdevice4=' + drpeditselectdevice4 + '&drpeditselectdevice5=' + drpeditselectdevice5 + '&drpeditselectdevice6=' + drpeditselectdevice6 + '&drpeditselectdevice7=' + drpeditselectdevice7 + '&drpeditselectdevice8=' + drpeditselectdevice8 + + '&drpeditselectdevice9A=' + drpeditselectdevice9 + '&editemailto=' + editemailto + '&editemailcc=' + editemailcc + '&chkedituserfinal=' + chkedituserfinal,
+                success: function (data) {
+                    alert(data);
+                    chkedituserfinal = "";
+                    syseditsecfinal = "";
+                    $('#edit_notification').modal('hide');
+                }
+            });
+        }
+    });
+    var deltempid = '';
+    function DeleteTemplateData(template_id) {
+        deltempid = template_id;
+        $('#delete_notification').modal('show');
+
+    }
+    $('#btndelete').on('click', function () {
+        var url1 = '@Url.Content("~/csat_settings_page/deleteTemplate?Temid=")' + deltempid;
+	     $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_notification').modal('hide');
+                shownotificationtemp();
+			}
+			});
+
+    });
+
+    $('#btndeletecancle').on('click', function () {
+        $('#delete_notification').modal('hide');
+    });
+
+    // Apply notification
+    var applyon = document.getElementById("notification_type").value;
+    function ApplyNotification() {
+        $('#apply_notification').modal('show');
+        $.get(null, null, bindapplytemp);
+        function bindapplytemp() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/GetNotificationTemp")',
+                success: function (data) {
+                    // debugger;
+                    var Setapplytemplate = $('#applytemplate');
+                    jQuery('#applytemplate').html('');
+                    var applytempdata = "<option value='-1'>Select Template</option>";
+                    for (var i = 0; i < data.notificationtemp.length; i++) {
+                        applytempdata += "<option value='" + data.notificationtemp[i].template_id + "'>" + data.notificationtemp[i].c050templatename + "</option>";
+                    }
+                    Setapplytemplate.append(applytempdata);
+                }
+            });
+        }
+        $.get(null, null, Displayonloadou);
+        function Displayonloadou() {
+           // debugger;
+            Notificationchange('01', tempid);
+        }
+    }
+
+    tempid = document.getElementById("applytemplate").value;
+    var temptype='01';
+    $('#notification_type').on('change', function () {
+        //debugger;
+        temptype = this.value;
+        Notificationchange(temptype,tempid);
+    });
+    $('#applytemplate').on('change', function () {
+       // debugger;
+        tempid = this.value;
+        temptype = document.getElementById("notification_type").value;
+        Notificationchange(temptype, tempid);
+    });
+    function Notificationchange(temptype,tempid) {
+       // debugger;
+        var url = '@Url.Content("~/csat_settings_page/GetOUDeviceFortemplate?name=")' + temptype + '&tempid=' + tempid;
+     $.ajax({
+         type: "POST",
+         url: url,
+         success: function (data) {
+            //  debugger;
+             jQuery('#GetTemplateOU').html('');
+             var SetTempOU = $('#GetTemplateOU');
+			 var apptempouheader ="";
+             var apptempourows = "";
+             if (data.gridtype == 'OU') {
+                 $("#branch_unit").show();
+                 $("#system").hide();
+                 apptempouheader += "<div id='branch_unit'> <label for='nameField' class='col-xs-3 form_label'>Select Branch/ Unit</label>" +
+                     apptempouheader + "<div class='col-xs-5'><div class='table-responsive'><table class='table table-striped table-bordered tbldemo' style='width:100%'><thead>" +
+                     apptempouheader + "<tr><th class='select' data-orderable='false'><input type='checkbox'  class='parent' data-group='.group01' id='gridheadcheck2' /></th><th class='col-sm-8'>Branch/ Unit</th></tr></thead><tbody>";
+                 for (var i = 0; i < data.getoudevicetempdata.length; i++) {
+                     apptempourows += "<tr><td class='select'><input type='checkbox' class='group01' name='check[]' id='gridrawcheck2' value='" + data.getoudevicetempdata[i].ou_nodelinkage_ouid + "' onchange='UncheckMain2()' " + data.getoudevicetempdata[i].ouid +" /></td>" +
+                         "<td>" + data.getoudevicetempdata[i].ou + "</td></tr>";
+                 }
+                 apptempouheader = apptempouheader + apptempourows + "</tbody></table></div></div></div>";
+                 SetTempOU.append(apptempouheader);
+                 datatable_simple();
+
+             }
+             if (data.gridtype == 'System') {
+                 $("#system").show();
+                 $("#branch_unit").hide();
+                 apptempouheader += "<div id='system'><label for='nameField' class='col-xs-3'>Select System Name</label><div class='col-xs-5'>" +
+                     apptempouheader + "<div class='table-responsive'><table class='table table-striped table-bordered tbldemo' style='width:100%'> <thead>" +
+                     apptempouheader + "<tr><th class='select' data-orderable='false'><input type='checkbox' class='parent'  data-group='.group01' /></th><th class='col-sm-7'>System Name</th><th class='col-sm-4'>IP Address</th></tr></thead><tbody>";
+                 for (var i = 0; i < data.getoudevicetempdata.length; i++) {
+                     apptempourows += "<tr><td class='select'><input type='checkbox' class='group01' name='check[]' id='gridrawcheck2' value='" + data.getoudevicetempdata[i].device_id + "' onchange='UncheckMain2()' " + data.getoudevicetempdata[i].userid +" /></td>" +
+                         "<td class='col-sm-7'>" + data.getoudevicetempdata[i].device_name + "</td>"+
+                         "<td class='col-sm-4'>" + data.getoudevicetempdata[i].ip + "</td></tr>";
+
+                 }
+                 apptempouheader = apptempouheader + apptempourows + "</tbody></table></div></div></div>";
+                 SetTempOU.append(apptempouheader);
+                 datatable_simple();
+                 $(document).ready(function () {
+                     $('.apply_datatable_sys').DataTable({
+                         paging: false,
+                         order: [],
+                         columnDefs: [{ orderable: false, targets: [] }],
+                         searching: false,
+                         info: false,
+                         responsive: false,
+
+                     });
+                     $(".table").css({ "width": "100%" });
+                     $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                 });
+             }
+
+             $(".parent").each(function (index) {
+               //   debugger;
+                 var group = $(this).data("group");
+                 var parent = $(this);
+                 parent.prop('checked', false);
+                 if ($(group + ':checked').length == $(group).length && $(group).length != "0") {
+                     parent.prop('checked', true);
+                 }
+                 parent.change(function () {  //"select all" change
+                     // debugger;
+                     $(group).prop('checked', parent.prop("checked"));
+                     UncheckMain2();
+                 });
+                 $(group).change(function () {
+                     //debugger;
+                     parent.prop('checked', false);
+                     if ($(group + ':checked').length == $(group).length) {
+                         parent.prop('checked', true);
+                     }
+                 });
+             });
+            }
+        });
+    }
+
+    var checkedid = "";
+    function UncheckMain2() {
+        //  debugger;
+        checkedid = "";
+        var checkboxes = document.querySelectorAll('input[id="gridrawcheck2"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                checkedid += "," + checkboxes[i].value;
+            }
+            else {
+
+            }
+
+        }
+        //alert(id);
+    }
+
+    // Apply Template
+    var fieldtype;
+    var fieldname;
+    var tempid;
+    function ApplyTemplate() {
+      //  debugger;
+
+        fieldtype = document.getElementById("notification_type").value;
+        tempid = document.getElementById("applytemplate").value;
+        var SystemChecked = $('input[id="gridrawcheck2"]:checked').length > 0;
+        if (SystemChecked == true) {
+        if (fieldtype == '01')
+            fieldname = "c054ouid";
+        else
+            fieldname = "c054deviceid";
+        var url = '@Url.Content("~/csat_settings_page/ApplyTemplateOUDevice?fieldname=")' + fieldname + '&tempid=' + tempid + '&checkedid=' + checkedid;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                alert(data);
+                $('#apply_notification').modal('hide');
+            }
+        });
+        }
+        else {
+            alert("Select any one !");
+            return false;
+        }
+    }
+
+    function Uncheckall() {
+        tempid = '';
+        document.getElementById("notification_type").value = '01'
+        document.getElementById("applytemplate").value = '-1';
+        $('input[type="checkbox"]:checked').prop('checked', false);
+
+    }
+
+
+</script>
+
+

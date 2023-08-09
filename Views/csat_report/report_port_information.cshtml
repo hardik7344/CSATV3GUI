@@ -1,0 +1,1359 @@
+
+@{
+    ViewData["Title"] = "report_port_information";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#port_process_up").click(function () {
+            $("#port_process_form").toggle();
+        });
+    });
+
+    $(document).ready(function () {
+        $("#port_Authentication_up").click(function () {
+            $("#port_Authentication_form").toggle();
+
+        });
+    });
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+    function validate() {
+        var $valid = $('#add_port_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        //if (document.add_port_form.portnumber.value == "") {
+        //    alert("Please provide Port Number!");
+        //    document.add_port_form.portnumber.focus();
+        //    return false;
+        //}
+        //if (document.add_port_form.portname.value == "") {
+        //    alert("Please provide Port Name!");
+        //    document.add_port_form.portname.focus();
+        //    return false;
+        //}
+        else {
+            fun_portauthorize();
+            return (true);
+        }
+    }
+    $(document).ready(function () {
+        $('.port_simple_table').DataTable({
+            paging: false,
+            order: [],
+            columnDefs: [{ orderable: false }],
+            searching: false,
+            info: false,
+            responsive: false,
+        });
+        $(".table").css({ "width": "100%" });
+        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+    });
+
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear() + "-" + (month) + "-" + (day);
+</script>
+
+<div class="row">
+
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <div class="pull-right form_label btn_top_margin">
+                <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#port_Authentication_popup">Port Authentication Report</button>
+                <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#port_process_popup">Port Wise Process Informations</button>
+            </div>
+
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li> Port Information  </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_portinfrm_report" id="frm_portinfrm_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou"></select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys2">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpDevice">
+                                        <option value='-1'>Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname2" id="add_systemname2">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk2" name="add_system_chk2" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip" id="drpip">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip">
+                                            <option value='-1'>Select IP Address</option>
+                                        </select>*@
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                <div class="col-xs-3">
+                                    <input type="text" name="datefilter" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " id="date">
+                                </div>
+                                <label for="nameField" class="col-xs-1">Search</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="Stype">
+                                        <option value='-1'>Select Type</option>
+                                        <option value="T.etimestamp">Timestamp</option>
+                                        <option value="T.protocol">Protocol</option>
+                                        <option value="T.local_port">Local Port </option>
+                                        <option value="T.remote_ip">Remote IP </option>
+                                        <option value="T.remote_port">Remote Port</option>
+                                        <option value="T.status">Status</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" placeholder="Search" id="Svalue" name="Svalue">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="portdatabind()">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="portdatabind()">
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--form  content end-->
+        <!--port  info  form end-->
+        <!--port  info Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divportinfo_div">
+                <table id="divportinfo" class="table table-striped table-bordered display nowrap" width="100%">
+                    @*<thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>ZIP / Post code</th>
+                                <th>Country</th>
+                            </tr>
+                        </thead>*@
+                </table>
+            </div>
+        </div>
+        <!--port  info Datatable end-->
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+</div>
+
+<!-- port process info pop-up model box  Content-->
+<div class="modal fade" id="port_process_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Port Process Information Report
+                </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="port_process_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="port_process_form" name="port_process_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou1"></select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys1">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpDevice1">
+                                                <option value='-1'>Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname1">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip1" id="drpip1">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip1">
+                                                    <option value='-1'>Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                        <div class="col-xs-3">
+                                            <input type="text" name="datefilter1" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " id="date1">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label ">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="Stype1">
+                                                <option value='-1'>Select Type</option>
+                                                <option value="T.pid">Process ID</option>
+                                                <option value="T.process">Process</option>
+                                                <option value="T.protocol">Protocol</option>
+                                                <option value="T.local_ip">Local IP </option>
+                                                <option value="T.local_port">Local Port</option>
+                                                <option value="T.remote_ip">Remote IP </option>
+                                                <option value="T.remote_port">Remote Port</option>
+                                                <option value="T.stimestamp">Start Date</option>
+                                                <option value="T.etimestamp">End Date </option>
+                                                <option value="T.status">status</option>
+
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="Svalue1" name="Svalue1">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" onclick="portProcessdatabind()">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="portProcessdatabind()">
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <!--End form  content-->
+
+                    </div>
+                </div>
+
+                <!--port process info Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="divportprocess_div">
+                        <table id="divportprocess" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+                <!--port process info Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End port process info  pop-up model box Content -->
+<!-- start port Authentication Report pop-up model box Content -->
+<div class="modal fade" id="port_Authentication_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 100px;">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 8px 5px 15px 15px;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#port_Autentic_Setting_popup" onclick="funcportauthenticationsetting()">Port Authentication Setting</button>
+                <h6 class=" modal-title">
+                    Port Authentication Report
+                </h6>
+            </div>
+            <div class="modal-body model_body_scroll">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="port_Authentication_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="port_Authentication_form" name="port_Authentication_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou2"></select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpDevice2">
+                                                <option value='-1'>Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip2" id="drpip2">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip2">
+                                                    <option value='-1'>Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Date Range</label>
+                                        <div class="col-xs-3">
+                                            <input type="text" name="datefilter2" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " id="date2">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label ">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="Stype2">
+                                                <option value='-1'>Select Type</option>
+                                                <option value="T.protocol">Protocol</option>
+                                                <option value="T.local_ip">Local IP </option>
+                                                <option value="T.local_port">Local Port</option>
+                                                <option value="T.remote_ip">Remote IP </option>
+                                                <option value="T.remote_port">Remote Port</option>
+                                                <option value="T.stimestamp">Start Date</option>
+                                                <option value="T.etimestamp">End Date </option>
+                                                <option value="T.status">status</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="Svalue2" name="Svalue2">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="portauthorizereport()">
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <!--End form  content-->
+
+                    </div>
+                </div>
+
+                <!--port process Authentication reprot Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="divportauthorizereport_div">
+                        <table id="divportauthorizereport" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+                <!--port process Authentication report Datatable end-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End port Authentication Report pop-up model box Content -->
+<!-- start port port_Autentic_Setting_popup  model box Content -->
+<div class="modal fade" id="port_Autentic_Setting_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 100px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Port Authorized/Unauthorized Port
+                </h6>
+            </div>
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <button class=" pull-right btn btn-primary btn-md day" data-toggle="modal" data-target="#Add_port_popup" style="margin-bottom:5px;padding:0px 4px;">Add New Port <b style="font-weight:bolder;">+</b></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive div_portauthsetting">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End port port_Autentic_Setting_popup  model box Content -->
+<!-- start port Add_port_popup  model box Content -->
+<div class="modal fade" id="Add_port_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Add Port
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="add_port_form" id="add_port_form">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Port Number</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="text" placeholder="Enter Port Number" onkeypress="return isNumberKey(event)" maxlength="5" id="portnumber" name="portnumber" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Port Name</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="text" placeholder="Enter Port Name" id="portname" name="portname" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4 col-lg-4 col-md-4">Status</label>
+                                <div class="col-xs-3 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input id="authorize" type="radio" name="authorize" value="1" checked> Authorized </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3 col-md-3 col-lg-3" style="padding-top:2px;">
+                                    <div class="radio">
+                                        <label> <input id="unauthorize" type="radio" name="authorize" value="0"> Unauthorized </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="save" value="Submit" onclick="validate()" />
+                                    @*<input type="button" class="btn btn-primary" name="save" value="Submit" onclick="return(validate());" />*@
+                                    <input type="button" data-dismiss="modal" class="btn btn-primary" name="close" value="Cancel" id="btncancle" onclick="cleardata()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End port Add_port_popup  model box Content -->
+<!-- start delete_port_popup  model box Content -->
+<div class="modal fade" id="delete_port_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Conformation
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-10">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-12">
+                                    <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                    <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="yes" id="btndelete" value="Yes" />
+                                    <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End delete_port_popup  model box Content -->
+<script>
+
+    $(document).ready(function () {
+        validateSingleForm("#frm_portinfrm_report");
+        validateSingleForm("#port_process_form");
+        validateSingleForm("#port_Authentication_form");
+        validateSingleForm("#add_port_form");
+
+
+    });
+</script>
+<script>
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+    $('.tree-toggle').click(function () {
+        $(this).parent().children('ul.tree').toggle(200);
+    });
+    $(function () {
+        $('.tree-toggle').parent().children('ul.tree').toggle(200);
+    })
+</script>
+<!--date-time picker-->
+<script type="text/javascript">
+	var sdate="";
+var edate="";
+        $(function () {
+            $('input[name="datefilter"]').daterangepicker({
+               // opens: 'left',
+                autoUpdateInput: true,
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear',
+
+                }
+            });
+
+            $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY '));
+				 sdate=picker.startDate.format('DD/MM/YYYY');
+				edate=picker.endDate.format('DD/MM/YYYY');
+
+            });
+
+            $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+            $(window).bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+
+        });
+
+    var oudata = "";
+		$.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        var tmpOUID = "";
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //debugger;
+            var SetData = $('#drpou');
+            jQuery('#drpou').html('');
+            oudata = "";
+            for (var i = 0; i < data.ou.length; i++) {
+                oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                if (i == 0)
+                    tmpOUID = data.ou[i].ouid;
+                }
+               SetData.append(oudata);
+              getsystemlist(tmpOUID);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+
+
+$("#drpou").change(function () {
+    ouidvalue = this.value;
+    getsystemlist(ouidvalue);
+});
+    function getsystemlist(ouidvalue) {
+        //debugger;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouidvalue;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpDevice');
+        //var SetDataip = $('#drpip');
+
+        jQuery('#drpDevice').html('');
+        //jQuery('#drpip').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+
+        }
+
+        });
+    }
+	var ouidvalue="";
+    var systemvalue="";
+    var ipvalue = "";
+    //$("#drpou").change(function () {
+    //    ouidvalue = this.value;
+    //});
+
+    $("#drpDevice").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#drpip").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+
+function portdatabind()
+{
+    var $valid = $('#frm_portinfrm_report').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    } else {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        sdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY');
+        edate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY');
+        var varserch = document.getElementById("Stype").value;
+        var varvalue = document.getElementById("Svalue").value;
+        var ipvalue = document.getElementById("drpip").value;
+        var systemvalue = document.getElementById('add_systemname2').value;
+        if (systemvalue == "") {
+            systemvalue = document.getElementById("drpDevice").value;
+        }
+        if (ouidvalue == '')
+            ouidvalue = document.getElementById("drpou").value;
+
+        var url1 = '@Url.Content("~/csat_report/Get_Port_information?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&searching=' + varserch + '&value=' + varvalue + '&startdate=' + sdate + '&enddate=' + edate;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (response) {
+                //debugger;
+                document.getElementById("Svalue").value = '';
+                var dataclear = document.getElementById('divportinfo_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divportinfo_div').append("<table id='divportinfo' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divportinfo');
+                var out = [];
+                $('#divportinfo').DataTable({
+                    serverSide: true,
+                    searching: false,
+                    type: 'POST',
+                    datatype: 'json',
+                    iDisplayLength: 500,
+                    ajax: function (data, callback, settings) {
+                        //debugger;
+                        try {
+                            for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
+                                out.push([response.data[i].ou_longname, response.data[i].stimestamp, response.data[i].systemname, response.data[i].ip, response.data[i].localport, response.data[i].remote_ip, response.data[i].remoteport, response.data[i].status]);
+                            }
+                        } catch (ex) {
+                        }
+                        setTimeout(function () {
+                            callback({
+                                draw: data.draw,
+                                data: out,
+                                recordsTotal: response.recordsTotal,
+                                recordsFiltered: response.recordsFiltered
+                            });
+                        }, 100);
+                    },
+                    dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Port Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Port Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columnDefs: [{ type: 'ip-address', targets: 2 }],
+                    columns: [{ title: "Branch/ Unit" },{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Status" }],
+                    scrollY: 400,
+                    scrollX: true,
+                    ordering: false,
+                    scrollCollapse: true,
+                    scroller: true,
+                    stateSave: true,
+                    scroller: {
+                        loadingIndicator: true,
+                    },
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                //document.getElementById("Svalue").value = '';
+                //var dataclear = document.getElementById('divportinfo_div');
+                //dataclear.innerHTML = '&nbsp;';
+                //$('#divportinfo_div').append("<table id='divportinfo' class='table table-striped table-bordered' width='100%'></table>");
+                //otable = document.getElementById('divportinfo');
+                //var data1 = [];
+                //for (var i = 0; i < data.portinfodata.length; i++) {
+                //    data1.push([data.portinfodata[i].stimestamp, data.portinfodata[i].systemname, data.portinfodata[i].ip, data.portinfodata[i].localport, data.portinfodata[i].remote_ip, data.portinfodata[i].remoteport, data.portinfodata[i].status, data.portinfodata[i].ou_longname]);
+                //    //data1.push([data.portinfodata[i].etimestamp, data.portinfodata[i].systemname, data.portinfodata[i].ip, data.portinfodata[i].protocol, data.portinfodata[i].localport, data.portinfodata[i].remote_ip, data.portinfodata[i].remoteport, data.portinfodata[i].status, data.portinfodata[i].ou_longname]);
+                //}
+                //var otable = $("#divportinfo").DataTable({
+                //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Port Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Port Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                //    columns: [{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Status" }, { title: "Branch/ Unit" }]
+                //    //columns: [{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Protocol" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Status" }, { title: "Branch/ Unit" }]
+                //});
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+}
+
+</script>
+<script type="text/javascript">
+	var sdate1="";
+var edate1="";
+        $(function () {
+            $('input[name="datefilter1"]').daterangepicker({
+               // opens: 'left',
+                autoUpdateInput: true,
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear',
+
+                }
+            });
+
+            $('input[name="datefilter1"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY '));
+				 sdate1=picker.startDate.format('DD/MM/YYYY');
+				edate1=picker.endDate.format('DD/MM/YYYY');
+
+            });
+
+            $('input[name="datefilter1"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+            $(".model_body_scroll").bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+
+        });
+
+    var oudata = "";
+		$.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        var tmpOUID = "";
+       // debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou1');
+                jQuery('#drpou1').html('');
+
+                oudata = "";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    if (i == 0)
+                        tmpOUID = data.ou[i].ouid;
+                }
+                SetData.append(oudata);
+                getsystemlist1(tmpOUID);
+            }
+        });
+    }
+
+
+
+$("#drpou1").change(function () {
+    ouidvalue = this.value;
+    getsystemlist1(ouidvalue);
+});
+    function getsystemlist1(ouidvalue) {
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouidvalue;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpDevice1');
+        //var SetDataip = $('#drpip1');
+
+        jQuery('#drpDevice1').html('');
+        //jQuery('#drpip1').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+
+        }
+
+        });
+    }
+	var ouidvalue1="";
+    var systemvalue1="";
+    var ipvalue1 = "";
+    $("#drpou1").change(function () {
+        ouidvalue1 = this.value;
+    });
+
+    $("#drpDevice1").change(function () {
+        systemvalue1 = this.value;
+
+    });
+    //$("#drpip1").change(function () {
+    //    ipvalue1 = this.value;
+
+    //});
+
+function portProcessdatabind()
+{
+    var $valid = $('#port_process_form').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    } else {
+        sdate1 = $('#date1').data('daterangepicker').startDate.format('DD/MM/YYYY');
+        edate1 = $('#date1').data('daterangepicker').endDate.format('DD/MM/YYYY');
+        var varserch1 = document.getElementById("Stype1").value;
+        var varvalue1 = document.getElementById("Svalue1").value;
+        var ipvalue1 = document.getElementById("drpip1").value;
+        if (ouidvalue == '')
+            ouidvalue = document.getElementById("drpou").value;
+        var systemvalue1 = document.getElementById('add_systemname1').value;
+        if (systemvalue1 == "") {
+            systemvalue1 = document.getElementById("drpDevice1").value;
+        }
+        var url1 = '@Url.Content("~/csat_report/Get_Port_process_information?IP=")' + ipvalue1 + '&Device=' + systemvalue1 + '&ouid=' + ouidvalue1 + '&searching=' + varserch1 + '&value=' + varvalue1 + '&startdate=' + sdate1 + '&enddate=' + edate1;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (response) {
+                document.getElementById("Svalue1").value = '';
+                var dataclear = document.getElementById('divportprocess_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divportprocess_div').append("<table id='divportprocess' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divportprocess');
+                var data = response.portprocessinfodata;
+                console.log('data we get', data);
+                $('#divportprocess').DataTable({
+                    serverSide: true,
+                    searching: false,
+                    type: 'POST',
+                    datatype: 'json',
+                    iDisplayLength: 500,
+                    ajax: function (data, callback, settings) {
+                        console.log(data, 'function data');
+                        // debugger;
+                        var out = [];
+                        if (response.portprocessinfodata.length > 0) {
+                           var ien = data.start + data.length;
+                            try {
+                                for (var i = data.start; i < ien; i++) {
+                                    out.push([response.portprocessinfodata[i].ou_longname, response.portprocessinfodata[i].systemname, response.portprocessinfodata[i].ip, response.portprocessinfodata[i].pid, response.portprocessinfodata[i].process, response.portprocessinfodata[i].protocol, response.portprocessinfodata[i].local_ip, response.portprocessinfodata[i].localport, response.portprocessinfodata[i].remote_ip, response.portprocessinfodata[i].remoteport, response.portprocessinfodata[i].stimestamp, response.portprocessinfodata[i].etimestamp, response.portprocessinfodata[i].status]);
+                                }
+                            } catch (ex) { }
+                        }
+                        //alert(111);                        
+                        setTimeout(function () {
+                            callback({
+                                draw: data.draw,
+                                data: out,
+                                recordsTotal: response.portprocessinfodata.length,
+                                recordsFiltered: response.portprocessinfodata.length
+                                //recordsTotal: response.recordsTotal,
+                                //recordsFiltered: response.recordsFiltered
+                            });
+                        }, 1);
+                        //alert(out.length);
+                    },
+                    dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Port Process Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Port Process Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columnDefs: [{ type: 'ip-address', targets: 1 }],
+                    columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "Process ID" }, { title: "Process" }, { title: "Protocol" }, { title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Start Date" }, { title: "End Date" }, { title: "Status" }],
+                    scrollY: 380,
+                    scrollX: true,
+                    ordering: false,
+                    scrollCollapse: true,
+                    scroller: true,
+                    stateSave: true,
+                    scroller: {
+                        loadingIndicator: true,
+                    },
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                //var data1 = [];
+                //for (var i = 0; i < data.portprocessinfodata.length; i++) {
+                //    data1.push([data.portprocessinfodata[i].systemname, data.portprocessinfodata[i].ip, data.portprocessinfodata[i].pid, data.portprocessinfodata[i].process, data.portprocessinfodata[i].local_ip, data.portprocessinfodata[i].localport, data.portprocessinfodata[i].remote_ip, data.portprocessinfodata[i].remoteport, data.portprocessinfodata[i].stimestamp, data.portprocessinfodata[i].etimestamp, data.portprocessinfodata[i].status, data.portprocessinfodata[i].ou_longname]);
+                //    //data1.push([data.portprocessinfodata[i].systemname, data.portprocessinfodata[i].ip, data.portprocessinfodata[i].pid, data.portprocessinfodata[i].process, data.portprocessinfodata[i].protocol, data.portprocessinfodata[i].local_ip, data.portprocessinfodata[i].localport, data.portprocessinfodata[i].remote_ip, data.portprocessinfodata[i].remoteport, data.portprocessinfodata[i].stimestamp, data.portprocessinfodata[i].etimestamp, data.portprocessinfodata[i].status, data.portprocessinfodata[i].ou_longname]);
+                //}
+                //var otable = $("#divportprocess").DataTable({
+                //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Port Process Information_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Port Process Information Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                //    columns: [{ title: "System Name" }, { title: "IP Address" }, { title: "Process ID" }, { title: "Process" },{ title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Start Date" }, { title: "End Date" }, { title: "Status" }, { title: "Branch/ Unit" }]
+                //    //columns: [{ title: "System Name" }, { title: "IP Address" }, { title: "Process ID" }, { title: "Process" }, { title: "Protocol" }, { title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Start Date" }, { title: "End Date" }, { title: "Status" }, { title: "Branch/ Unit" }]
+                //});
+            }
+        });
+    }
+}
+
+</script>
+<script type="text/javascript">
+	var sdate2="";
+    var edate2="";
+        $(function () {
+            $('input[name="datefilter2"]').daterangepicker({
+               // opens: 'left',
+                autoUpdateInput: true,
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear',
+
+                }
+            });
+
+            $('input[name="datefilter2"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY '));
+                sdate2=picker.startDate.format('DD/MM/YYYY');
+				edate2=picker.endDate.format('DD/MM/YYYY');
+
+            });
+
+            $('input[name="datefilter2"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+            $(".model_body_scroll").bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+
+        });
+
+
+		$.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+
+       // debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#drpou2');
+                jQuery('#drpou2').html('');
+
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+            }
+        });
+    }
+
+
+
+$("#drpou2").change(function () {
+
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpDevice2');
+        //var SetDataip = $('#drpip2');
+
+        jQuery('#drpDevice2').html('');
+        //jQuery('#drpip2').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+           devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+
+            SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+
+        }
+
+        });
+
+    });
+	var ouidvalue2="";
+    var systemvalue2="";
+    //var ipvalue2 = "";
+    $("#drpou2").change(function () {
+        ouidvalue2 = this.value;
+    });
+
+    $("#drpDevice2").change(function () {
+        systemvalue2 = this.value;
+
+    });
+    //$("#drpip2").change(function () {
+    //    ipvalue2 = this.value;
+
+    //});
+
+function portauthorizereport()
+{
+    var $valid = $('#port_Authentication_form').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    } else {
+        //debugger;
+        sdate2 = $('#date2').data('daterangepicker').startDate.format('DD/MM/YYYY');
+        edate2 = $('#date2').data('daterangepicker').endDate.format('DD/MM/YYYY');
+        var varserch2 = document.getElementById("Stype2").value;
+        var varvalue2 = document.getElementById("Svalue2").value;
+        var ipvalue2 = document.getElementById("drpip2").value;
+        if (ouidvalue == '')
+            ouidvalue = document.getElementById("drpou2").value;
+        var systemvalue2 = document.getElementById('add_systemname').value;
+        if (systemvalue2 == "") {
+            systemvalue2 = document.getElementById("drpDevice2").value;
+        }
+        var url1 = '@Url.Content("~/csat_report/get_port_authentication_report?IP=")' + ipvalue2 + '&Device=' + systemvalue2 + '&ouid=' + ouidvalue2 + '&searching=' + varserch2 + '&value=' + varvalue2 + '&startdate=' + sdate2 + '&enddate=' + edate2;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                document.getElementById("Svalue2").value = '';
+                var dataclear = document.getElementById('divportauthorizereport_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divportauthorizereport_div').append("<table id='divportauthorizereport' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divportauthorizereport');
+                var data1 = [];
+                for (var i = 0; i < data.portauthreport.length; i++) {
+                    //data1.push([data.portauthreport[i].ou_longname, data.portauthreport[i].systemname, data.portauthreport[i].ip, data.portauthreport[i].protocol, data.portauthreport[i].local_ip, data.portauthreport[i].localport, data.portauthreport[i].remote_ip, data.portauthreport[i].remoteport, data.portauthreport[i].stimestamp, data.portauthreport[i].etimestamp, data.portauthreport[i].status, data.portauthreport[i].localAuth, data.portauthreport[i].remoteAuth]);
+                    data1.push([data.portauthreport[i].ou_longname, data.portauthreport[i].systemname, data.portauthreport[i].ip, data.portauthreport[i].local_ip, data.portauthreport[i].localport, data.portauthreport[i].remote_ip, data.portauthreport[i].remoteport, data.portauthreport[i].stimestamp, data.portauthreport[i].etimestamp, data.portauthreport[i].status, data.portauthreport[i].localAuth, data.portauthreport[i].remoteAuth]);
+                }
+                var otable = $("#divportauthorizereport").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Port Authentication_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Port Authentication Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    //columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Protocol" }, { title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Start Date" }, { title: "End Date" }, { title: "Status" }, { title: "Local Authorize" }, { title: "Remote Authorize" }]
+                    columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Start Date" }, { title: "End Date" }, { title: "Status" }, { title: "Local Authorize" }, { title: "Remote Authorize" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+}
+
+</script>
+<script>
+    function funcportauthenticationsetting() {
+   //debugger;
+        var url1 = '@Url.Content("~/csat_report/port_authentication_setting")';
+    $.ajax({
+       type: "POST",
+       url: url1,
+        success: function (data) {
+                var SetData1 = $('.div_portauthsetting');
+                jQuery('.div_portauthsetting').html('');
+
+            var nwheader = "<table class='table table-striped table-bordered table-hover tbl_pdfexport_count'><thead><tr>";
+           nwheader +="<th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' data-group='.group2' /></th>" +
+                    "<th class='col-sm-4' >Port Number</th>" +
+                    "<th class='col-sm-4' >Port Name</th>" +
+                    "<th class='col-sm-4'>Authorize/UnAuthorize</th>" +
+                   "<th class='col-sm-4' data-orderable='false'>Delete</th></tr ></thead > <tbody>";
+                var nwrows = "";
+
+           for (var i = 0; i < data.portauth.length; i++) {
+                    nwrows += "<tr>";
+               nwrows += "<td class='select'><input type='checkbox' class='group2' name='check[]' id='selectAll' value='" + data.portauth[i].port +"' onchange='UncheckMain2()' /></td >" +
+                        "<td>" + data.portauth[i].port + "</td>" +
+                        "<td>" + data.portauth[i].port_name + "</td>" +
+                        "<td>" + data.portauth[i].authorize + "</td>" +
+                   "<td class='icon'><i class='glyphicon glyphicon-trash manage_icon' type='button' data-toggle='modal' data-target='#delete_port_popup' title='Delete' onclick=deletauthport('" + data.portauth[i].port + "');></i></td>";
+                }
+                nwportauth = nwheader + nwrows + "</tr></tbody></table>";
+            SetData1.append(nwportauth);
+             reportname = "Port Information Report";
+               datatable_pdfexport_counting(reportname);
+
+           $(".parent").each(function (index) {
+               // debugger;
+               var group = $(this).data("group");
+               var parent = $(this);
+
+               parent.change(function () {  //"select all" change
+                   // debugger;
+                   $(group).prop('checked', parent.prop("checked"));
+                   UncheckMain2();
+               });
+               $(group).change(function () {
+                   //debugger;
+                   parent.prop('checked', false);
+                   if ($(group + ':checked').length == $(group).length) {
+                       parent.prop('checked', true);
+                   }
+               });
+           });
+            }
+        });
+
+    }
+
+
+
+    var port = "";
+    function UncheckMain2() {
+        //  debugger;
+        port = "";
+        var checkboxes = document.querySelectorAll('input[id="selectAll"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                port += "," + checkboxes[i].value;
+            }
+            else {
+
+            }
+
+        }
+        //alert(crc);
+    }
+</script>
+<script>
+    // Delete authorize port
+    var portid = "";
+    function deletauthport(port) {
+        //debugger;
+        portid = port;
+        $("#delete_port_popup").modal('show');
+    }
+
+     $('#btndelete').on('click',function(){
+         var url1 = '@Url.Content("~/csat_report/deleteAuthport?portid=")' + portid;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_port_popup').modal('hide');
+                funcportauthenticationsetting();
+			}
+			});
+
+	});
+	$('#btndeletecancle').on('click',function(){
+        $('#delete_port_popup').modal('hide');
+    });
+</script>
+<script>
+
+     var authport = '';
+    $('input[type=radio][name=authorize]').change(function () {
+
+        authport = this.value;
+
+    });
+    function fun_portauthorize() {
+        // debugger;
+
+        var authport = $('input[name=authorize]:checked').val();
+        var portnumber = document.getElementById("portnumber").value;
+        var portname = document.getElementById("portname").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_report/port_authorized_add?authport=")' + authport + '&portnumber=' + portnumber + '&portname=' + portname,
+            success: function (strreturn) {
+                alert(strreturn);
+                $('#Add_port_popup').modal('hide');
+                funcportauthenticationsetting();
+
+            }
+        });
+    }
+    $('#btncancle').on('click', function () {
+        $('#Add_port_popup').modal('hide');
+    });
+
+    function cleardata() {
+        var SetDatadevice = $('#drpDevice1');
+        //var SetDataip = $('#drpip1');
+        jQuery('#drpDevice1').html('');
+        //jQuery('#drpip1').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        document.getElementById("drpip1").value = '';
+        document.getElementById("drpDevice1").value = '-1';
+        document.getElementById("drpou1").value = '-1';
+        document.getElementById("Stype1").value = '-1';
+        document.getElementById("Svalue1").value = '';
+        $('#divportprocess').html('');
+
+        document.getElementById("portnumber").value = '';
+        document.getElementById("portname").value = '';
+        document.getElementById("authorize").checked = true;
+        document.getElementById("unauthorize").checked = false;
+
+        var SetDatadevice = $('#drpDevice2');
+        //var SetDataip = $('#drpip2');
+        jQuery('#drpDevice2').html('');
+        //jQuery('#drpip2').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        document.getElementById("drpip2").value = '';
+        document.getElementById("drpDevice2").value = '-1';
+        document.getElementById("drpou2").value = '-1';
+        document.getElementById("Stype2").value = '-1';
+        document.getElementById("Svalue2").value = '';
+        $('#divportauthorizereport_div').html('');
+
+        document.getElementById("Svalue1").value = '';
+        var dataclear = document.getElementById('divportprocess_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#divportprocess_div').append("<table id='divportprocess' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('divportprocess');
+    }
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+
+
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname2').hide();
+    $('#add_system_chk2').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys2').hide();
+            $('#inputsystemname2').show();
+        }
+        else {
+            $('#selectsys2').show();
+            $('#inputsystemname2').hide();
+            document.getElementById('add_systemname2').value = "";
+        }
+    });
+</script>

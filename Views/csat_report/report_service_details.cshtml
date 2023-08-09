@@ -1,0 +1,854 @@
+﻿
+@{
+    ViewData["Title"] = "report_service_details";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#service_up").click(function () {
+            $("#service_form").toggle();
+        });
+    });    
+</script>
+<div class="row">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    @*<button class="btn btn-default btn-md day" data-toggle="modal"  id="underwatchservice">Under Watch Service Report</button>*@
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#under_watch_service_report" onclick="UnderwatchserviceReport()">Under Watch Service Report</button>
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#under_watch_service_popup" onclick="Underwatchservice()">Under Watch Service</button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Services Details  </li>
+                </ul>
+            </div>
+        </div>
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_servicedetail_report" id="frm_servicedetail_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU">
+                                        @*<option>Root</option>
+                <option value="01">Root >> Location</option>
+                <option value="02">Root >> Location >> Department</option>*@
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="Device">
+                                        <option value="-1">Select System Name</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="ip" id="ip">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="ip">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Search</label>
+                                <div class="col-xs-2">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type">
+                                        <option value="-1">Select Type</option>
+                                        <option value="service_name">Service</option>
+                                        <option value="display_name">Display Name</option>
+                                        <option value="startname">Start Name </option>
+                                        <option value="state">Status</option>
+                                        <option value="startmode">Start Mode</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="Funcservicedetailsinfo()">
+                                                <i class="glyphicon glyphicon-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="Funcservicedetailsinfo()">
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!--form  content end-->
+        <!--Services Details Report  form end-->
+        <!--Services Details Report Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="tblservicedata_div" style="margin-bottom:10px;">
+                <table id="tblservicedata" class="table table-striped table-bordered display nowrap" width="100%" ></table>
+            </div>
+        </div>
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+
+</div>
+
+<!-- Services List  pop-up model box  Content-->
+<div class="modal fade" id="under_watch_service_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Set Under Watch Service
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2 form_label">Service Name</label>
+                                <div class="col-xs-8">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="ServiceName" id="Drpservicename">
+                                        <option value="-1">Service Name</option>
+                                    </select>
+                                    @*<input class="form-control" type="text" name="Name" placeholder="Service Name" />*@
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" onclick="Saveunderwatchservice()" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Close" id="btncancel" />
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="table-responsive" id="tblunderwatchservice">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End  Services List Report  pop-up model box Content end-->
+<!--Services List edit popup model box  Content-->
+<div class="modal fade" id="edit_service_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Edit Services Information
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+                               <div class="form-group">
+                                <label for="nameField" class="col-xs-2 form_label">Service Name</label>
+                                <div class="col-xs-8">
+                                    @*<input class="form-control" type="text" name="Name" value="Application Identity" />*@
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="ServiceName" id="editDrpservicename"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-2"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" />
+                                    <input type="button" class="btn btn-primary" name="close" value="Close" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Services List edit  pop-up model box Content end-->
+<!-- Service delete popup model box  Content-->
+<div class="modal fade" id="delete_service_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Delete Service Details
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-10">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+
+                                <label for="nameField" class="col-xs-12">
+                                    <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                    <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete service details ?</span>
+                                </label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-6">
+                                    <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                    <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Service delete  pop-up model box Content end-->
+<!-- End Service delete  pop-up model box Content end-->
+<!--Under Watch Service Report pop-up model box  Content-->
+<div class="modal fade" id="under_watch_service_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Under Watch Service Report
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="service_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="service_form" name="service_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU1">
+                                                @*<option>Root</option>
+                <option value="01">Root >> Location</option>
+                <option value="02">Root >> Location >> Department</option>*@
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys1">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="Device1">
+                                                <option value="-1">Select System Name</option>
+
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname1">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="ip1" id="ip1">
+                                            @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="ip1">
+                <option value="-1">Select IP Address</option>
+
+            </select>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1">Search</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="type1">
+                                                <option value="-1">Select Type</option>
+                                                <option value="service_name">Service</option>
+                                                <option value="display_name">Display Name</option>
+                                                <option value="startname">Group </option>
+                                                <option value="state">Status</option>
+                                                <option value="startmode">Mode</option>
+
+
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control" placeholder="Search" id="searchvalue1" name="searchvalue1">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" onclick="Funcunderwatchservicedetails()">
+                                                        <i class="glyphicon glyphicon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="Funcunderwatchservicedetails()">
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <!--End form  content-->
+
+                    </div>
+                </div>
+
+                <!--Under Watch Service Report Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tblunderwatchservicerpt_div">
+                        <table id="tblunderwatchservicerpt" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+               
+                <!--Under Watch Service Report Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Under Watch Service Report  pop-up model box Content -->
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_servicedetail_report");
+        validateSingleForm("#service_form");
+        
+    });
+</script>
+<script>
+    var oudata = "";
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        //debugger;
+        var tmpOUID = "";
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+	 //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU');
+                jQuery('#DrpOU').html('');
+                oudata = "";
+                for (var i = 0; i < data.ou.length; i++) {
+                    //debugger;
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    if (i == 0)
+                        tmpOUID = data.ou[i].ouid;
+                }
+                SetData.append(oudata);
+                getsystemlist(tmpOUID);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+      
+	}
+</script>
+<script>
+var ouidvalue="";
+var systemvalue="";
+    var ipvalue = "";
+    var actionvalue = "";
+$("#DrpOU").change(function () {
+    ouidvalue = this.value;
+    getsystemlist(ouidvalue);
+    });
+    function getsystemlist(ouidvalue) {
+        //debugger;       
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + ouidvalue;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+                var SetDatadevice = $('#Device');
+				 //var SetDataip = $('#ip');
+                jQuery('#Device').html('');
+                //jQuery('#ip').html('');
+
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+				 devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+                    //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+    }
+
+    $("#Device").change(function () {
+        systemvalue = this.value;
+    });
+    //$("#ip").change(function () {
+    //    ipvalue = this.value;
+    //    //systemvalue= this.value;
+
+    //});
+    var type = "";
+    $("#type").change(function () {
+        //debugger;
+        type = this.value;
+    });
+    var ValueSerach = "";
+    function Funcservicedetailsinfo() {
+        var $valid = $('#frm_servicedetail_report').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            var ipvalue = document.getElementById("ip").value;
+            var e = document.getElementById("searchvalue");
+            ValueSerach = e.value;
+            var systemvalue = document.getElementById('add_systemname').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("Device").value;
+            }
+            //debugger;
+            var url = '@Url.Content("~/csat_report/GetservicedetailsReport?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (response) {
+                    //debugger;
+
+                    //3
+                    //$(document).ready(function () {
+                    //    $('#tblservicedata').DataTable({
+                    //        data: response.data,
+                    //        //serverSide: true,
+                    //        searching: false,
+                    //        dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Services Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Services Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    //        columnDefs: [{ type: 'ip-address', targets: 1 }],
+                    //        scrollY: 400,
+                    //        scrollX: true,
+                    //        columns: [
+                    //            {
+                    //                "data": "device_name",
+                    //                "title": "System Name",
+                    //            },
+                    //            {
+                    //                "data": "ip",
+                    //                "title": "IP Address"
+                    //            },
+                    //            {
+                    //                "data": "service_name",
+                    //                "title": "Service",
+                    //            },
+                    //            {
+                    //                "data": "display_name",
+                    //                "title": "Display Name"
+                    //            },
+                    //            {
+                    //                "data": "startname",
+                    //                "title": "Group",
+                    //            },
+                    //            {
+                    //                "data": "state",
+                    //                "title": "Status"
+                    //            },
+                    //            {
+                    //                "data": "startmode",
+                    //                "title": "Mode"
+                    //            },
+                    //            {
+                    //                "data": "ou_longname",
+                    //                "title": "Branch/ Unit"
+                    //            },
+                    //        ],
+                    //        destroy: true,
+                    //    });
+                    //});
+                    //$(".table").css({ "width": "100%" });
+                    //$(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                    //2
+                    var dataclear = document.getElementById('tblservicedata_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblservicedata_div').append("<table id='tblservicedata' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblservicedata');
+                    $('#tblservicedata').DataTable({
+                        serverSide: true,
+                        searching: false,
+                        type: 'POST',
+                        datatype: 'json',
+                        iDisplayLength: 500,
+                        ajax: function (data, callback, settings) {
+                            // debugger;                                                                 
+                            var out = [];
+                            if (response.data.length > 0) {
+                                try {
+                                    for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
+                                        out.push([response.data[i].ou_longname, response.data[i].device_name, response.data[i].ip, response.data[i].service_name, response.data[i].display_name, response.data[i].startname, response.data[i].state, response.data[i].startmode]);
+                                    }
+                                } catch (ex) { }
+                            }
+                            setTimeout(function () {
+                                callback({
+                                    draw: data.draw,
+                                    data: out,
+                                    recordsTotal: response.recordsTotal,
+                                    recordsFiltered: response.recordsFiltered
+                                });
+                            }, 100);
+                        },
+                        dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Services Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Services Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columnDefs: [{ type: 'ip-address', targets: 1 }],
+                        columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "Service" }, { title: "Display Name" }, { title: "Group" }, { title: "Status" }, { title: "Mode" }],
+                        scrollY: 400,
+                        scrollX: true,
+                        ordering: false,
+                        scrollCollapse: true,
+                        scroller: true,
+                        stateSave: true,
+                        scroller: {
+                            loadingIndicator: true,
+                        },
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                    //1
+                    //var dataclear = document.getElementById('tblservicedata_div');
+                    //dataclear.innerHTML = '&nbsp;';
+                    //$('#tblservicedata_div').append("<table id='tblservicedata' class='table table-striped table-bordered' width='100%'></table>");
+                    //otable = document.getElementById('tblservicedata');
+                    //var data1 = [];
+                    //for (var i = 0; i < data.getservicedetailsdata.length; i++) {
+                    //    data1.push([data.getservicedetailsdata[i].device_name, data.getservicedetailsdata[i].ip, data.getservicedetailsdata[i].service_name, data.getservicedetailsdata[i].display_name, data.getservicedetailsdata[i].startname, data.getservicedetailsdata[i].state, data.getservicedetailsdata[i].startmode, data.getservicedetailsdata[i].ou_longname]);
+                    //}
+                    //var otable = $("#tblservicedata").DataTable({
+                    //    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Services Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Services Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    //    columns: [{ title: "System Name" }, { title: "IP Address" }, { title: "Service" }, { title: "Display Name" }, { title: "Group" }, { title: "Status" }, { title: "Mode" }, { title: "Branch/ Unit" }]
+                    //});     
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    }
+
+</script>
+<script>
+
+    function Underwatchservice() {
+        var url = '@Url.Content("~/csat_report/GetServicename")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                //   debugger;
+                var SetData = $('#Drpservicename');
+                jQuery('#Drpservicename').html('');
+                var Setunderwatchservicedata = $('#tblunderwatchservice');
+                jQuery('#tblunderwatchservice').html('');
+                var servicedata = "<option value='-1'>Service name</option>";
+                for (var i = 0; i < data.servicename.length; i++) {
+                    servicedata += "<option value='" + data.servicename[i].service_name + "'>" + data.servicename[i].service_name + "</option>";
+                }
+                SetData.append(servicedata);
+
+                var underwatchserviceheader = "<table class='table table-striped table-bordered tbldemo' style='width:100%'><thead><tr>";
+                underwatchserviceheader += "  <th class='col-sm-2' colspan='2'>Set Service List</th></tr>" +
+                    " <tr> <th class='col-sm-5'>Service Name</th> <th class='icon' data-orderable='false'> Delete</th></tr></thead><tbody>";
+                var underwatchservicerows = "";
+                for (var i = 0; i < data.underwatchservicename.length; i++) {
+                    underwatchservicerows += "<tr>";
+                    underwatchservicerows += "<td class='col-sm-11'>" + data.underwatchservicename[i].servicename + "</td>";
+                    underwatchservicerows += "<td class='icon'><i class='glyphicon glyphicon-trash manage_icon' type='button' data-toggle='modal'  title='Delete'  onclick=deleteunderwatchservice('" + encodeURIComponent(data.underwatchservicename[i].servicename) + "')></i>&nbsp;</td>";
+
+
+                }
+                underwatchserviceinfo = underwatchserviceheader + underwatchservicerows + "</tr></tbody></table>";
+                Setunderwatchservicedata.append(underwatchserviceinfo);
+
+                $('#under_watch_service_popup').modal('show');
+                datatable_simple();
+             
+            }
+        });
+    }
+        //});
+
+    var drpservice = "";
+    $("#Drpservicename").change(function () {
+        //debugger;
+        drpservice = this.value;
+    });
+    function Saveunderwatchservice() {
+        var url = '@Url.Content("~/csat_report/Insert_underwatchservice?servicename=")' + drpservice;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                alert(result);
+                Underwatchservice();
+                document.getElementById("Drpservicename").value = '-1';
+                servicename = "";
+                drpservice = "";
+            }
+        });
+      
+    }
+      $('#btncancel').on('click', function () {
+        $('#under_watch_service_popup').modal('hide');
+    });
+
+    var underwatchservice = "";
+    function deleteunderwatchservice(servicename) {
+      //  debugger;
+        underwatchservice = servicename;
+        $('#delete_service_popup').modal('show');
+
+
+    }
+     $('#btndelete').on('click',function(){
+     //   debugger;
+
+         var url1 = '@Url.Content("~/csat_report/delete_underwatchservicedata?servicename=")' + underwatchservice;
+	 $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_service_popup').modal('hide');
+                Underwatchservice();
+			}
+			});
+
+    });
+</script>
+<script>
+    function UnderwatchserviceReport() {
+        jQuery('#tblunderwatchservicerpt').html('');
+       $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+        function DataBind(data) {
+            //debugger;
+            var url = '@Url.Content("~/csat_report/GetOU/")';
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var SetData = $('#DrpOU1');
+                    jQuery('#DrpOU1').html('');
+                    var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                    for (var i = 0; i < data.ou.length; i++) {
+                        oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                    }
+                    SetData.append(oudata);
+                }
+            });
+        }
+       
+    }
+    var ouidvalue="";
+    var systemvalue="";
+    var ipvalue = "";
+   // var actionvalue = "";
+
+$("#DrpOU1").change(function () {
+
+     //  debugger;
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+			//debugger;
+                var SetDatadevice = $('#Device1');
+				 //var SetDataip = $('#ip1');
+                jQuery('#Device1').html('');
+                //jQuery('#ip1').html('');
+
+		  var devicedata = "<option value='-1'>Select System Name</option>";
+		 //var ipdata = "<option value='-1'>Select IP Address</option>";
+      	    for (var i = 0; i < data.systemip.length; i++) {
+				 devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+                    //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+											}
+                SetDatadevice.append(devicedata);
+				//SetDataip.append(ipdata);
+            }
+
+            });
+
+    });
+
+
+    $("#Device1").change(function () {
+        systemvalue = this.value;
+    });
+    //$("#ip1").change(function () {
+    //    ipvalue = this.value;
+    //    //systemvalue= this.value;
+
+    //});
+    var type = "";
+    $("#type1").change(function () {
+        //debugger;
+        type = this.value;
+    });
+    var ValueSerach = "";
+    function Funcunderwatchservicedetails() {
+        var $valid = $('#service_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            var ipvalue = document.getElementById("ip1").value;
+            var e = document.getElementById("searchvalue1");
+            ValueSerach = e.value;
+            var systemvalue = document.getElementById('add_systemname1').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("Device1").value;
+            }
+            var url = '@Url.Content("~/csat_report/GetunderwatchservicedetailsReport?IP=")' + ipvalue + '&Device=' + systemvalue + '&ouid=' + ouidvalue + '&FieldSerach=' + type + '&ValueSerach=' + ValueSerach;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblunderwatchservicerpt_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblunderwatchservicerpt_div').append("<table id='tblunderwatchservicerpt' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblunderwatchservicerpt');
+                    var data1 = [];
+                    for (var i = 0; i < data.getunderwatchservicedetailsdata.length; i++) {
+                        data1.push([data.getunderwatchservicedetailsdata[i].ou_longname,data.getunderwatchservicedetailsdata[i].device_name, data.getunderwatchservicedetailsdata[i].ip, data.getunderwatchservicedetailsdata[i].service_name, data.getunderwatchservicedetailsdata[i].display_name, data.getunderwatchservicedetailsdata[i].startname, data.getunderwatchservicedetailsdata[i].state, data.getunderwatchservicedetailsdata[i].startmode]);
+                    }
+                    var otable = $("#tblunderwatchservicerpt").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Services Details_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Services Details Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "System Name" }, { title: "IP Address" }, { title: "Service" }, { title: "Display Name" }, { title: "Group" }, { title: "Status" }, { title: "Mode" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    }
+
+    function cleardata() {
+        document.getElementById("ip1").value = '';
+        document.getElementById("Device1").value = '-1';
+        document.getElementById("type1").value = '-1';
+        document.getElementById("searchvalue1").value = '';
+        ipvalue = "";
+        systemvalue = "";
+        FieldSerach = "";
+        ValueSerach = "";
+        var dataclear = document.getElementById('tblunderwatchservicerpt_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblunderwatchservicerpt_div').append("<table id='tblunderwatchservicerpt' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblunderwatchservicerpt');
+    }
+
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>

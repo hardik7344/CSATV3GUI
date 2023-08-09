@@ -1,0 +1,844 @@
+﻿
+@{
+    ViewData["Title"] = "report_system_firewall_status";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<!--date-time picker-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#firewall_up").click(function () {
+            $("#firewall_form").toggle();
+
+        });
+    });
+    $(document).ready(function () {
+        $("#screen_saver_up").click(function () {
+            $("#screen_saver_form").toggle();
+
+        });
+    });
+  
+</script>
+
+<div class="row">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button class="179 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#screen_saver_popup" onclick="screnn_sever_password()">Screen Saver Password</button>
+                    <button class="178 div_none btn btn-primary btn-md day " data-toggle="modal" data-target="#firewall_exception_popup" onclick="firewall_exception()">Firewall Exception</button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> System Firewall Status </li>
+
+                </ul>
+
+            </div>
+    </div>
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" name="frm_sysfirewall_report" id="frm_sysfirewall_report">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU">
+                                            @*<option>Root</option>
+                <option value="01">Root >> Location</option>
+                <option value="02">Root >> Location >> Department</option>*@
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 form_label ">System Name</label>
+                                    <div class="col-xs-2" id="selectsys">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="system">
+                                            <option value="-1">Select System Name</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2" id="inputsystemname">
+                                        <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                    <div class="col-xs-2">
+                                        <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="ip" id="ip">
+                                        @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="ip">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-1">User Name</label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Username" id="username">
+                                            <option value="-1">Select User Name</option>                                          
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-1 form_label" style="display:none">Date Range</label>
+                                    <div class="col-xs-3" style="display:none">
+                                        <input type="text" name="datefilter" class="form-control" placeholder="DD/MM/YYYY - DD/MM/YYYY " id="date">
+                                    </div>                                  
+                                    <div class="pull-left col-xs-1">
+                                        <input type="button" class="btn btn-primary" value="Show" id="btnshowreport">
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--form  content end-->
+        <!--system firewall  form end-->
+        <!--system firewall Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="tblfwstatus_div">
+                <table id="tblfwstatus" class="table table-striped table-bordered display nowrap" width="100%"></table>
+            </div>
+        </div>
+        <!--system firewall Datatable end-->
+    </div>
+    <div class="space_bottom">&nbsp;</div>
+</div>
+<!--  firewall exception Data pop-up model box  Content-->
+<div class="modal fade" id="firewall_exception_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Firewall Exception
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="firewall_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="firewall_form" name="firewall_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU1">
+                                                @*<option>Root</option>
+                <option value="01">Root >> Location</option>
+                <option value="02">Root >> Location >> Department</option>*@
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys1">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="system1">
+                                                <option value="-1">Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname1">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname1" id="add_systemname1">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk1" name="add_system_chk1" style="width:20px;height:25px;">
+                                        </div>
+
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip1" id="ip1">
+                                            @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip1">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1">Exception</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Exception" id="exception">
+                                                <option value="-1">Select Exception</option>
+                                            </select>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" id="btnshowexcpreport">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!--End form  content-->
+                    </div>
+                </div>
+                <!--firewall exception  Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tblfwexception_div">
+                        <table id="tblfwexception" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+               
+                <!--firewall exception Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End firewall exception  pop-up model box Content -->
+<!-- Screen Saver Password Data pop-up model box  Content-->
+<div class="modal fade" id="screen_saver_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Screen Saver Password
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="screen_saver_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="screen_saver_form" name="screen_saver_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="DrpOU2"></select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2" id="selectsys2">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="system2">
+                                                <option value="-1">Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-2" id="inputsystemname2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname2" id="add_systemname2">
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <input type="checkbox" class="form-check-input" id="add_system_chk2" name="add_system_chk2" style="width:20px;height:25px;">
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-2 col-lg-2 col-md-2" placeholder="" name="ip2" id="ip2">
+                                            @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="ip2">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1">Username</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Username" id="username1">
+                                                <option value="-1">Select Username</option>
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">Set Password</label>
+                                        <div class="col-xs-3">
+                                            <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Status" id="Status">
+                                                <option value="-1">Select Set Password</option>
+                                                <option value="All">All</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+
+                                            </select>
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" id="btnshowsspwd">
+                                        </div>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <!--End form  content-->
+
+                    </div>
+                </div>
+
+                <!--Screen Saver Password Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="tblsspwd_div">
+                        <table id="tblsspwd" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+                
+                <!--Screen Saver Password Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Screen Saver Password  pop-up model box Content -->
+<script>
+    
+    $(document).ready(function () {
+        validateSingleForm("#frm_sysfirewall_report");
+        validateSingleForm("#firewall_form");
+        validateSingleForm("#screen_saver_form");
+        
+    });
+</script>
+<script>
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                var SetData = $('#DrpOU');
+                var SetData1 = $('#DrpOU1');
+                var SetData2 = $('#DrpOU2');
+                jQuery('#DrpOU').html('');
+                jQuery('#DrpOU1').html('');
+                jQuery('#DrpOU2').html('');
+
+                var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+                SetData1.append(oudata);
+                SetData2.append(oudata);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+</script>
+<script>
+var ouidvalue="";
+var systemvalue="";
+    var ipvalue = "";
+    var uservalue = "";
+
+$("#DrpOU").change(function () {
+
+      // debugger;
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#system');
+        //var SetDataip = $('#ip');
+        var SetDatauser = $('#username');
+        jQuery('#system').html('');
+        //jQuery('#ip').html('');
+        jQuery('#username').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        var userdata = "<option value='-1'>Select User Name</option>";
+        for (var i = 0; i < data.systemip.length; i++) {
+            devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+            //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            for (var i = 0; i < data.usernamefirewall.length; i++) {
+            userdata += "<option value='" + data.usernamefirewall[i].login_user + "'>" + data.usernamefirewall[i].login_user + "</option>";
+            //userdata += "<option value='" + data.username[i].e115username + "'>" + data.username[i].e115username + "</option>";
+            }
+        SetDatadevice.append(devicedata);
+            //SetDataip.append(ipdata);
+            SetDatauser.append(userdata);
+        }
+
+        });
+
+    });
+    $("#DrpOU").change(function () {
+        ouidvalue = this.value;
+    });
+
+    $("#system").change(function () {
+        systemvalue = this.value;
+    });
+    //$("#ip").change(function () {
+    //    ipvalue = this.value;
+    //});
+    $("#username").change(function () {
+        uservalue = this.value;
+    });
+
+    var varkeynumber = "";
+    $("#btnshowreport").on('click', function () {  
+        var $valid = $('#frm_sysfirewall_report').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+            ipvalue = document.getElementById("ip").value;
+            startdate = $('#date').data('daterangepicker').startDate.format('DD/MM/YYYY');
+            enddate = $('#date').data('daterangepicker').endDate.format('DD/MM/YYYY');
+            var systemvalue = document.getElementById('add_systemname').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system").value;
+            }
+            var url = '@Url.Content("~/csat_report/GetSysFWStatus?startdate=")' + startdate + '&enddate=' + enddate + '&Device=' + systemvalue + '&IP=' + ipvalue + '&username=' + uservalue + '&ouid=' + ouidvalue;
+            $.ajax({
+                type: 'post',
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblfwstatus_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblfwstatus_div').append("<table id='tblfwstatus' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblfwstatus');
+                    var data1 = [];
+                    for (var i = 0; i < data.sysfirewallstatus.length; i++) {
+                        data1.push([data.sysfirewallstatus[i].ou_longname, data.sysfirewallstatus[i].timestamp, data.sysfirewallstatus[i].device_name, data.sysfirewallstatus[i].ip, data.sysfirewallstatus[i].login_user, data.sysfirewallstatus[i].status]);
+                    }
+                    var otable = $("#tblfwstatus").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "System Firewall Status_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "System Firewall Status Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" },{ title: "TimeStamp" }, { title: "System Name" }, { title: "IP Address" }, { title: "Username" }, { title: "Status" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    });
+</script>
+<script>
+var ouidvalue="";
+var systemvalue="";
+    var ipvalue = "";
+    var exceptionvalue = "";
+$("#DrpOU1").change(function () {
+
+      // debugger;
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+       // debugger;
+        var SetDatadevice1 = $('#system1');
+        //var SetDataip1 = $('#ip1');
+        var SetDataexception = $('#exception');
+        jQuery('#system1').html('');
+        //jQuery('#ip1').html('');
+            jQuery('#exception').html('');
+        var devicedata1 = "<option value='-1'>Select System Name</option>";
+        //var ipdata1 = "<option value='-1'>Select IP Address</option>";
+        var exceptiondata = "<option value='-1'>Select Exception</option>";
+        for (var i = 0; i < data.systemip.length; i++) {
+        devicedata1+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata1+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            for (var i = 0; i < data.exception.length; i++) {
+                exceptiondata += "<option value='" + data.exception[i].exception + "'>" + data.exception[i].exception + "</option>";
+
+            }
+             SetDatadevice1.append(devicedata1);
+            //SetDataip1.append(ipdata1);
+            SetDataexception.append(exceptiondata);
+        }
+
+        });
+
+    });
+    $("#DrpOU1").change(function () {
+        ouidvalue = this.value;
+    });
+
+    $("#system1").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#ip1").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+    $("#exception").change(function () {
+        exceptionvalue = this.value;
+
+    });
+
+    function firewall_exception() {
+    //$('#btnfwexception').on('click', function () {
+        //debugger;
+        var SetDatadevice = $('#system1');
+        //var SetDataip = $('#ip1');
+        var SetDataexp = $('#exception');
+        jQuery('#system1').html('');
+        //jQuery('#ip1').html('');
+        jQuery('#exception').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        var exceptiondata = "<option value='-1'>Select exception</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        SetDataexp.append(exceptiondata);
+        IP = "";
+        Device = "";
+        exception = "";
+        document.getElementById("ip1").value = '';
+        document.getElementById("system1").value = '-1';
+        document.getElementById("exception").value = '-1';
+        document.getElementById("DrpOU1").value = '-1';
+
+        jQuery('#tblfwexception').html('');
+    //});
+     }
+   
+    function escapeRegExp(string){
+        return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function replaceAll(str, term, replacement) {
+      return str.replace(new RegExp(escapeRegExp(term), 'g'), replacement);
+    }
+  
+    $("#btnshowexcpreport").on('click', function () {
+        var $valid = $('#firewall_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            ipvalue = document.getElementById("ip1").value;
+            var systemvalue = document.getElementById('add_systemname1').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system1").value;
+            }
+            // debugger;
+            var url = '@Url.Content("~/csat_report/GetSysFWException?Device=")' + systemvalue + '&IP=' + ipvalue + '&exception=' + exceptionvalue + '&ouid=' + ouidvalue;
+            $.ajax({
+                type: 'post',
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblfwexception_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblfwexception_div').append("<table id='tblfwexception' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblfwexception');
+                    var data1 = [];
+                    for (var i = 0; i < data.sysfirewallexception.length; i++) {
+                        var firewall = "";
+                        firewall = data.sysfirewallexception[i].rule_json;
+                        var firewallexc = replaceAll(firewall, '/`', '"');
+                        var firestr = replaceAll(firewallexc, 'Rule Name', 'RuleName');
+                        var firewallstr = replaceAll(firestr, 'Rule source', 'Rulesource');
+                        var fireexception = "";
+                        fireexception = JSON.parse(firewallstr);
+                        data1.push([data.sysfirewallexception[i].ou_longname, data.sysfirewallexception[i].device_name, data.sysfirewallexception[i].ip, fireexception.RuleName, fireexception.Enabled, fireexception.Direction, fireexception.Profiles, fireexception.LocalIP, fireexception.LocalPort, fireexception.RemoteIP, fireexception.RemotePort, fireexception.Protocol, fireexception.Rulesource, fireexception.Action]);
+                    }
+                    var otable = $("#tblfwexception").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Firewall Exception Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Firewall Exception Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Rule Name" }, { title: "Enabled" }, { title: "Direction" }, { title: "Profiles" }, { title: "Local IP" }, { title: "Local Port" }, { title: "Remote IP" }, { title: "Remote Port" }, { title: "Protocol" }, { title: "Rule source" }, { title: "Action" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                    reportdate = document.getElementById('date').value;
+                }
+            });
+        }
+    });
+</script>
+<script>
+    var ouidvalue = "";
+    var systemvalue = "";
+    var ipvalue = "";
+    var uservalue = "";
+    var Pwdvalue = "";
+
+    $("#DrpOU2").change(function () {
+
+      //debugger;
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+      // debugger;
+        var SetDatadevice2 = $('#system2');
+        //var SetDataip2 = $('#ip2');
+        var setusername = $('#username1');
+        jQuery('#system2').html('');
+        //jQuery('#ip2').html('');
+        jQuery('#username1').html('');
+        var devicedata2 = "<option value='-1'>Select System Name</option>";
+        //var ipdata2 = "<option value='-1'>Select IP Address</option>";
+        var usernamedata = "<option value='-1'>Select User Name</option>";
+        for (var i = 0; i < data.systemip.length; i++) {
+        devicedata2+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+           //ipdata2+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            for (var i = 0; i < data.sSusername.length; i++) {
+                usernamedata += "<option value='" + data.sSusername[i].login_user + "'>" + data.sSusername[i].login_user + "</option>";
+
+            }
+             SetDatadevice2.append(devicedata2);
+            //SetDataip2.append(ipdata2);
+            setusername.append(usernamedata);
+        }
+
+        });
+
+    });
+
+    $("#DrpOU2").change(function () {
+        ouidvalue = this.value;
+    });
+
+    $("#system2").change(function () {
+        systemvalue = this.value;
+
+    });
+    //$("#ip2").change(function () {
+    //    ipvalue = this.value;
+
+    //});
+    $("#username1").change(function () {
+        uservalue = this.value;
+
+    });
+    $("#Status").change(function () {
+        Pwdvalue = this.value;
+
+    });
+
+    function screnn_sever_password() {
+    //$('#btnsspwd').on('click', function () {
+        //debugger;
+        var SetDatadevice = $('#system2');
+        //var SetDataip = $('#ip2');
+        var SetDatauser = $('#username1');
+        jQuery('#system2').html('');
+        //jQuery('#ip2').html('');
+        jQuery('#username1').html('');
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+        var userdata = "<option value='-1'>Select User Name</option>";
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+        SetDatauser.append(userdata);
+        IP = "";
+        Device = "";
+        username = "";
+
+        document.getElementById("ip2").value = '';
+        document.getElementById("system2").value = '-1';
+        document.getElementById("username1").value = '-1';
+        document.getElementById("DrpOU2").value = '-1';
+
+        //jQuery('#tblsspwd').html('');
+        $('#tblsspwd').html('');
+    //});
+     }
+
+    $("#btnshowsspwd").on('click', function () {
+        var $valid = $('#screen_saver_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        } else {
+            // debugger;
+            ipvalue = document.getElementById("ip2").value;
+            var systemvalue = document.getElementById('add_systemname2').value;
+            if (systemvalue == "") {
+                systemvalue = document.getElementById("system2").value;
+            }
+            var url = '@Url.Content("~/csat_report/GetScreenSaverpwd?Device=")' + systemvalue + '&IP=' + ipvalue + '&username=' + uservalue + '&status=' + Pwdvalue + '&ouid=' + ouidvalue;
+            $.ajax({
+                type: 'post',
+                url: url,
+                success: function (data) {
+                    var dataclear = document.getElementById('tblsspwd_div');
+                    dataclear.innerHTML = '&nbsp;';
+                    $('#tblsspwd_div').append("<table id='tblsspwd' class='table table-striped table-bordered' width='100%'></table>");
+                    otable = document.getElementById('tblsspwd');
+                    var data1 = [];
+                    for (var i = 0; i < data.screensaverpwd.length; i++) {
+                        data1.push([data.screensaverpwd[i].ou_longname, data.screensaverpwd[i].device_name, data.screensaverpwd[i].ip, data.screensaverpwd[i].login_user, data.screensaverpwd[i].pswstatus]);
+                    }
+                    var otable = $("#tblsspwd").DataTable({
+                        data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Screen Saver Password_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Screen Saver Password Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                        columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Username" }, { title: "Set Password" }]
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                }
+            });
+        }
+    });
+
+    function cleardata() {
+        $('#tblfwexception').html('');
+        $('#tblsspwd').html('');
+        document.getElementById("DrpOU1").value = '-1';
+        document.getElementById("ip1").value = '';
+        document.getElementById("system1").value = '-1';
+        document.getElementById("exception").value = '-1';
+        document.getElementById("DrpOU2").value = '-1';
+        document.getElementById("Status").value = '-1';
+        document.getElementById("ip2").value = '';
+        document.getElementById("system2").value = '-1';
+        document.getElementById("username1").value = '-1';
+
+        document.getElementById("add_system_chk1").checked = false;
+        document.getElementById("add_systemname1").value = "";
+        $('#selectsys1').show();
+        $('#inputsystemname1').hide();
+        document.getElementById("add_system_chk2").checked = false;
+        document.getElementById("add_systemname2").value = "";
+        $('#selectsys2').show();
+        $('#inputsystemname2').hide();
+        ouidvalue = "";
+        systemvalue = "";
+        ipvalue = "";
+        uservalue = "";
+        Pwdvalue = "";
+        var dataclear = document.getElementById('tblfwexception_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblfwexception_div').append("<table id='tblfwexception' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblfwexception');
+        var dataclear = document.getElementById('tblsspwd_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblsspwd_div').append("<table id='tblsspwd' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblsspwd');
+        var dataclear = document.getElementById('tblfwstatus_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblfwstatus_div').append("<table id='tblfwstatus' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblfwstatus');
+    }
+</script>
+<script type="text/javascript">
+    //function dateselect() {
+        var startdate = "";
+        var enddate = "";
+        $(function () {
+            $('input[name="datefilter"]').daterangepicker({
+                // opens: 'left',
+                autoUpdateInput: true,
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear',
+
+                }
+            });
+
+            $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY '));
+                startdate = picker.startDate.format('DD/MM/YYYY');
+                enddate = picker.endDate.format('DD/MM/YYYY');
+            });
+
+            $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+
+            $(window).bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+
+        });
+    //}
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname1').hide();
+    $('#add_system_chk1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys1').hide();
+            $('#inputsystemname1').show();
+        }
+        else {
+            $('#selectsys1').show();
+            $('#inputsystemname1').hide();
+            document.getElementById('add_systemname1').value = "";
+        }
+    });
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname2').hide();
+    $('#add_system_chk2').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys2').hide();
+            $('#inputsystemname2').show();
+        }
+        else {
+            $('#selectsys2').show();
+            $('#inputsystemname2').hide();
+            document.getElementById('add_systemname2').value = "";
+        }
+    });
+</script>

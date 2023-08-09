@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="yes"?>
+<DataSet>
+  <Config>
+    <DBServer>192.168.100.120</DBServer>
+    <DBName>ownyitcsat</DBName>
+    <UserName>root</UserName>
+    <Password>demo@123</Password>
+    <DBPORT>3306</DBPORT>
+    <DBWindows_Domain />
+    <DBSQL_Auth>1</DBSQL_Auth>
+    <DBConnection>2</DBConnection>
+    <Database_Name>1</Database_Name>
+    <CONNECTION_TIMEOUT>20</CONNECTION_TIMEOUT>
+    <systemtype></systemtype>    
+  </Config>
+</DataSet>
+

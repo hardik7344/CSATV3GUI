@@ -1,0 +1,1929 @@
+﻿
+@{
+    ViewData["Title"] = "setting_dcm";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script src="~/js/main.js"></script>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('.config_table').DataTable({
+    //        paging: false,
+    //        order: [],
+    //        columnDefs: [{ orderable: false }],
+    //        searching: false,
+    //        info: false,
+    //        responsive: false,
+    //    });
+    //});
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.apppy_config_table').DataTable({
+            paging: true,
+            order: [],
+            columnDefs: [{ orderable: false }],
+            searching: false,
+            info: false,
+            responsive: false,
+
+        });
+        $(".table").css({ "width": "100%" });
+        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#apply_type').on('change', function () {
+
+            if (this.value == '1') {
+                $("#branch_unit").show();
+            }
+            else {
+                $("#branch_unit").hide();
+            }
+            if (this.value == '2') {
+                $("#system").show();
+            }
+            else {
+                $("#system").hide();
+            }
+
+
+        });
+    });
+</script>
+
+<body onload="databind()">
+
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right" style="margin-top:2px;margin-bottom:3px;">
+                    <button class="btn btn-primary btn-md day" data-toggle="modal" data-target="#general_settings">General/Common Settings</button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Desired Configuration Management  </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <button type="button" data-toggle="modal" onclick="showgroupdata();" class="btn btn-primary pull-right">Add Group <b style="font-weight:bolder;">+</b></button>
+                            <button type="button" data-toggle="modal" onclick="AddDCM();" class="btn btn-primary pull-right" style="margin-right:20px;">Add New <b style="font-weight:bolder;">+</b></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="divdcmpolicy_div">
+                            <table id="divdcmpolicy" style="margin-top: 30px;" class="table table-striped table-bordered " width="100%"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+    </div>
+
+
+    <!--Start  Apply count-->
+
+    <div class="modal fade" id="apply_count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <ul class=" modal-title breadcrumb" style="margin-bottom:0px;margin-left:-15px;background-color: transparent;">
+                        <li>
+                            @Html.ActionLink("Desired Configuration Management", "setting_dcm", "csat_settings_page")
+                            <i class="icon-angle-right"></i>
+                        </li>
+                        <li> Default DCM Policy </li>
+                    </ul>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="divapplycount_div">
+                                <table id="divapplycount" class="table table-striped table-bordered " width="100%"></table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--End  Apply count-->
+    <!--Start  Apply config-->
+
+    <div class="modal fade" id="apply_config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+
+                    <ul class=" modal-title breadcrumb" style="margin-bottom:0px;margin-left:-15px;background-color: transparent;">
+                        <li>
+                            @Html.ActionLink("Desired Configuration Management", "setting_dcm", "csat_settings_page")
+                            <i class="icon-angle-right"></i>
+                        </li>
+                        <li><a data-toggle="modal" data-target="#manage_system_popup"> Default DCM Policy</a></li>
+                        <li> Apply </li>
+                    </ul>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <form class="form-horizontal" method="post" name="frm_dcm_apply" id="frm_dcm_apply">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Branch/ Unit</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-2"> System Name</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="drpdevice">
+                                            <option value="-1">Select System Name</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-2"> IP Address</label>
+                                    <div class="col-xs-4">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="IP Address" id="drpip">
+                                            <option value="-1">Select IP Address</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <input type="button" class="btn btn-primary" value="Show" name="Show" onclick="Bind_DCM_Apply()" />
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="table-responsive" id="applydiv">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--End  Apply config-->
+    <!--delete_config  model  content-->
+
+    <div class="modal fade" id="delete_config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--delete_config system model  content-->
+    <!--  Manage general_settings model box  Content-->
+    <div class="modal fade" id="general_settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        General/Common Settings
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" data-toggle="validator">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        Choose Software Compliance Action
+                                    </label>
+                                </div>
+                                <div class="form-group">
+
+                                    <div class="col-xs-3 col-md-3 col-lg-3" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="action" value="1"> Popup </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-md-4 col-lg-4" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="action" value="2">Block System </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 col-md-2 col-lg-2" style="padding-top:2px;">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="action" value="3"> Both </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="submit" value="Submit" onclick="AddCompliance()" />
+                                        <input type="button" class="btn btn-primary" name="cancle" value="Cancel" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End Manage general_settings model box Content end-->
+    <!--create config-->
+
+    <div class="modal fade" id="create_config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Desired Configuration Management
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <form class="form-horizontal" method="post" name="frm_dcm_add" id="frm_dcm_add">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 ">Policy Name </label>
+                                    <div class="col-xs-4">
+                                        <input type="text" class="form-control" id="txtpolicyname" name="txtpolicyname" placeholder="Enter Policy Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-3 " style="font-weight: 600;color: #3a72a2;"> Hardware Configuration </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> <input type="checkbox" value="RAM" id="chkram1" name="RAM" style="margin-right:2px;" /> RAM </label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="ram_select" id="ram_select">
+                                            <option value="-1">Select RAM </option>
+                                            <option value="1">1 GB</option>
+                                            <option value="2">2 GB</option>
+                                            <option value="4">4 GB</option>
+                                            <option value="8">8 GB</option>
+                                            <option value="16">16 GB</option>
+                                            <option value=">16">Above 16 GB</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-3 text-align-right"> Multiple LAN Card </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="LAN" id="LAN1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="LAN" id="LAN0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> <input type="checkbox" id="chkhdd1" name="HDD" style="margin-right:2px;" /> HDD </label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="hdd_select" id="hdd_select">
+                                            <option value="-1">Select HDD </option>
+                                            <option value="256">256 GB</option>
+                                            <option value="320">320 GB</option>
+                                            <option value="500">500 GB</option>
+                                            <option value="1">1 TB</option>
+                                            <option value="2">2 TB</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-3 text-align-right"> CD/DVD Writter </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="CD" id="CD1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="CD" id="CD0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 ">  Antivirus </label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <input type="checkbox" value="1" id="antivirus" name="Antivirus" style="margin-right:3px;" />Install
+                                        </div>
+                                    </div>
+
+                                    <label for="nameField" class="col-xs-3 text-align-right"> WI-FI Connection </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="WIFI" id="WIFI1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="WIFI" id="WIFI0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> Action </label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="dcmaction" id="action1" value="1"> Green List </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="dcmaction" id="action2" value="2"> Yellow List </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="dcmaction" id="action3" value="3"> Red List </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 "> <input type="checkbox" id="chkprocessor1" name="PROCESSOR" style="margin-right:2px;" /> Processor </label>
+                                    <div class="col-xs-7">
+                                        <div class="col-sm-12 col-md-12 col-lg-12" id="divprocessor_div">
+                                            <table id="divprocessor" class="table table-striped table-bordered " width="100%"></table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-2 " style="font-weight: 600;color: #3a72a2;"> Software Configuration </label>
+                                    @*<label for="nameField" class="col-xs-4 text-align-right" >Search</label>*@
+
+                                    <div class="col-xs-3" style="display:none">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" id="softsearch" placeholder="Search">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default" type="button" onclick="AddDCMSoft('')">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 "> <input type="checkbox" name="SOFTWARE" id="chksoftware1" style="margin-right:2px;" /> Software Name </label>
+                                    <div class="col-xs-7">
+                                        <div id="divsoft_div">
+                                            <table id="divsoft" class="table table-striped table-bordered " width="100%"></table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-4" style="font-weight: 600;color: #3a72a2;"> Operating System Configuration </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 "> <input type="checkbox" name="OS" id="chkos1" style="margin-right:2px;" /> Operating System Name </label>
+                                    <div class="col-xs-7" id="divos_div">
+                                        <table id="divos" class="table table-striped table-bordered " width="100%"></table>
+                                    </div>
+                                </div>
+                                <div class="form-group model-button">
+                                    <div class="col-xs-7 pull-right ">
+                                        <input type="submit" class="btn btn-primary" value="Apply" name="Apply" onclick="btnApply();" />
+                                        <input type="button" class="btn btn-default" value="Cancel" name="Apply cancel" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--End  create config-->
+    <!--edit config-->
+
+    <div class="modal fade" id="edit_config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class=" modal-title">
+                        Desired Configuration Management
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <form class="form-horizontal" method="post" name="frm_dcm_edit" id="frm_dcm_edit">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 ">Policy Name </label>
+                                    <div class="col-xs-4">
+                                        <input type="text" class="form-control" id="edittxtpolicyname" name="edittxtname" placeholder="Enter Policy Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-3 " style="font-weight: 600;color: #3a72a2;"> Hardware Configuration </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> <input type="checkbox" value="RAM" id="editchkram" name="editRAM" style="margin-right:2px;" /> RAM </label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="editram_select" id="editram_select">
+                                            <option value="-1">Select RAM </option>
+                                            <option value="1">1 GB</option>
+                                            <option value="2">2 GB</option>
+                                            <option value="4">4 GB</option>
+                                            <option value="8">8 GB</option>
+                                            <option value="16">16 GB</option>
+                                            <option value=">16">Above 16 GB</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-3 text-align-right"> Multiple LAN Card </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editLAN" id="editLAN1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editLAN" id="editLAN0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> <input type="checkbox" value="HDD" id="editchkhdd" name="editHDD" style="margin-right:2px;" /> HDD </label>
+                                    <div class="col-xs-2">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="edithdd_select" id="edithdd_select">
+                                            <option value="-1">Select HDD </option>
+                                            <option value="256">256 GB</option>
+                                            <option value="320">320 GB</option>
+                                            <option value="500">500 GB</option>
+                                            <option value="1">1 TB</option>
+                                            <option value="2">2 TB</option>
+                                        </select>
+                                    </div>
+                                    <label for="nameField" class="col-xs-3 text-align-right"> CD/DVD Writter </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editCD" id="editCD1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editCD" id="editCD0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 ">  Antivirus </label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <input type="checkbox" value="1" id="editantivirus" name="editAntivirus" style="margin-right:3px;" />Install
+                                        </div>
+                                    </div>
+
+                                    <label for="nameField" class="col-xs-3 text-align-right"> WI-FI Connection </label>
+                                    <div class="col-xs-1">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editWIFI" id="editWIFI1" value="1"> Allowed </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editWIFI" id="editWIFI0" value="0"> Not Allowed </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> Action </label>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editdcmaction" id="editaction1" value="1"> Green List </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editdcmaction" id="editaction2" value="2"> Yellow List </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="radio">
+                                            <label> <input type="radio" name="editdcmaction" id="editaction3" value="3"> Red List </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1 "> <input type="checkbox" id="editchkprocessor" style="margin-right:2px;" /> Processor </label>
+                                    <div class="col-xs-5">
+                                        <div class="table-responsive" id="editdivprocessor">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-3 " style="font-weight: 600;color: #3a72a2;"> Software Configuration </label>
+                                    @*<label for="nameField" class="col-xs-6 text-align-right">Search</label>*@
+
+                                    <div class="col-xs-3" style="display:none">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" id="softsearch" placeholder="Search">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default" type="button" onclick="AddDCMSoft('')">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="divsoft_div">
+                                    <table id="divsoft" class="table table-striped table-bordered " width="100%"></table>
+                                </div>
+
+
+                                <div class="form-group model-button">
+                                    <label for="nameField" class="col-xs-4" style="font-weight: 600;color: #3a72a2;"> Operating System Configuration </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-3 "> <input type="checkbox" value="os" name="editos" id="editchkos" style="margin-right:2px;" /> Operating System Name </label>
+                                    <div class="col-xs-5">
+                                        <div class="table-responsive" id="editdivos">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group model-button">
+                                    <div class="col-xs-7 pull-right ">
+                                        <input type="submit" class="btn btn-primary" value="Apply" name="Apply" onclick="editbtnApply();" />
+                                        <input type="button" class="btn btn-default" value="Cancel" name="Apply cancel" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--End  edit config-->
+    <!-- Add new group -->
+    <div class="modal fade" id="addgroup_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()"> &times;</button>
+                    <h6 class=" modal-title">
+                        Add Group
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" id="frm_dcm_add_group" name="frm_dcm_add_group">
+                                <div class="form-group"> 
+                                    <label for="nameField" class="col-xs-2 form_label">Type</label>
+                                    <div class="col-xs-5">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="itemtype" id="itemtype">
+                                            <option value="Software">Software</option>
+                                            <option value="Operating System">Operating System</option>
+                                            <option value="Processor">Processor</option>
+                                            <option value="RAM">RAM</option>
+                                            <option value="Hard Disk">Hard Disk</option>
+                                            <option value="Network Card">Network Card</option>
+                                            <option value="WIFI">WIFI</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Group</label>
+                                    <div class="col-xs-5">
+                                        <select class="form-control col-sm-3 col-lg-3 col-md-3" name="grouptype" id="grouptype">
+                                            <option value="Red">Red</option>
+                                            <option value="Blue">Blue</option>
+                                            <option value="Green">Green</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Group Name</label>
+                                    <div class="col-xs-5">
+                                        <input type="text" class="form-control" placeholder="Group Name" id="groupname" name="groupname" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="form-group mt5">
+                                    <label for="nameField" class="col-xs-2"></label>
+                                    <div class="col-xs-5">
+                                        <input type="button" class="btn btn-primary" onclick="addgroup()" value="Add Group" id="btnaddgroup" name="btnaddgroup" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div>
+                                <div id="bindgroup_div">
+                                    <table id="bindgroup" class="table table-bordered display nowrap" width="100%"></table>
+                                </div>
+                            </div>
+                            <div class="space_bottom">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!--End new group -->
+    <!--delete_grouppopup  model  content-->
+    <div class="modal fade" id="delete_grouppopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to unlink this Group?</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deletegroup()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_grouppopup model content-->
+    <!-- Show Item List -->
+    <div class="modal fade" id="showitem_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close reset_btn_id" data-dismiss="modal" aria-hidden="true" onclick="cleardata();">&times;</button>
+                    <h6 class=" modal-title" id="showitem_type_name">
+                        Item List
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="pull-right col-xs-2">
+                            <button type="button" class="btn btn-primary day" data-toggle="modal" data-target="#addnewitem_popup">Add Item</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="binditem_div">
+                            <table id="binditem" class="table table-striped table-bordered" width="100%"></table>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--End Item List -->
+    <!-- Add new Item -->
+    <div class="modal fade" id="addnewitem_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()"> &times;</button>
+                    <h6 class=" modal-title">
+                        Add Item
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-2 form_label">Item Name</label>
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control" placeholder="Item Name" id="item_name" name="item_name" autocomplete="off">
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <input type="button" class="btn btn-primary" onclick="additem()" value="Add Item" id="btnadditem" name="btnadditem" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- End new Item -->
+    <!--delete_itempopup  model  content-->
+    <div class="modal fade" id="delete_itempopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class=" modal-title">
+                        Conformation
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <form class="form-horizontal" method="post">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-12">
+                                        <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                        <span style="font-weight:normal;margin-left:30px;">Are you sure you want to unlink this Item?</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-4"></label>
+                                    <div class="col-xs-6">
+                                        <input type="button" class="btn btn-primary" name="yes" value="Yes" onclick="deleteitem()" />
+                                        <input type="button" class="btn btn-default" name="no" value="No" data-dismiss="modal" onclick="cleardata()" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--delete_itempopup model content-->
+</body>
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_dcm_add");
+        validateSingleForm("#frm_dcm_add_group");
+        
+        //validateSingleForm("#frm_dcm_apply");
+        //validateSingleForm("#frm_dcm_edit");
+    });
+</script>
+
+<script>
+    $(".parent").each(function (index) {
+        var group = $(this).data("group");
+        var parent = $(this);
+
+        parent.change(function () {  //"select all" change
+            $(group).prop('checked', parent.prop("checked"));
+        });
+        $(group).change(function () {
+            parent.prop('checked', false);
+            if ($(group + ':checked').length == $(group).length) {
+                parent.prop('checked', true);
+            }
+        });
+    });
+    $('.tree-toggle').click(function () {
+        $(this).parent().children('ul.tree').toggle(200);
+    });
+    $(function () {
+        $('.tree-toggle').parent().children('ul.tree').toggle(200);
+    })
+</script>
+
+<script>
+
+        function databind() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        var url1 = '@Url.Content("~/csat_settings_page/get_dcm_policy/")';
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                var agent_divclear = document.getElementById('divdcmpolicy_div');
+                agent_divclear.innerHTML = '&nbsp;';
+                $('#divdcmpolicy_div').append("<table id='divdcmpolicy' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divdcmpolicy');
+                var data1 = [];
+                for (var i = 0; i < data.dcm_policy.length; i++) {
+                    var pcount = "<a href='' data-toggle='modal' data-target='#apply_count' onclick=openLinkedDevice(" + data.dcm_policy[i].policy_id + ")>" + data.dcm_policy[i].count + "</a>";
+                    //var pedit = "<i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal' onclick=EditTemplateData(" + data.dcm_policy[i].policy_id + ",'" + encodeURI(data.dcm_policy[i].policy_name) + "')  title='Edit'></i>";
+                    var papply = "<i class='manage_icon ' type='button' data-toggle='modal' data-target='#apply_config' title='Apply Config'><img src='@Url.Content("~/images/user_right.png")' onclick='ApplyTemplateData(" + data.dcm_policy[i].policy_id + ")' /></i>&nbsp;";
+                    data1.push([data.dcm_policy[i].policy_name, pcount,/* pedit,*/ papply]);
+                }
+                var otable = $("#divdcmpolicy").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    columns: [{ title: "Policy Name", width: '180px' }, { title: "Apply Count", width: '40px' }, /*{ title: "Edit", width: '20px' },*/ { title: "Apply", width: '20px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+  function openLinkedDevice(policy_id) {
+        //debugger;
+        apply_policyid = policy_id;
+        $('#system_unlink').modal('show');
+        var url1 = '@Url.Content("~/csat_policy_mgmt/get_apply_policy_devices?policy_id=")' + policy_id;
+	    $.ajax({
+        type: "POST",
+        url: url1,
+            success: function (data) {
+                var apply_divclear = document.getElementById('divapplycount_div');
+                apply_divclear.innerHTML = '&nbsp;';
+                $('#divapplycount_div').append("<table id='divapplycount' class='table table-striped table-bordered' width='100%'></table></div><div class='form-group'><div class='col-xs-5' style='margin-left:-10px;'>&nbsp;<input type='button' class='btn btn-primary' name='Add' value='Remove' id='unlinkdevice'/>&nbsp;<input type='button' class='btn btn-primary' data-dismiss='modal' name='close' value='Cancel' /></div></div>");
+                otable = document.getElementById('divapplycount');
+                var data1 = [];
+                for (var i = 0; i < data.applypolicydevice.length; i++) {
+                    data1.push([data.applypolicydevice[i].device_id, data.applypolicydevice[i].ou_longname, data.applypolicydevice[i].device_name, data.applypolicydevice[i].ip]);
+                }
+                var otable = $("#divapplycount").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    'columnDefs': [{ 'targets': 0, 'checkboxes': { 'selectRow': true } }, { orderable: false, targets: 1 }], 'select': { 'style': 'multi' },
+                    columns: [{ title: "", width: '10px' }, { title: "Branch/ Unit", width: '170px' }, { title: "System Name", width: '90px' }, { title: "IP Address", width: '80px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                $('#unlinkdevice').on('click', function (e) {
+                    var form = this;
+                    var rows_selected = otable.column(0).checkboxes.selected();
+                    $.each(rows_selected, function (index) {
+                        //debugger;
+                        applydeviceid = "";
+                        for (var i = 0; i < rows_selected.length; i++) {
+                            applydeviceid += "," + rows_selected[i];
+                        }
+                        unlinkdevice(applydeviceid, policy_id);
+                        return false;
+                    });
+                });
+
+			}
+		});
+    }
+     function unlinkdevice(applydeviceid, policy_id) {
+           // debugger;
+            if (applydeviceid != '') {
+                var url1 = '@Url.Content("~/csat_policy_mgmt/Get_Policy_Unapply?policyid=")' + policy_id + '&deviceid=' + applydeviceid;
+                $.ajax({
+                    type: "POST",
+                    url: url1,
+                    success: function (result) {
+                        alert(result);
+                        $('#apply_count').modal('hide');
+                        databind();
+                    }
+                });
+            }
+            else {
+                alert('Please select any device..');
+            }
+        }
+
+    // Add DCM
+        var softsearch = "";
+        var otableprocessor;
+        var otableos;
+    function AddDCM() {
+       // debugger;
+        edittempid = "";
+        $('#create_config').modal('show');
+         var url1 = '@Url.Content("~/csat_settings_page/Add_parameter_master?software=")'+ softsearch;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                AddDCMSoft('');
+                var processor_divclear = document.getElementById('divprocessor_div');
+                processor_divclear.innerHTML = '&nbsp;';
+                $('#divprocessor_div').append("<table id='divprocessor' class='table table-striped table-bordered' width='100%'></table>");
+                otableprocessor = document.getElementById('divprocessor');
+                var data1 = [];
+                for (var i = 0; i < data.dcm_processordata.length; i++) {
+                    data1.push([data.dcm_processordata[i].parameter_value, data.dcm_processordata[i].parameter_value]);
+                }
+                otableprocessor = $("#divprocessor").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    'columnDefs': [{ 'targets': 0, 'checkboxes': { 'selectRow': true } }, { orderable: false, targets: 1 }], 'select': { 'style': 'multi' }, 'order': [[1, 'asc']],
+                    columns: [{ title: "", width: '10px' }, { title: "Processor Name", width: '90px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                var processor_divclear = document.getElementById('divos_div');
+                processor_divclear.innerHTML = '&nbsp;';
+                $('#divos_div').append("<table id='divos' class='table table-striped table-bordered' width='100%'></table>");
+                otableos = document.getElementById('divos');
+                var data1 = [];
+                for (var i = 0; i < data.dcm_osdata.length; i++) {
+                    data1.push([data.dcm_osdata[i].value, data.dcm_osdata[i].value]);
+                }
+                otableos = $("#divos").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    'columnDefs': [{ 'targets': 0, 'checkboxes': { 'selectRow': true } }, { orderable: false, targets: 1 }], 'select': { 'style': 'multi' }, 'order': [[1, 'asc']],
+                    columns: [{ title: "", width: '10px' }, { title: "Operating System", width: '90px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                //var SetOSData = $('#divos');
+                //jQuery('#divos').html('');
+                //var os_data = "<table class='table table-striped table-bordered' id='config_table2' style='width:100%'><thead><tr><th class='col-sm-1 icon' data-orderable='false'><input type='checkbox' name='checkos[]' onclick='checkallitemsbyname(this,this.name);' class='parent' data-group='.group2' /></th>" +
+                //    "<th class='col-sm-11'>Operating System</th></tr></thead><tbody>";
+                //for (var i = 0; i < data.dcm_osdata.length; i++) {
+                //    os_data += "<tr>";
+                //    os_data += "<td class='col-sm-1 icon'><input type='checkbox' class='group2' name='checkos[]' id='" + data.dcm_osdata[i].value + "' value='" + data.dcm_osdata[i].value +"' /></td>";
+                //    os_data += "<td class='col-sm-11'>" + data.dcm_osdata[i].value + "</td>";
+                //    os_data += "</tr>";
+                //}
+                //os_data += "</tbody></table>";
+
+                //$(document).ready(function () {
+                //    $('#config_table2').DataTable({
+                //        paging: false,
+                //        order: [],
+                //        columnDefs: [{ orderable: false }],
+                //        searching: false,
+                //        info: false,
+                //        responsive: false,
+
+
+                //    });
+
+                //});
+
+                //SetOSData.append(os_data);
+                }
+        });
+
+    }
+    var otable;
+    function AddDCMSoft(softsearch) {
+         softsearch = document.getElementById("softsearch").value;
+          $('#create_config').modal('show');
+         var url1 = '@Url.Content("~/csat_settings_page/Add_parameter_master?software=")'+ softsearch;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                //debugger;
+                var agent_divclear = document.getElementById('divsoft_div');
+                agent_divclear.innerHTML = '&nbsp;';
+                $('#divsoft_div').append("<table id='divsoft' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('divsoft');
+                var data1 = [];
+                for (var i = 0; i < data.dcm_softdata.length; i++) {
+                    data1.push([data.dcm_softdata[i].software, data.dcm_softdata[i].software]);
+                }
+                otable = $("#divsoft").DataTable({
+                            data: data1, scrollX: !0, searching: !1,
+                            'columnDefs': [{'targets': 0,'checkboxes': {'selectRow': true}},{orderable: false,targets: 1} ],'select': {'style': 'multi'},'order': [[1, 'asc']],
+                             columns: [{ title: "", width: '10px' }, { title: "Software Name", width: '90px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+            }
+        });
+
+        }
+        var chksoft;
+        var chkprocessor;
+        var chkos;
+        function btnApply() {
+            //debugger;
+            //software
+            alert('1');
+            var $valid = $('#frm_dcm_add').valid();
+            alert($valid);
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            }
+            else {
+
+                if (document.getElementById("chksoftware1").checked) {
+                    var form = this;
+                    var rows_selected = otable.column(0).checkboxes.selected();
+                    $.each(rows_selected, function (index) {
+                        chksoft = "";
+                        for (var i = 0; i < rows_selected.length; i++) {
+                            chksoft += "!" + rows_selected[i];
+                        }
+                        return false;
+                    });
+                }
+                //processor
+                if (document.getElementById("chkprocessor1").checked) {
+                    var form1 = this;
+                    var rows_selected1 = otableprocessor.column(0).checkboxes.selected();
+                    $.each(rows_selected1, function (index) {
+                        chkprocessor = "";
+                        for (var i = 0; i < rows_selected1.length; i++) {
+                            chkprocessor += "!" + rows_selected1[i];
+                        }
+                        return false;
+                    });
+                }
+                //os
+                if (document.getElementById("chkos1").checked) {
+                    var form2 = this;
+                    var rows_selected2 = otableos.column(0).checkboxes.selected();
+                    $.each(rows_selected2, function (index) {
+                        chkos = "";
+                        for (var i = 0; i < rows_selected2.length; i++) {
+                            chkos += "!" + rows_selected2[i];
+                        }
+                        return false;
+                    });
+                }
+                validate1(chksoft, chkprocessor, chkos)
+            }
+        }
+
+        function validate1(chksoft, chkprocessor, chkos) {
+           // debugger;
+            var lanallow = $('input[name=LAN]:checked').val();
+            var wifiallow = $('input[name=WIFI]:checked').val();
+            var cdallow = $('input[name=CD]:checked').val();
+       // debugger;
+            //if (document.getElementById("txtpolicyname").value == "") {
+            //    alert("Please enter policy name !!!");
+            //    document.getElementById("txtpolicyname").focus();
+            //    return false;
+            //}
+            if (document.getElementById("chkprocessor1").checked == true || document.getElementById("chkos1").checked == true || document.getElementById("chkram1").checked == true || document.getElementById("chkhdd1").checked == true || document.getElementById("chksoftware1").checked == true || lanallow != 'undefined' || wifiallow != 'undefined' || cdallow != 'undefined') {
+                if (chkprocessor == "undefined") {
+                    alert('Please select Processor');
+                    return false;
+                }
+                else if (chkos == "undefined") {
+                    alert('Please select OS');
+                    return false;
+                }
+                else if (chksoft == "undefined") {
+                    alert('Please select Software');
+                    return false;
+                }
+                else if (document.getElementById("chkram1").checked == true) {
+                    if (document.getElementById('ram_select').value == "-1") {
+                        alert('Please select RAM');
+                        return false;
+                    }
+                }
+                else if (document.getElementById("chkhdd1").checked == true) {
+                    if (document.getElementById('hdd_select').value == "-1") {
+                        alert('Please select HDD');
+                        return false;
+                    }
+                }
+                else if (document.getElementById("chksoftware1").checked == true) {
+                    if (document.getElementById('hdd_select').value == "undefined") {
+                        alert('Please select Software');
+                        return false;
+                    }
+                }
+                    AddDCMTemplate(chksoft, chkprocessor, chkos);
+
+            }
+                }
+       var policyname = '';
+      function AddDCMTemplate(chksoft, chkprocessor, chkos) {
+        //debugger;
+        var ramsize = document.getElementById("ram_select").value;
+        var hddsize = document.getElementById("hdd_select").value;
+        var lanallow =  $('input[name=LAN]:checked').val();
+        var wifiallow = $('input[name=WIFI]:checked').val();
+        var dcmaction = $('input[name=dcmaction]:checked').val();
+         var cdallow = $('input[name=CD]:checked').val();
+         var chekboxram = $('input[name=RAM]:checked').val();
+         var chekboxhdd = $('input[name=HDD]:checked').val();
+          var chekboxprocessor = $('input[name=PROCESSOR]:checked').val();
+          var chekboxsoftware = $('input[name=SOFTWARE]:checked').val();
+         var chekboxos = $('input[name=OS]:checked').val();
+        var antivirus = $('input[name=Antivirus]:checked').val();
+        policyname = document.getElementById("txtpolicyname").value;
+          var url1 = '@Url.Content("~/csat_settings_page/Add_DCM_Template?policyname=")' + policyname + '&editpolicyid=' + edittempid + '&chekboxram=' + chekboxram + '&ramsize=' + ramsize + '&chekboxhdd=' + chekboxhdd + '&hddsize=' + hddsize + '&chekboxprocessor=' + chekboxprocessor + '&chkprocessor=' + chkprocessor + '&chekboxos=' + chekboxos + '&chkos=' + chkos + '&chekboxsoftware=' + chekboxsoftware + '&chksoft=' + chksoft + '&lan=' + lanallow + '&cd=' + cdallow + '&wifi=' + wifiallow + '&antivirus=' + antivirus + '&dcmaction=' + dcmaction;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                alert(data);
+                databind();
+                edittempid = "";
+                cleardata();
+
+                //$('#create_config').modal('show');
+
+            }
+        })
+
+    }
+
+    // Edit DCM Template
+
+    var edittempid = "";
+    function EditTemplateData(template_id, policy_name) {
+        cleardata();
+      // debugger;
+        edittempid = template_id;
+        // edittempprocessdata(edittempid);
+        document.getElementById("edittempname").value = decodeURI(policy_name);
+        var url1 = '@Url.Content("~/csat_settings_page/GetDCMTemplatedetail?edittempid=")' + edittempid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+            // debugger;
+                for (var i = 0; i < data.templatedetail.length; i++) {
+                    if (data.templatedetail[i].parameter_value == 'RAM') {
+                        document.getElementById('editchkram').checked = true;
+                        document.getElementById("editram_select").value = data.templatedetail[i].warning_threshold;
+                    }
+                    if (data.templatedetail[i].parameter_value == 'HARDDISK') {
+                        document.getElementById('editchkhdd').checked = true;
+                        document.getElementById("edithdd_select").value = data.templatedetail[i].warning_threshold;
+                    }
+                    if (data.templatedetail[i].parameter_value == 'LAN') {
+                        if (data.templatedetail[i].warning_threshold == "1")
+                            document.getElementById('editLAN1').checked = true;
+                        else
+                            document.getElementById('editLAN0').checked = true;
+
+                    }
+                    if (data.templatedetail[i].parameter_value == 'CDDrive') {
+                        if (data.templatedetail[i].warning_threshold == "1")
+                            document.getElementById('editcddvd1').checked = true;
+                        else
+                            document.getElementById('editcddvd0').checked = true;
+                    }
+                    if (data.templatedetail[i].parameter_value == 'Antivirus') {
+                        if (data.templatedetail[i].warning_threshold == "1")
+                            document.getElementById('editantivirus').checked = true;
+                    }
+                    if (data.templatedetail[i].parameter_value == 'WIFI') {
+                        if (data.templatedetail[i].warning_threshold == "1")
+                            document.getElementById('editWIFI1').checked = true;
+                        else
+                            document.getElementById('editWIFI0').checked = true;
+                    }
+                    if (data.templatedetail[i].action == "1") {
+                        document.getElementById('editaction1').checked = true;
+                    }
+                    else if (data.templatedetail[i].action == "2") {
+                        document.getElementById('editaction2').checked = true;
+                    }
+                    else if (data.templatedetail[i].action == "3"){
+                        document.getElementById('editaction3').checked = true;
+                    }
+                    else {
+                        document.getElementById('editaction1').checked = false;
+                        document.getElementById('editaction2').checked = false;
+                        document.getElementById('editaction3').checked = false;
+                    }
+                    if (data.templatedetail[i].parameter_value == 'PROCESSOR')
+                        document.getElementById('editchkprocessor').checked = true;
+                    if (data.templatedetail[i].parameter_value == 'OS')
+                        document.getElementById('editchkos').checked = true;
+
+                }
+                var SetProcessorData = $('#editdivprocessor');
+                jQuery('#editdivprocessor').html('');
+                var processor_data = "<table class='table table-striped table-bordered' id='config_table111' style='width:100%'><thead><tr><th class='col-sm-1 icon' data-orderable='false'><input type='checkbox' name='check[]'  onclick='checkallitemsbyname(this,this.name);' class='parent' data-group='.groupprocess' /></th>" +
+                    "<th class='col-sm-11'>Processor</th></tr></thead><tbody>";
+                for (var i = 0; i < data.templateprocessordata.length; i++) {
+                    processor_data += "<tr>";
+                    processor_data += "<td class='col-sm-1 icon'><input type='checkbox' class='groupprocess' name='check[]' id='" + data.templateprocessordata[i].parameter_id + "' value='" + data.templateprocessordata[i].value + "' " + data.templateprocessordata[i].pmid + " /></td>";
+                    processor_data += "<td class='col-sm-11'>" + data.templateprocessordata[i].value + "</td>";
+                    processor_data += "</tr>";
+                }
+                processor_data += "</tbody></table>";
+
+                $(document).ready(function () {
+                    $('#config_table111').DataTable({
+                        paging: false,
+                        order: [],
+                        columnDefs: [{ orderable: false }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                });
+                SetProcessorData.append(processor_data);
+                var SetOSData = $('#editdivos');
+                jQuery('#editdivos').html('');
+                var os_data = "<table class='table table-striped table-bordered' id='config_table222' style='width:100%'><thead><tr><th class='col-sm-1 icon' data-orderable='false'><input type='checkbox' name='checkos[]' onclick='checkallitemsbyname(this,this.name);' class='parent' data-group='.group2' /></th>" +
+                    "<th class='col-sm-11'>Operating System</th></tr></thead><tbody>";
+                for (var i = 0; i < data.templateosdata.length; i++) {
+                    os_data += "<tr>";
+                    os_data += "<td class='col-sm-1 icon'><input type='checkbox' class='group2' name='checkos[]' id='" + data.templateosdata[i].parameter_id + "' value='" + data.templateosdata[i].value + "' " + data.templateosdata[i].pmid + " /></td>";
+                    os_data += "<td class='col-sm-11'>" + data.templateosdata[i].value + "</td>";
+                    os_data += "</tr>";
+                }
+                os_data += "</tbody></table>";
+
+                $(document).ready(function () {
+                    $('#config_table222').DataTable({
+                        paging: false,
+                        order: [],
+                        columnDefs: [{ orderable: false }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                });
+
+                SetOSData.append(os_data);
+                AddDCMeditSoft(edittempid);
+            }
+        });
+
+        $('#edit_config').modal('show');
+
+    }
+
+    function AddDCMeditSoft(edittempid) {
+         softsearch = document.getElementById("editsoftsearch").value;
+        $('#edit_config').modal('show');
+         var url1 = '@Url.Content("~/csat_settings_page/GetDCMTemplateSoftdetail?edittempid=")' + edittempid + '&software='+ softsearch;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+             //   debugger;
+                var SetSoftData = $('#editdivsoft');
+                jQuery('#editdivsoft').html('');
+                var soft_data = "<table class='table table-striped table-bordered' id='config_table333' style='width:100%'><thead><tr><th class='select' data-orderable='false'><input type='checkbox' class='parent' onclick='checkallitemsbyname(this,this.name);' name='check2[]'  data-group='.group3' /></th>" +
+                    "<th class='col-sm-8'>Software Name</th><th class='col-sm-2 icon ' data-orderable='false'>Allow</th><th class='col-sm-2 icon' data-orderable='false'>Not Allow</th></tr></thead><tbody>";
+                for (var i = 0; i < data.templatesoftdata.length; i++) {
+                    soft_data += "<tr>";
+                    soft_data += "<td class='select'><input type='checkbox' class='group3' name='check2[]' id='" + data.templatesoftdata[i].parameter_id + "' value='" + data.templatesoftdata[i].value +"' " + data.templatesoftdata[i].pmid + "  /></td>";
+                    soft_data += "<td class='col-sm-8'>" + data.templatesoftdata[i].value + "</td>";
+                    if (data.templatesoftdata[i].warning_threshold == "1")
+                        soft_data += "<td class='col-sm-2 icon'><div class='radio'><label> <input type='radio' name='allow" + i + "'  id='Allowed'  value='allow'  checked /></label></div></td>";
+                    else
+                        soft_data += "<td class='col-sm-2 icon'><div class='radio'><label> <input type='radio' name='allow" + i + "'  id='Allowed'  value='allow'  /></label></div></td>";
+                    if (data.templatesoftdata[i].warning_threshold == "0")
+                        soft_data += "<td class='col-sm-2 icon'><div class='radio'><label> <input type='radio' name='allow" + i + "'  id='notAllowed' value='not'  checked /></label></div></td>";
+                    else
+                        soft_data += "<td class='col-sm-2 icon'><div class='radio'><label> <input type='radio' name='allow" + i + "'  id='notAllowed' value='not'  /></label></div></td>";
+                    soft_data += "</tr>";
+                }
+                soft_data += "</tbody></table>";
+                 $(document).ready(function () {
+                     var table = $('#config_table333').DataTable({
+                         //scrollY: 202,
+                         //scrollCollapse: true,
+                         paging: true,
+                         order: [],
+                         columnDefs: [{ orderable: false }],
+                         searching: false,
+                         responsive: false,
+                         info: false
+
+                     });
+                     $(".table").css({ "width": "100%" });
+                     $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                     table.on('page.dt', function () {
+                         var info = table.page.info();
+                         pagesize = table.page.len();
+                         page = info.page;
+
+                     });
+
+                });
+                SetSoftData.append(soft_data);
+            }
+        });
+
+    }
+
+    // Edit Add DCM Template
+    var editchekboxram;
+    var editchekboxhdd;
+    var editchekboxprocessor;
+    var editchekboxos;
+    function validate11() {
+          //debugger;
+        if (document.getElementById("edittempname").value == "") {
+            alert("Please enter policy name !!!");
+            document.getElementById("edittempname").focus();
+            return false;
+        }
+        else {
+            var hardware = false;
+            var os = false;
+            var software = false;
+            var flag = false;
+            editchekboxram = document.getElementById("editchkram");
+            editchekboxhdd = document.getElementById("editchkhdd");
+            editchekboxprocessor = document.getElementById("editchkprocessor");
+            editchekboxos = document.getElementById("editchkos");
+            if (editchekboxram.checked || editchekboxhdd.checked || editchekboxprocessor.checked)
+                hardware = true;
+            var checkboxes = document.querySelectorAll('input[class="group3"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked == true) {
+                    software = true;
+                }
+            }
+            if (editchekboxos.checked)
+                os = true;
+        }
+
+        if (editchekboxram.checked) {
+            if (document.getElementById('editram_select').value == "-1") {
+                alert('Please select RAM');
+                flag = true;
+            }
+        }
+        if (editchekboxhdd.checked) {
+            if (document.getElementById('edithdd_select').value == "-1") {
+                alert('Please select HDD');
+                flag = true;
+            }
+        }
+        if (editchekboxprocessor.checked) {
+            if ($('input[class="groupprocess"]:checked').length == "0") {
+                alert('Please select Processor');
+                flag = true;
+            }
+        }
+        if (editchekboxos.checked) {
+            if ($('input[class="group2"]:checked').length == "0") {
+                alert('Please select OS');
+                flag = true;
+            }
+        }
+        if (hardware == false && software == false && os == false) {
+            alert("Please select atleast one parameter");
+        }
+        else if (flag == true) {
+            $('#edit_config').modal('show');
+
+        }
+        else {
+            AddeditDCMTemplate();
+        }
+    }
+    function AddeditDCMTemplate() {
+        //debugger;
+        var chkprocessor;
+        var chkprocessorid;
+        var checkboxesp = document.querySelectorAll('input[class="groupprocess"]');
+        if (document.getElementById("editchkprocessor").checked) {
+            chkprocessor = "";
+            chkprocessorid = "";
+            for (var i = 0; i < checkboxesp.length; i++) {
+                if (checkboxesp[i].checked == true) {
+                    chkprocessor += "," + checkboxesp[i].value;
+                   chkprocessorid += "," + checkboxesp[i].id;
+                }
+            }
+        }
+
+        // Software
+        var chksoft;
+        var chksoftid;
+        var table = $('#config_table333').DataTable();
+        var info = table.page.info();
+        totalpage = info.pages;
+        page = info.page;
+        totalrec = info.recordsTotal;
+        pagesize = table.page.len();
+
+        var chksoft;
+        var chksoftid;
+        var chksoftparamid;
+        var checkboxessoft = document.querySelectorAll('input[class="group3"]');
+        chksoft = "";
+        chksoftid = "";
+        chksoftparamid = "";
+        for (var i = 0; i < checkboxessoft.length; i++) {
+            if (checkboxessoft[i].checked == true) {
+                chksoft += "," + checkboxessoft[i].value;
+                chksoftparamid += "," + checkboxessoft[i].id;
+                var rdname = "allow" + ((page * pagesize) + i).toString();
+                var selected = document.getElementsByName(rdname);
+               if (selected[0].checked)
+                   chksoftid += ",1";
+                else if (selected[1].checked) {
+                    chksoftid += ",0";
+                }
+            }
+        }
+
+        var chkos;
+        var chkosid;
+        var checkboxesos = document.querySelectorAll('input[class="group2"]');
+        if (document.getElementById("editchkos").checked) {
+            chkos = "";
+            chkosid = "";
+            for (var i = 0; i < checkboxesos.length; i++) {
+                if (checkboxesos[i].checked == true) {
+                    chkos += "," + checkboxesos[i].value;
+                    chkosid += "," + checkboxesos[i].id;
+                }
+            }
+        }
+
+        var ramsize = document.getElementById("editram_select").value;
+        var hddsize = document.getElementById("edithdd_select").value;
+        var lanallow = $('input[name=editLAN]:checked').val();
+        var wifiallow = $('input[name=editwifi]:checked').val();
+        var cdallow = $('input[name=editcd]:checked').val();
+        var editdcmaction = $('input[name=editaction]:checked').val();
+        var antivirus = $('input[name=editantivirus]:checked').val();
+        policyname = document.getElementById("edittempname").value;
+        var url1 = '@Url.Content("~/csat_settings_page/Add_DCM_Template?policyname=")' + policyname + '&editpolicyid=' + edittempid + '&chekboxram=' + editchekboxram.checked + '&ramsize=' + ramsize + '&chekboxhdd=' + editchekboxhdd.checked + '&hddsize=' + hddsize + '&chekboxprocessor=' + editchekboxprocessor.checked + '&chkprocessorid=' + chkprocessorid + '&chkprocessor=' + chkprocessor + '&chekboxos=' + editchekboxos.checked + '&chkosid=' + chkosid + '&chkos=' + chkos + '&chksoftid=' + chksoftid + '&chksoftparamid=' + chksoftparamid + '&chksoft=' + chksoft + '&lan=' + lanallow + '&cd=' + cdallow + '&wifi=' + wifiallow + '&antivirus=' + antivirus + '&dcmaction=' + editdcmaction;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                // debugger;
+                alert(data);
+                edittempid = "";
+                cleardata();
+                databind();
+            }
+        })
+
+    }
+
+    // Apply Template Data
+    var applypolicyid;
+    function ApplyTemplateData(policyid) {
+      //  debugger;
+        cleardata();
+        applypolicyid = policyid;
+        var ou_id = document.getElementById("drpou").value;
+        var device_name = document.getElementById("drpdevice").value;
+        var ip = document.getElementById("drpip").value;
+        var url1 = '@Url.Content("~/csat_settings_page/Apply_DCMTemplate?policyid=")' + policyid + '&ou_id=' + ou_id + '&device_name=' + device_name + '&ip=' + ip;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                var SetOUDiv = $('#drpou');
+                jQuery('#drpou').html('');
+                var SetOUData = "<option value='-1'>Select Branch/ Unit</option>";
+                for (var i = 0; i < data.getou.length; i++) {
+                    SetOUData += "<option value='" + data.getou[i].ouid + "'>" + data.getou[i].ouname + "</option>";
+                }
+                SetOUDiv.append(SetOUData);
+            }
+        });
+
+    }
+    function Bind_DCM_Apply() {
+       // debugger;
+       //  var rule_id = document.getElementById("hdn_rule_id_multiple_apply").value;
+        var ou_id = document.getElementById("drpou").value;
+        var device_name = document.getElementById("drpdevice").value;
+        var ip = document.getElementById("drpip").value;
+        var url1 = '@Url.Content("~/csat_settings_page/Apply_DCMTemplate?ouid=")' + ou_id + '&device_name=' + device_name + '&ip=' + ip + '&policyid=' + applypolicyid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+              //  debugger;
+                var SetDeviceData = $('#applydiv');
+                jQuery('#applydiv').html('');
+                var DeviceData = "<table class='table table-striped table-bordered' id='apppy_config_table1' style='width:100%'><thead><tr><th class='select noExport' data-orderable='false'><input type='checkbox' class='parent' onclick='checkallitemsbyname(this,this.name);' name='check[]' data-group='.group12' /></th><th class='col-sm-6'>Branch/ Unit</th><th class='col-sm-2'>System Name</th><th class='col-sm-2'>IP Address</th></tr></thead><tbody>";
+                for (var i = 0; i < data.getdevice.length; i++) {
+                    DeviceData += "<tr>";
+                    DeviceData += "<td class='select'><input type='checkbox' class='group12' name='check[]' id='" + data.getdevice[i].ou_id + "' value='" + data.getdevice[i].device_id + "'  " + data.getdevice[i].cid + " /></td>";
+                    DeviceData += "<td class='col-sm-6'>" + data.getdevice[i].ou_node_name + "</td>";
+                    DeviceData += "<td class='col-sm-4'>" + data.getdevice[i].device_name + "</td>";
+                    DeviceData += "<td class='col-sm-2'>" + data.getdevice[i].ip + "</td>";
+                    DeviceData += "</tr>";
+                }
+                DeviceData += "</tbody></table><div class='col-xs-12 pul- right'><input type= 'button' class='btn btn-primary' value='Apply' name ='Apply' onclick = 'Bind_DCM_submit()' /> </div>";
+
+                $(document).ready(function () {
+                    $('#apppy_config_table1').DataTable({
+                        paging: true,
+                        order: [],
+                        columnDefs: [{ orderable: false }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                });
+                SetDeviceData.append(DeviceData);
+            }
+        });
+    }
+    $("#drpou").change(function () {
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+            var SetDatadevice = $('#drpdevice');
+            var SetDataip = $('#drpip');
+
+            jQuery('#drpdevice').html('');
+            jQuery('#drpip').html('');
+
+            var devicedata = "<option value='-1'>Select System Name</option>";
+            var ipdata = "<option value='-1'>Select IP Address</option>";
+
+            for (var i = 0; i < data.systemip.length; i++) {
+                devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+                ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+            }
+            SetDatadevice.append(devicedata);
+            SetDataip.append(ipdata);
+            }
+        });
+    });
+
+    var singledeviceids = "";
+    var singleouids = "";
+    function getcheckeddevice() {
+   //    debugger;
+        singledeviceids = "";
+        singleouids = "";
+        var checkboxes = document.querySelectorAll('input[name="check[]"]');
+        for (var i = 1; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                singledeviceids += "," + checkboxes[i].value;
+                singleouids += "," + checkboxes[i].id;
+            }
+            else {
+            }
+        }
+    }
+    function Bind_DCM_submit() {
+        //debugger;
+        getcheckeddevice();
+        var hddsizes = document.getElementById("hdd_select").value;
+        var ramsizes = document.getElementById("ram_select").value;
+        var chkprocessorid = chkprocessorid;
+        var chksoftid = chksoftid;
+        var url1 = '@Url.Content("~/csat_settings_page/DCM_Apply_Submit?applypolicyid=")' + applypolicyid + '&deviceids=' + singledeviceids + '&ouid=' + singleouids;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+                alert(data);
+                databind();
+                document.getElementById("drpou").value = "-1";
+                document.getElementById("drpdevice").value = "-1";
+                document.getElementById("drpip").value = "-1";
+             //   cleardata();
+
+            }
+        });
+
+    }
+    var deltempid = "";
+    function DeleteTemplateData(template_id) {
+        //  debugger;
+        deltempid = template_id;
+        $('#delete_config').modal('show');
+    }
+      $('#btndelete').click(function () {
+          var url1 = '@Url.Content("~/csat_settings_page/DCMDeleteTemplate?policyid=")' + deltempid;
+	     $.ajax({
+            type: "POST",
+            url:url1,
+            success: function (result) {
+			alert(result);
+                $('#delete_config').modal('hide');
+                databind();
+			}
+			});
+
+    });
+    $('#btndeletecancle').click(function () {
+        $('#delete_config').modal('hide');
+    });
+
+    // Show Apply DCM Count
+    function ShowDCMCount(policyid) {
+        var url1 = '@Url.Content("~/csat_settings_page/Show_DCMCount?policyid=")' + policyid;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (data) {
+              //  debugger;
+                var SetDeviceData = $('#divapplycount');
+                jQuery('#divapplycount').html('');
+                var DeviceData = "<table class='table table-striped table-bordered' id='apppy_config_table13' style='width:100%'><thead><tr><th class='col-sm-8'>Branch/ Unit</th><th class='col-sm-2'>System Name</th><th class='col-sm-2'>IP Address</th></tr></thead><tbody>";
+                for (var i = 0; i < data.showcountdata.length; i++) {
+                    DeviceData += "<tr>";
+                    DeviceData += "<td class='col-sm-8'>" + data.showcountdata[i].ou_longname + "</td>";
+                    DeviceData += "<td class='col-sm-2'>" + data.showcountdata[i].device_name + "</td>";
+                    DeviceData += "<td class='col-sm-2'>" + data.showcountdata[i].ip + "</td>";
+                    DeviceData += "</tr>";
+                }
+                DeviceData += "</tbody></table>";
+
+                $(document).ready(function () {
+                    $('#apppy_config_table13').DataTable({
+                        paging: true,
+                        order: [],
+                        columnDefs: [{ orderable: false }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+                });
+                SetDeviceData.append(DeviceData);
+            }
+        });
+
+    }
+
+    function AddCompliance() {
+        // debugger;
+        var softaction = $('input[name=action]:checked').val();
+
+        var url1 = '@Url.Content("~/csat_settings_page/Add_Soft_Compliance?softaction=")' + softaction;
+        $.ajax({
+            type: "POST",
+            url: url1,
+            success: function (result) {
+                alert(result);
+                $('#general_settings').modal('hide');
+            }
+        });
+    }
+</script>
+
+<script>
+    var groupid = "";
+    var grouptype = "";
+    var groupname = "";
+    var itemtype = "";
+    var itemid = "";
+    function showgroupdata() {
+        $('#addgroup_popup').modal('show');
+        getgroupdata();
+    }
+    var otablegroup;
+    function getgroupdata() {
+        // debugger;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetGroupData")',
+            success: function (data) {
+                var group_divclear = document.getElementById('bindgroup_div');
+                group_divclear.innerHTML = '&nbsp;';
+                $('#bindgroup_div').append("<table id='bindgroup' class='table table-striped table-bordered' width='100%'></table>");
+                otablegroup = document.getElementById('bindgroup');
+                var data1 = [];
+                for (var i = 0; i < data.groupdata.length; i++) {
+                    var add_item = "<div class='icon'><i class='glyphicon glyphicon-pencil manage_icon' type='button' data-toggle='modal' style = 'padding-top:2px;' onclick=showadditem(" + data.groupdata[i].group_id + ",'" + encodeURIComponent(data.groupdata[i].group_type) + "','" + encodeURIComponent(data.groupdata[i].group_name) + "','" + encodeURIComponent(data.groupdata[i].item_type) + "') title='Add Item'></i></div>";
+                    var grp_delete = "<div class='icon'><i class='glyphicon glyphicon-trash manage_icon' type='button' data-toggle='modal' title='Delete' onclick=deletegrouppopup(" + data.groupdata[i].group_id + ") title='Delete'></i></div>";
+                    data1.push([data.groupdata[i].item_type, data.groupdata[i].group_type, data.groupdata[i].group_name, add_item, grp_delete]);
+                }
+                otablegroup = $("#bindgroup").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    columns: [{ title: "Type" }, { title: "Group" }, { title: "Group Name" }, { title: "Add Item" }, { title: "Delete" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function addgroup() {
+        //debugger;
+        var $valid = $('#frm_dcm_add_group').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+
+            var grouptype = document.getElementById("grouptype").value;
+            var groupname = document.getElementById("groupname").value;
+            var itemtype = document.getElementById("itemtype").value;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/addgroup?group_type=")' + grouptype + "&group_name=" + groupname + "&item_type=" + itemtype,
+                success: function (result) {
+                    alert(result);
+                    document.getElementById("grouptype").value = "Red";
+                    document.getElementById("groupname").value = "";
+                    document.getElementById("itemtype").value = "Software";
+                    getgroupdata();
+                }
+            });
+        }
+    }
+    function deletegrouppopup(group_id) {
+        groupid = group_id;
+        $('#delete_grouppopup').modal('show');
+    }
+    function deletegroup() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Content("~/csat_settings_page/deletegroup?groupid=")' + groupid,
+            success: function (result) {
+			    alert(result);
+                $('#delete_grouppopup').modal('hide');
+                getgroupdata();
+			}
+		});
+    }
+    function showadditem(group_id, group_type, group_name, item_type) {
+        //debugger;
+        $('#showitem_popup').modal('show');
+        decodeURIComponent(name)
+        groupid = group_id;
+        grouptype = decodeURIComponent(group_type);
+        groupname = decodeURIComponent(group_name);
+        itemtype = decodeURIComponent(item_type);
+        getitemdata(groupid, itemtype);
+    }
+    function getitemdata(groupid, itemtype) {
+        //debugger;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetItemData?group_id=")' + groupid,
+            success: function (data) {
+                document.getElementById('showitem_type_name').innerText = 'Item List [ Item Type : ' + itemtype + ' ]';
+                var item_divclear = document.getElementById('binditem_div');
+                item_divclear.innerHTML = '&nbsp;';
+                $('#binditem_div').append("<table id='binditem' class='table table-striped table-bordered' width='100%'></table>");
+                otableitem = document.getElementById('binditem');
+                var data1 = [];
+                for (var i = 0; i < data.itemdata.length; i++) {
+                    var item_delete = "<a><div class='icon'><i class='glyphicon glyphicon-trash manage_icon' type='button' data-toggle='modal' title='Delete' onclick=delete_itempopup(" + groupid + "," + data.itemdata[i].item_id + ") title='Delete'></i></div></a>";
+                    data1.push([data.itemdata[i].item_name, item_delete]);
+                }
+                var otableitem = $("#binditem").DataTable({
+                    data: data1, scrollX: !0, searching: !1,
+                    columns: [{ title: "Item Name" }, { title: "Delete" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+    function additem() {
+        //debugger;
+        var itemname = document.getElementById("item_name").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/additem?group_id=")' + groupid + "&group_type=" + grouptype + "&group_name=" + groupname + "&item_type=" + itemtype + "&item_name=" + itemname,
+            success: function (result) {
+                alert(result);
+                document.getElementById("item_name").value = "";
+                getitemdata(groupid, itemtype);
+            }
+        });
+    }
+
+    function delete_itempopup(group_id, item_id) {
+        groupid = group_id;
+        itemid = item_id;
+        $('#delete_itempopup').modal('show');
+    }
+    function deleteitem() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Content("~/csat_settings_page/deleteitem?groupid=")' + groupid + "&itemid=" + itemid,
+            success: function (result) {
+			    alert(result);
+                $('#delete_itempopup').modal('hide');
+                getitemdata(groupid, itemtype);
+                getgroupdata();
+			}
+		});
+    }
+</script>
+<script>
+
+    function cleardata() {
+        $('input[type="checkbox"]:checked').prop('checked', false);
+        $('input[type="radio"]:checked').prop('checked', false);
+        document.getElementById("txtpolicyname").value = "";
+        document.getElementById("drpou").value = "-1";
+        document.getElementById("drpdevice").value = "-1";
+        document.getElementById("drpip").value = "-1";
+        //document.getElementById("editram_select").value = "-1";
+        //document.getElementById("edithdd_select").value = "-1";
+        //document.getElementById("ram_select").value = "-1";
+        //document.getElementById("hdd_select").value = "-1";
+        //document.getElementById("editLAN0").checked = false;
+        //document.getElementById("editLAN1").checked = false;
+        //document.getElementById("editcddvd0").checked = false;
+        //document.getElementById("editcddvd1").checked = false;
+        //document.getElementById("editWIFI0").checked = false;
+        //document.getElementById("editWIFI1").checked = false;
+        jQuery('#applydiv').html('');
+        jQuery('#applydiv').html('');
+        document.getElementById("grouptype").value = "Red";
+        document.getElementById("groupname").value = "";
+        document.getElementById("itemtype").value = "Software";
+        document.getElementById("item_name").value = "";
+        $('#delete_grouppopup').modal('hide');
+        $('#delete_itempopup').modal('hide');
+    }
+
+</script>

@@ -1,0 +1,193 @@
+﻿
+@{
+    ViewData["Title"] = "Policy Management";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+@*<div class="row">
+    <div class="headerbar">
+        <a href="#" style="padding-left:10px;">Policy Enforcement</a>
+    </div>
+</div>*@
+<div class="row">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Policy Enforcement", "csat_policy_mgmt", "csat_policy_mgmt")
+                    <i class="icon-angle-right"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+    <!--Policy Management main content -->
+    <body onload="Funcpolicycharts()">
+        <div class="row">
+            <!--Policy Management content-->
+            <div class="col-sm-12 col-md-12 col-lg-12">               
+                <!--Policy Management  chart  content-->
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h6 class="pull-left">Branch/ Unit Wise Policy Deployed</h6>
+                                <div class="col-xs-6 pull-right" style="margin-top:1px;margin-bottom:10px;">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="DrpOU" style="height: 24px;"></select>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <canvas id='csat_policy_branch_unit' class="policy_chart"></canvas>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h6>System Wise Policy Infringe  </h6>
+                                <div class="col-xs-2" style="float:right;top: -18px;right: 125px;">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="system" onchange="Funcpolicycharts(this.value)" style="height: 22px;width: 200px;">*@
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="system" style="height: 22px;width: 200px;">
+                        <option value="-1">Select System Name</option>
+                        </select>*@
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <canvas id='csat_policy_system_deployed' class="policy_chart"></canvas>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h6>Total Available Policies</h6>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <canvas id='csat_policy_total_available' class="policy_chart"></canvas>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h6>Deployed Policy</h6>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <canvas id='csat_policy_deployed' class="policy_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Policy Management  chart end content-->
+                <!--Policy Management  table  content-->
+
+                <div class="row">
+
+                </div>
+
+
+                <!--Policy Management  table  content end-->
+                <div class="space_bottom">&nbsp;</div>
+            </div> <!-- Policy Management content end-->
+        </div>  <!-- Policy Management main content end*-->
+
+    </body>
+    <!--Policy Management  -->
+    <script>
+    $.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+	 //debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+	         var SetData = $('#DrpOU');
+			  jQuery('#DrpOU').html('');
+			  var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+                //var oudata = "";
+                for (var i = 0; i < data.ou.length; i++) {
+                        oudata += "<option value='" + data.ou[0].ouid + "'>" + data.ou[i].ouname + "</option>";
+                }
+                SetData.append(oudata);
+            }
+        });
+	}
+
+
+    </script>
+    <script>
+
+    var ouid;
+    $("#DrpOU").change(function () {
+       // debugger;
+        ouid = this.value;
+        var url = '@Url.Content("~/csat_policy_mgmt/GetPolicyCharts?device=")' + ouid;
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    group_barchart('csat_policy_branch_unit', data.chartstrdepoupolicy, '#003399', '#a02c5a', 'Defult Policy', 'User Define Policy');
+                }
+            });
+        });
+
+          function Funcpolicycharts() {
+           // debugger;
+              $("#overlay").show();
+              $("#overlay").fadeIn(300);　
+            var url = '@Url.Content("~/csat_policy_mgmt/GetPolicyCharts?device=")' + "";
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function (data) {
+                    //debugger;
+                    var SetDatadevice = $('#system');
+                    jQuery('#system').html('');
+                    var devicedata = "<option value='-1'>Select System Name</option>";
+                    for (var i = 0; i < data.sysip.length; i++) {
+                        devicedata += "<option value='" + data.sysip[i].device_id + "'>" + data.sysip[i].device_name + "</option>";
+                    }
+                    SetDatadevice.append(devicedata);
+                    group_barchart('csat_policy_deployed', data.chartstrdeppolicy, '#C00000', '#2cc2c2 ', 'Defult Policy','User Define Policy');
+                    group_barchart('csat_policy_total_available', data.chartstravlpolicy, '#A055BC ', '#FFCC00 ', 'Defult Policy', 'User Define Policy');
+                    group_barchart('csat_policy_system_deployed', data.chartstrdepsyspolicy, '#009900', '#FF9900', 'Available Policies','Infringe Policies');
+                    group_barchart('csat_policy_branch_unit', data.chartstrdepoupolicy, '#003399', '#a02c5a', 'Defult Policy', 'User Define Policy');
+
+                }
+
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+        }
+    </script>
+    <!--Policy Management  End -->

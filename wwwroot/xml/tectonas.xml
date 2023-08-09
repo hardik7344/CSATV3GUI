@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <customer_details>
+    <CustomerID>8489479252442920</CustomerID>
+    <InstallationID>6811565144504089</InstallationID>
+    <Name>aditi</Name>
+    <Address>The First</Address>
+    <Address1>The First</Address1>
+    <Address2>The First</Address2>
+    <City>Ahmedabad</City>
+    <PinCode>380015</PinCode>
+    <State>Gujarat</State>
+    <Country>India</Country>
+    <Email>aditi@tectonas.in</Email>
+    <ContactNo>7896541236</ContactNo>
+    <MobileNo>96594594</MobileNo>
+  </customer_details>
+  <location_details>
+    <CustomerID>8489479252442920</CustomerID>
+    <LocationID>5803266037292024</LocationID>
+    <Name>Ahmdabad</Name>
+    <Address>Ahmdabad</Address>
+    <Address1>Ahmdabad</Address1>
+    <Address2>Ahmdabad</Address2>
+    <City>Ahmdabad</City>
+    <PinCode>380015</PinCode>
+    <State>Gujarat</State>
+    <Country>India</Country>
+    <Email>aditi@tectonas.in</Email>
+    <ContactNo>4524564</ContactNo>
+    <MobileNo>5545</MobileNo>
+  </location_details>
+  <distributor_details>
+    <CustomerID>8489479252442920</CustomerID>
+    <LocationID>5803266037292024</LocationID>
+    <PartnerID>123</PartnerID>
+    <SIID>456</SIID>
+  </distributor_details>
+  <Product_details>
+    <CustomerID>8489479252442920</CustomerID>
+    <LocationID>5803266037292024</LocationID>
+    <Product>OwnYITCSAT</Product>
+  </Product_details>
+</NewDataSet>

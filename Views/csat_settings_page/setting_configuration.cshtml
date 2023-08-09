@@ -1,0 +1,243 @@
+﻿
+@{
+    ViewData["Title"] = "setting_configuration";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+<div class="row">
+   
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button type="button" class="btn btn-primary btn-md day" onclick='AddConfiguration()'> Apply Configuration </button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Configuration Setting </li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 170px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Configuration&nbsp;&nbsp;</label>
+                                            <div class="col-xs-10">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            @*<button type="button" class="btn btn-primary pull-right " style="margin-bottom: 5px;" onclick='AddConfiguration()'> Apply Configuration </button>*@
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1">Section: </label>
+                                <div class="col-xs-3">
+                                    <select class="form-control col-sm-2 col-lg-2 col-md-2" name="Section Name " id="drpsection" onchange="GetConfiguration(this.value)"></select>
+                                </div>
+                            </div>
+                            <div class="space_bottom">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content">
+                    <div class="table-responsive" id="divconf">
+
+                    </div>
+                    <div class="space_bottom">&nbsp;</div>
+                </div>
+            </div>
+
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+ </div>
+
+    @*<input type="submit" class="btn btn-primary pull-right" value="Add Configuration" onclick='AddConfiguration()' />*@
+    @*<div class="form-group">
+            <label for="nameField" class="col-xs-1">Section: </label>
+            <div class="col-xs-2">
+                <select class="form-control col-sm-1 col-lg-1 col-md-1" name="Section Name " id="drpsection" onchange="GetConfiguration(this.value)"></select>
+            </div>
+        </div>*@
+    @*<div class="table-responsive" id="divconf">
+        </div>*@
+
+
+<script>
+    $.get(null, null, databind);
+    function databind() {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        var Sethrddata = $('#drpsection');
+        jQuery('#drpsection').html('');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetConfigurationdata?sectionname=")' + "",
+            success: function (data) {
+                var sectiondata = "<option value='-1'>Select Section</option>";
+                for (var i = 0; i < data.sectionname.length; i++) {
+                    sectiondata += "<option value='" + data.sectionname[i].sectionname + "'>" + data.sectionname[i].sectiondisplayname + "</option>";
+                }
+                Sethrddata.append(sectiondata);
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+    function GetConfiguration(sec) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+        var yes;
+        var no;
+      //  var sec = document.getElementById("drpsection").value;
+        //  debugger;
+            $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetConfigurationdata?sectionname=")' + sec,
+            success: function (data) {
+          //  debugger;
+                var setgriddata = $('#divconf');
+                $('#divconf').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' id='admin_user_datatable' style='width:100%'><thead><tr><th class='col-sm-2'>Property Name</th>" +
+                    "<th class='col-sm-2' data-orderable='false'>Property Value</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.configdata.length; i++) {
+                  //  trdata += "<tr class='abc'><td class='col-sm-2'>" + data.configdata[i].sectionname + "</td>";
+                    trdata += "<tr><td class='col-sm-1'>" + data.configdata[i].propertyname + "</td>";
+                    if (data.configdata[i].propertytype == "1") {
+                        if (data.configdata[i].propertyvalue == "1")
+                            yes = 'checked';
+                        else
+                            no = 'checked';
+                        trdata += "<td class='col-sm-2'><input type='radio' id='yes'   name='" + data.configdata[i].propertyname + "' value='1' "+yes+" /> &nbsp;" + data.configdata[i].propertyvalue1;
+                        trdata += "&nbsp;<input type='radio' id='no'  name='" + data.configdata[i].propertyname + "' value='0' "+no+"  />&nbsp;" + data.configdata[i].propertyvalue2 + "</td></tr> ";
+
+                    }
+                    else if (data.configdata[i].propertytype == "2")
+                    {
+                        trdata += "<td class='col-sm-2'><input type='checkbox' class='group4' name='check[]' id='gridrawcheck4' onchange='UncheckMain()' value='1' " + data.configdata[i].chk + " />" + data.configdata[i].propertyname + "</td></tr>";
+                    }
+                    else if (data.configdata[i].propertytype == "3") {
+                        if (data.configdata[i].propertyname == "Database_Name")
+                            trdata += "<td class='col-sm-2'><select class='form-control col-sm-3 col-lg-3 col-md-3' id='drpdbtype'><option value='0'>SQL Server</option><option value='3'>MYSQL</option></select></td>";
+                        else if (data.configdata[i].propertyname == "DBConnection")
+                            trdata += "<td class='col-sm-2'><select class='form-control col-sm-3 col-lg-3 col-md-3'id='drpdbconn'><option value='0'>SQL Connection</option><option value='1'>Windows DNS connection</option><option value='2'>Direct DNS connection</option></select></td>";
+                        else if (data.configdata[i].propertyname == "CONNECTION_TIMEOUT")
+                            trdata += "<td class='col-sm-2'><select class='form-control col-sm-3 col-lg-3 col-md-3' id='drpdbconntimeout'><option value='00'>00</option><option value='05'>05</option><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option><option value='30'>30</option><option value='35'>35</option><option value='40'>40</option><option value='45'>45</option><option value='50'>50</option><option value='55'>55</option><option value='60'>60</option></select></td>";
+                    }
+                    else {
+                            trdata += "<td class='col-sm-2'><div class='col-xs-5'><input type='text' class='form-control'  value='" + data.configdata[i].propertyvalue + "' /></div></td></tr>";
+                    }
+                    yes = "";
+                    no = "";
+                }
+                setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_paging();
+
+            }
+            }).done(function () {
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
+            });
+
+    }
+    var chkdata = "";
+    function UncheckMain() {
+       // debugger;
+        chkdata = "";
+        var checkboxes = document.querySelectorAll('input[id="gridrawcheck4"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkdata += ",1";
+            }
+            else {
+                chkdata += ",0";
+            }
+
+        }
+        //alert(crc);
+    }
+    function AddConfiguration() {
+        //debugger;
+        if ($("#drpsection").val() == "-1") {
+            alert("Please select any one section !");
+            return false;
+        }
+        else {
+            var pro = "";
+            var proval = "";
+            var flag = true;
+            var sec = document.getElementById("drpsection").value;
+
+            $('#admin_user_datatable tbody tr').each(function () {
+            //debugger;
+                var value = $(this).find("td:eq(1) input[type='text']").val();
+                if (typeof value == "undefined")
+                    value = $(this).find("td:eq(1) input[type='radio']:checked").val();
+                if (typeof value == "undefined")
+                    value = $(this).find("select").val();
+                if (typeof value == "undefined") {
+                    if (flag == true) {
+                        value = chkdata.substring(1);
+                        flag = false;
+                    }
+                }
+                if (value != "") {
+                    var prop = $(this).find("td").eq(0).html();
+                    pro += "," + prop;
+                    proval += "!" + value;
+                }
+            });
+            //if (proval.search('undefined'))
+            //if (proval.indexOf('undefined') != '-1')
+            //{
+            //    proval.replace(/undefined/g, "");
+            //    proval += chkdata;
+            //}
+
+            //debugger;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/AddConfiguration?sec=")' + sec + '&prop=' + pro + '&propval=' + proval,
+                success: function (data) {
+                    alert(data);
+                }
+            });
+        }
+    }
+
+</script>
+

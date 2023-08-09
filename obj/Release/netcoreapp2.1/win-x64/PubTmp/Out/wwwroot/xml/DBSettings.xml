@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="yes"?>
+<DataSet>
+  <Config>
+    <DBServer>192.168.100.54</DBServer>
+    <DBName>rajesh</DBName>
+    <UserName>sa</UserName>
+    <Password>demo@123</Password>
+    <DBPORT>1433</DBPORT>
+    <DBWindows_Domain />
+    <DBSQL_Auth>1</DBSQL_Auth>
+    <DBConnection>2</DBConnection>
+    <Database_Name>0</Database_Name>
+    <CONNECTION_TIMEOUT>20</CONNECTION_TIMEOUT>
+    <systemtype></systemtype>
+  </Config>
+</DataSet>

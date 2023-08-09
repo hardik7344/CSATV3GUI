@@ -1,0 +1,602 @@
+﻿
+@{
+    ViewData["Title"] = "setting_database_maintenance";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/js/moment.min.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#backuptype').on('change', function () {
+
+            if (this.value == '0') {
+                $("#daily").show();
+            }
+            else {
+                $("#daily").hide();
+            }
+            if (this.value == '1') {
+                $("#weekly").show();
+            }
+            else {
+                $("#weekly").hide();
+            }
+
+            if (this.value == '2') {
+                $("#monthly").show();
+            }
+            else {
+                $("#monthly").hide();
+            }
+
+        });
+    });
+    $(document).ready(function () {
+        $('.simple_datatable1').DataTable({
+            paging: false,
+            order: [],
+            columnDefs: [{ orderable: false, targets: [] }],
+            searching: false,
+            info: false,
+            responsive: false,
+
+        });
+        $(".table").css({ "width": "100%" });
+        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+
+    });
+
+</script>
+<script>
+    $(function () {
+        $('input[name="time"]').daterangepicker({
+            autoUpdateInput: true,
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerSeconds: false,
+            timePicker24Hour: true,
+            startDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'HH:mm',
+            }
+        });
+        $('.calendar-table').css('display', 'none');
+        $('input[name="time"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('HH:mm'));
+        });
+
+        $('input[name="time"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+    });
+   
+</script>
+
+<script>
+    $(function () {
+        $('input[name="backdate"]').daterangepicker({
+            singleDatePicker: true,
+            autoUpdateInput: true,
+            // timePicker: true,
+            startDate: moment(),
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'DD.MM.YYYY'
+            }
+        })
+
+        $('input[name="backdate"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY'));
+        });
+
+        $('input[name="backdate"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        $(".model_body_scroll").bind('scroll', function () {
+            $(".daterangepicker").hide();
+        });
+    });
+</script>
+
+<body onload="showdatabasebackup();">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li> Database Maintenance </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div>
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="divbackupdb_div">
+                                <table id="divbackupdb" class="table table-striped table-bordered " width="100%"></table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="space_bottom">&nbsp;</div>
+        </div>
+    </div>
+
+
+    <!--add new schedular form content-->
+    <div class="modal fade" id="add_schedular" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Add New Schedular </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="add_user_form" id="add_user_form">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 ">Backup Type</label>
+                                            <div class="col-xs-3">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="backuptype" id="backuptype">
+                                                    @*<option>Select Backup Type</option>*@
+                                                    <option value="0">Daily</option>
+                                                    <option value="1">Weekly</option>
+                                                    <option value="2">Monthly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Backup Time </label>
+                                            <div id="daily">
+                                                <div class="col-xs-6">
+                                                    <input type="text" name="time" class="form-control" placeholder="hh:mm A - hh:mm A " id="date" readonly>
+                                                </div>
+                                            </div>
+                                            <div id="weekly" style="display:none;">
+                                                <div class="col-xs-8">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped table-bordered simple_datatable1" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="col-sm-10" data-orderable="false"><input type="checkbox" class="parent" data-group=".group1" id="allday" />&nbsp;  Days</th>
+                                                                    @*<th class="col-sm-8"> </th>*@
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    @*<td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Sunday' value="Sunday" onchange='UncheckMain()' /> &nbsp; Sunday</td>*@
+                                                                    @*<td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Monday' value="Monday" onchange='UncheckMain()' /></td>*@
+                                                                    <td class="col-sm-12">
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Monday' value='Monday' onchange='UncheckMain()' />&nbsp; Monday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Tuesday' value='Tuesday' onchange='UncheckMain()' />&nbsp; Tuesday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Wednesday' value='Wednesday' onchange='UncheckMain()' />&nbsp; Wednesday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Thursday' value='Thursday' onchange='UncheckMain()' />&nbsp; Thursday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Friday' value='Friday' onchange='UncheckMain()' />&nbsp; Friday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Saturday' value='Saturday' onchange='UncheckMain()' />&nbsp; Saturday</div></div>
+                                                                        <div class='col-xs-4'><div class='radio'><input type='checkbox' class="group1" name="check[]" id='Sunday' value='Sunday' onchange='UncheckMain()' />&nbsp; Sunday</div></div>
+                                                                    </td>
+
+                                                                </tr>
+                                                            </tbody>
+                                                            @*<tr>
+                                                                    <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Tuesday' value="Tuesday" onchange='UncheckMain()' /></td>
+                                                                    <td class="col-sm-5">
+                                                                        Tuesday
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Wednesday' value="Wednesday" onchange='UncheckMain()' /></td>
+                                                                    <td class="col-sm-5">
+                                                                        Wednesday
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Thursday' value="Thursday" onchange='UncheckMain()' /></td>
+                                                                    <td class="col-sm-5">
+                                                                        Thursday
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Friday' value="Friday" onchange='UncheckMain()' /></td>
+                                                                    <td class="col-sm-5">
+                                                                        Friday
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="col-sm-1"><input type="checkbox" class="group1" name="check[]" id='Saturday' value="Saturday" onchange='UncheckMain()' /></td>
+                                                                    <td class="col-sm-5">
+                                                                        Saturday
+                                                                    </td>
+                                                                </tr>*@
+
+
+                                                        </table>
+                                                    </div>
+                                                    <input type="text" name="time" class="form-control" placeholder="hh:mm A - hh:mm A " id="date1" readonly>
+                                                </div>
+                                            </div>
+                                            <div id="monthly" style="display:none;">
+                                                <div class="col-xs-3">
+                                                    <input type="text" name="backdate" class="form-control " placeholder="DD/MM/YYYY" id="date2" readonly>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <input type="text" name="time" class="form-control" placeholder="hh:mm A" id="time" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Backup Folder</label>
+                                            <div class="col-xs-6">
+                                                <input type="text" name="txtattachment_path" class="form-control " placeholder="Enter backup Folder" id="txtattachment_path">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">History Removal</label>
+                                            <div class="col-xs-8">
+                                                <div class="table-responsive" id="divhistoryremoval">
+                                                    <div id="overlay_modal" style="display:none;">
+                                                        <div class="cv-spinner">
+                                                            <span class="spinner_modal"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Apply" name="apply" onclick="adddatabasebackup()" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="Add cancel" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--add schedular form content End-->
+
+    <script>
+
+        $(".parent").each(function (index) {
+            var group = $(this).data("group");
+            var parent = $(this);
+
+            parent.change(function () {  //"select all" change
+                $(group).prop('checked', parent.prop("checked"));
+                UncheckMain();
+            });
+            $(group).change(function () {
+                //    debugger;
+                parent.prop('checked', false);
+                if ($(group + ':checked').length == $(group).length) {
+                    parent.prop('checked', true);
+                }
+            });
+        });
+        $('.tree-toggle').click(function () {
+            $(this).parent().children('ul.tree').toggle(200);
+        });
+        $(function () {
+            $('.tree-toggle').parent().children('ul.tree').toggle(200);
+        })
+    </script>
+    @*Database backup*@
+    <script>
+        function showdatabasebackup() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/Showdatabasebackup")',
+            success: function (data) {
+                var dataclear = document.getElementById('divbackupdb_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divbackupdb_div').append("<table id='divbackupdb' class='table table-striped table-bordered' width='100%'></table>");
+                dtable = document.getElementById('divbackupdb');
+                var data1 = [];                 
+                for (var i = 0; i < data.databasebackup.length; i++) {   
+                    //debugger;
+                    if (data.databasebackup[i].backup_status == "1")
+                        var  status_div = "<img src='../images/running.gif' />";
+                    else if (data.databasebackup[i].backup_status == "0")
+                        var status_div = "<img src='../images/down.gif' />";
+                    else
+                        var status_div = "<img src='../images/warning.gif' />";
+                    
+                    var status_div = "<i class='glyphicon glyphicon-refresh manage_icon' type='button' title='Setting'></i>";
+                    var add_schedule = "<i class=' glyphicon glyphicon-pencil manage_icon' type='button' data-toggle='modal' onclick=addscheduler(" + data.databasebackup[i].backup_type + ",'" + data.databasebackup[i].backup_details + "','" + encodeURIComponent(data.databasebackup[i].backup_time) + "','" + encodeURIComponent(data.databasebackup[i].backup_path) +"') title='Edit'></i>";
+                    data1.push([status_div, data.backuptype, data.schedule, data.databasebackup[i].backup_time, data.databasebackup[i].backup_path, add_schedule]);
+                }
+                var dtable = $("#divbackupdb").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                    columns: [{ title: "Status", orderable: false, className: 'dt-center', width: '10px' }, { title: "Backup Type" }, { title: "Schedule" }, { title: "Time" }, { title: "Backup Path" }, { title: "Edit", orderable: false, className: 'dt-center', width: '10px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+
+
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+        }
+           
+    function addscheduler(backup_type, backup_details, backup_time, backup_path) {
+      //  debugger;
+        $("#overlay_modal").show();
+        $("#overlay_modal").fadeIn(300); 
+        var backup_time1 = decodeURIComponent(backup_time);
+        document.getElementById("backuptype").value = backup_type;
+        document.getElementById("txtattachment_path").value = decodeURIComponent(backup_path);
+        if (backup_type == '0') {
+            $("#daily").show();
+            document.getElementById("date").value = backup_time1;
+        }
+        else {
+            $("#daily").hide();
+        }
+        if (backup_type == '1') {
+            $("#weekly").show();
+            document.getElementById("date1").value = backup_time1;
+            if (backup_details.substr(0, 1) == "1")
+                document.getElementById("Sunday").checked = true;
+            if (backup_details.substr(1, 1) == "1")
+                document.getElementById("Monday").checked = true;
+            if (backup_details.substr(2, 1) == "1")
+                document.getElementById("Tuesday").checked = true;
+            if (backup_details.substr(3, 1) == "1")
+                document.getElementById("Wednesday").checked = true;
+            if (backup_details.substr(4, 1) == "1")
+                document.getElementById("Thursday").checked = true;
+            if (backup_details.substr(5, 1) == "1")
+                document.getElementById("Friday").checked = true;
+            if (backup_details.substr(6, 1) == "1")
+                document.getElementById("Saturday").checked = true;
+        }
+        else {
+            $("#weekly").hide();
+        }
+
+        if (backup_type == '2') {
+            $("#monthly").show();
+            document.getElementById("time").value = backup_time1;
+            document.getElementById("date2").value = backup_details;
+        }
+        else {
+            $("#monthly").hide();
+        }
+        gethistoryremoval();
+        $("#add_schedular").modal('show');       
+
+    }
+    // Get History removal
+    function gethistoryremoval() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/gethistoryremoval")',
+            success: function (data) {
+                //  debugger;
+                var Setgriddata = $('#divhistoryremoval');
+                jQuery('#divhistoryremoval').html('');
+                var headdata = "<table class='table table-striped table-bordered tblpaging' style='width:100%'><thead><tr><th class='col-sm-5'>Data Information</th>" +
+                    "<th class='col-sm-5' data-orderable='false'> Keep last n days Records</th></tr></thead><tbody>";
+                var trdata = "";
+                for (var i = 0; i < data.datahistory.length; i++) {
+                    // document.getElementById("Days").value = data.datahistory[i].days;
+                    trdata += "<tr><td class='col-sm-5'> " + data.datahistory[i].displayName + "</td>";
+                    trdata += "<td class='col-sm-5'> <div class='col-sm-10'><select class='form-control col-sm-3 col-lg-3 col-md-3' name='Days' id='historydays' onchange=updatedays('" + encodeURIComponent(data.datahistory[i].displayName) + "',this.value) > <option>Select Days</option>";
+                    if (data.datahistory[i].days == "0")
+                        trdata += " <option value='0' selected>0</option>";
+                    else
+                        trdata += " <option value='0' >0</option>";
+                    if (data.datahistory[i].days == "15")
+                        trdata += " <option value='15' selected>15</option>";
+                    else
+                        trdata += " <option value='15'>15</option>";
+                    if (data.datahistory[i].days == "30")
+                        trdata += " <option value='30' selected>30</option>";
+                    else
+                        trdata += " <option value='30'>30</option>";
+                    if (data.datahistory[i].days == "45")
+                        trdata += " <option value='45' selected>45</option>";
+                    else
+                        trdata += " <option value='45'>45</option>";
+                    if (data.datahistory[i].days == "60")
+                        trdata += " <option value='60' selected>60</option>";
+                    else
+                        trdata += " <option value='60'>60</option>";
+                    if (data.datahistory[i].days == "65")
+                        trdata += " <option value='65' selected>65</option>";
+                    else
+                        trdata += " <option value='65'>65</option>";
+                    if (data.datahistory[i].days == "70")
+                        trdata += " <option value='70' selected>70</option>";
+                    else
+                        trdata += " <option value='70'>70</option>";
+                    if (data.datahistory[i].days == "75")
+                        trdata += " <option value='75' selected>75</option>";
+                    else
+                        trdata += " <option value='75'>75</option>";
+
+                    trdata += "</select></div></td>";
+                    trdata += "</tr>";
+
+               }
+                Setgriddata.append(headdata + trdata + "</tbody></table>");
+                datatable_paging();
+                $(document).ready(function () {
+                    $('#simple_datatable').DataTable({
+                        paging: true,
+                        order: [],
+                        columnDefs: [{ orderable: false, targets: [] }],
+                        searching: false,
+                        info: false,
+                        responsive: false,
+
+                    });
+                    $(".table").css({ "width": "100%" });
+                    $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                });
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay_modal").fadeOut(300);
+            }, 500);
+        });
+    }
+    </script>
+
+    <script>
+
+    daysid = "";
+    function UncheckMain() {
+       // debugger;
+        daysid = "";
+        var checkboxes = document.querySelectorAll('input[class="group1"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                daysid += "," + checkboxes[i].value;
+            }
+            else {
+
+            }
+
+        }
+    }
+
+@* Save database backup*@
+
+    function updatedays(displayName,days) {
+       // debugger;
+        displayName1 = decodeURI(displayName);
+        days1 = days;
+         $.ajax({
+            type: "POST",
+             url: '@Url.Content("~/csat_settings_page/updatehistoryremoval?dispname=")' + displayName1 + '&days=' + days1,
+            success: function (data) {
+            }
+            });
+    }
+
+        $(document).ready(function () {
+            validateSingleForm("#add_user_form");
+        });
+
+    function adddatabasebackup()
+    {
+        var $valid = $('#add_user_form').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            // debugger;
+            var backuptype1 = document.getElementById("backuptype").value;
+            var backuptime = '';
+            var bacupdetails = '';
+            if (backuptype1 == '0') {
+                backuptime = document.getElementById("date").value;
+            }
+            if (backuptype1 == '1') {
+                backuptime = document.getElementById("date1").value;
+                if (document.getElementById("Sunday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Monday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Tuesday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Wednesday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Thursday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Friday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+                if (document.getElementById("Saturday").checked == true)
+                    bacupdetails = bacupdetails + "1";
+                else
+                    bacupdetails = bacupdetails + "0";
+
+            }
+            if (backuptype1 == '2') {
+                backuptime = document.getElementById("time").value;
+                bacupdetails = document.getElementById("date2").value;
+            }
+            var varattechment = document.getElementById("txtattachment_path").value;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_settings_page/Adddatabasebackup?backuptype=")' + backuptype1 + "&backupdetails=" + bacupdetails + "&backuptime=" + backuptime + "&backuppath=" + varattechment,
+                success: function (result) {
+                    alert(result);
+                    document.getElementById("txtattachment_path").value = "";
+                    document.getElementById("allday").checked = false;
+                    document.getElementById("Sunday").checked = false;
+                    document.getElementById("Monday").checked = false;
+                    document.getElementById("Tuesday").checked = false;
+                    document.getElementById("Wednesday").checked = false;
+                    document.getElementById("Thursday").checked = false;
+                    document.getElementById("Friday").checked = false;
+                    document.getElementById("Saturday").checked = false;
+                    $("#add_schedular").modal('hide');
+                    showdatabasebackup();
+                }
+            });
+        }
+    }
+    </script>
+</body>

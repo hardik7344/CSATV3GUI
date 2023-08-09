@@ -1,0 +1,77 @@
+﻿
+@using OwnYITCSAT.DataAccessLayer;
+
+<div class="category-tree mb30">
+    @*<div class="input-group">
+        <input type="search" class="form-control" placeholder="Search">
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>
+        </div>
+    </div>*@
+
+
+    <ul class="subcategories">
+        @*<li><a href='/csatsetting/csatsetting'>Organization Structure Management</a></li>
+        <li><a href='/csatsetting/csatsetting'>Admin User Management</a></li>
+        <li><a href='/csatsetting/csatsetting'>Alert Notification Handling</a></li>
+        <li><a href='/csatsetting/csatsetting'>Compliance Management</a></li>
+        <li><a href='/csatsetting/csatsetting'>Configuration Management</a></li>*@
+
+        @*<li>@Html.ActionLink("Organization Structure Management", "csat_settings_page", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Admin User Management ", "csat_settings_page", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Alert Notification Handling", "csat_settings_page", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Compliance Management", "csat_settings_page", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Configuration Management", "csat_settings_page", "csat_settings_page")</li>*@
+        @*@{
+
+            if (OwnYITConstant.DT_SETTINGS_MENU != null)
+            {
+                foreach (System.Data.DataRow dr in (OwnYITConstant.DT_SETTINGS_MENU.Rows))
+                {
+                    <li>
+                        <a href='@Url.Content("~" + @dr["menu_url"] + "")'>@dr["menu_name"]</a>
+                    </li>
+                }
+            }
+        }*@
+        @*<li>@Html.ActionLink("Csat Agent Management", "csat_agent_management", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Organization Structure Management ", "organization_structure_management", "csat_settings_page")</li>
+        <li>@Html.ActionLink(" Admin User Management", "admin_user_management", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Alert Notification Handling", "alert_notification_handling", "csat_settings_page")</li>
+        <li>@Html.ActionLink(" Compliance Management", "compliance_management", "csat_settings_page")</li>
+        <li>@Html.ActionLink(" Configuration Management", "configuration_management", "csat_settings_page")</li>*@
+        <li class="131 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_scan_ip_range" ? "active" : "")">@Html.ActionLink(" Scan IP Range", "setting_scan_ip_range", "csat_settings_page")</li>
+        <li class="132 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_agent_release_licence" ? "active" : "")">@Html.ActionLink("Agent Release license ", "setting_agent_release_licence", "csat_settings_page")</li>
+        <li class="133 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_database_maintenance" ? "active" : "")">@Html.ActionLink("Database Maintenance", "setting_database_maintenance", "csat_settings_page")</li>
+        <li class="135 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_notification_handler" ? "active" : "")">@Html.ActionLink("Notification Configuration", "setting_notification_handler", "csat_settings_page")</li>
+        <li class="136 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_dcm" ? "active" : "")">@Html.ActionLink("Desired Configuration Management", "setting_dcm", "csat_settings_page")</li>
+        <li class="137 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_csatupdater" ? "active" : "")">@Html.ActionLink("Updater", "setting_csatupdater", "csat_settings_page")</li>
+        <li class="138 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_software_authentication" ? "active" : "")">@Html.ActionLink("Software Authentication", "setting_software_authentication", "csat_settings_page")</li>
+        <li class="139 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_process_authentication" ? "active" : "")">@Html.ActionLink("Process Authentication", "setting_process_authentication", "csat_settings_page")</li>
+        @*<li>@Html.ActionLink("Event Monitoring", "setting_event_monitoring", "csat_settings_page")</li>
+        <li>@Html.ActionLink("Manage Disk Cleanup Schedule", "setting_managedisk_cleanup", "csat_settings_page")</li>*@
+        <li class="140 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_service" ? "active" : "")">@Html.ActionLink("Service Settings", "setting_service", "csat_settings_page")</li>
+        <li class="141 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_configuration" ? "active" : "")">@Html.ActionLink("Configuration Settings", "setting_configuration", "csat_settings_page")</li>
+        <li class="142 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_makesetup" ? "active" : "")">@Html.ActionLink("Make Setup", "setting_makesetup", "csat_settings_page")</li>
+        <li class="185 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_flag_onoff" ? "active" : "")">@Html.ActionLink("Flag OnOff", "setting_flag_onoff", "csat_settings_page")</li>
+        <li class="188 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "setting_device_onoff" ? "active" : "")">@Html.ActionLink("Device ONOff Status", "setting_device_onoff", "csat_settings_page")</li>
+        <li class="189 div_none @(ViewContext.RouteData.Values["Action"].ToString() == "authorizeip_access_gui" ? "active" : "")">@Html.ActionLink("Authorized IP Access GUI", "authorizeip_access_gui", "csat_settings_page")</li>
+    </ul>
+</div>
+<script>
+    $(function () {
+        var current_page_URL = location.href;
+        $("a").each(function () {
+            if ($(this).attr("href") !== "#") {
+                var target_URL = $(this).prop("href");
+                if (target_URL == current_page_URL) {
+                    $('.category-tree').parents('li, ul').removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    return false;
+                }
+            }
+        });
+    });
+</script>

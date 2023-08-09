@@ -1,0 +1,1452 @@
+﻿
+
+@{
+    ViewData["Title"] = "report_hardware_information";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<style>
+    .dataTables_filter{
+        margin-bottom:2px!important;
+    }
+</style>
+<script type="text/javascript">
+    var now = new Date();
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = (day) + "-" + (month) + "-" + now.getFullYear();
+    $(document).ready(function () {
+        $("#hd_up").click(function () {
+            $("#hd_form").toggle();
+
+        });
+    });
+    jQuery(function ($) {
+        var $all = $('#all').change(function () {
+            $checkboxes.prop('checked', this.checked);
+        });
+        var $checkboxes = $('input[name="Hardware"]').not($all).change(function () {
+            $all.prop('checked', $checkboxes.not(':checked').length == 0);
+        });
+        $checkboxes.eq(0).change();
+    })
+</script>
+
+<div class="row">
+
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Reports", "report_agent_information", "csat_report")
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li> Hardware Information  </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--side menu-->
+    <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content sidemenu">
+                @{
+                    @Html.Partial("csat_report_menu");
+                }
+            </div>
+        </div>
+    </div>
+    <!--side menu end-->
+
+    <div class="col-sm-10 col-md-10 col-lg-10">
+        <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group">
+                                        <label for="nameField" style="margin-top: -5px;background-color: #fff;text-align: center;color: #3D93C8;width: 120px;" class="col-xs-2 form_label">&nbsp;&nbsp;Advance Search&nbsp;&nbsp;</label>
+                                        <div class="col-xs-10">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" name="frm_hdinform_report" id="frm_hdinform_report">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                <div class="col-xs-4">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou">
+                                        <option value='-1'>Select Branch/ Unit</option>
+                                    </select>
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                <div class="col-xs-2" id="selectsys">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Device" id="drpDevice">
+                                        <option value="-1">Select System Name</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2" id="inputsystemname">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" name="add_systemname" id="add_systemname">
+                                </div>
+                                <div class="col-xs-1">
+                                    <input type="checkbox" class="form-check-input" id="add_system_chk" name="add_system_chk" style="width:20px;height:25px;">
+                                </div>
+                                <label for="nameField" class="col-xs-1 form_label" style="margin-left:-48px;">IP Address</label>
+                                <div class="col-xs-2">
+                                    <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip" id="drpip">
+                                    @*<select class="form-control col-sm-3 col-lg-3 col-md-3" name="ip" id="drpip">
+                <option value="-1">Select IP Address</option>
+            </select>*@
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1 form_label">Hardware Type</label>
+                                <div id="divhw">
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-1"> </label>
+                                <div class="pull-left col-xs-1">
+                                    <input type="button" class="btn btn-primary" value="Show" onclick="ShowHWTypeData()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--form  content end-->
+        <!--hardware report form end-->
+        <!--hardware report Datatable start-->
+        <div class="row ibox2">
+            <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content">
+                <div class="table-responsive" id="divhwdetaildata">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hardware Count  Data pop-up model box  Content-->
+<div class="modal fade" id="hardware_count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Hardware Summary
+                </h6>
+            </div>
+            <div class="modal-body">
+
+                <!--Count Hardware  Datatable start-->
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="table-responsive" id="divhwdetaildatapopup">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <!--Count Hardware  Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End Hardware Count pop-up model box Content -->
+<!-- hardware_generat_report  Data pop-up model box  Content-->
+<div class="modal fade" id="hardware_generat_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="cleardata()" aria-hidden="true">&times;</button>
+                <h6 class=" modal-title">
+                    Hardware Information Report
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <!--form  content-->
+                        <div class="row">
+                            <i id="hd_up" class="pull-right glyphicon glyphicon-chevron-down" style="color:#74b1f4;font-size: 12px;"></i>
+                            <div class="col-xs-10">
+                                <form class="form-horizontal" method="post" id="hd_form" name="hd_form">
+                                    <div class="form-group">
+                                        <label for="nameField" class="col-xs-1  form_label">Branch/ Unit</label>
+                                        <div class="col-xs-4">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou1"></select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label">System Name</label>
+                                        <div class="col-xs-2">
+                                            <select class="form-control col-sm-3 col-lg-3 col-md-3" name="System" id="drpdevice1">
+                                                <option value="-1">Select System Name</option>
+                                            </select>
+                                        </div>
+                                        <label for="nameField" class="col-xs-1 form_label ">IP Address</label>
+                                        <div class="col-xs-2">
+                                            <input type="text" class="form-control col-sm-3 col-lg-3 col-md-3" placeholder="" name="drpip1" id="drpip1">
+                                            @*<select class="form-control col-sm-2 col-lg-2 col-md-2" name="IP" id="drpip1">
+                                                    <option value="-1">Select IP Address</option>
+                                                </select>*@
+                                        </div>
+                                        <div class="pull-left col-xs-1">
+                                            <input type="button" class="btn btn-primary" value="Show" onclick="GenerateHWTypeData1()">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+
+                                    </div>
+
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <!--End form  content-->
+
+                    </div>
+                </div>
+
+                <!--hardware_generat_report  Datatable start-->
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 " id="divgenhwdetail_div">
+                        <table id="divgenhwdetail" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                    </div>
+                </div>
+
+                <!--hardware_generat_report  Datatable end-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="cleardata()" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- End hardware_generat_report pop-up model box Content -->
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_hdinform_report");
+        validateSingleForm("#hd_form");
+        
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var $all = $('#all').change(function () {
+            $checkboxes.prop('checked', this.checked);
+        });
+        var $checkboxes = $('input[name="Hardware"]').not($all).change(function () {
+            $all.prop('checked', $checkboxes.not(':checked').length == 0);
+        });
+        $checkboxes.eq(0).change();
+    })
+</script>
+<script>
+
+    	$.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+    function DataBind(data) {
+        $("#overlay").show();
+        $("#overlay").fadeIn(300);
+       // debugger;
+        var url = '@Url.Content("~/csat_report/GetOU/")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+        var SetData = $('#drpou');
+        jQuery('#drpou').html('');
+        var SetData1 = $('#drpou1');
+        jQuery('#drpou1').html('');
+
+        var oudata = "<option value='-1'>Select Branch/ sUnit</option>";
+        for (var i = 0; i < data.ou.length; i++) {
+            oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+        }
+        SetData.append(oudata);
+        SetData1.append(oudata);
+            }
+        });
+        var url = '@Url.Content("~/csat_report/Gethrdjsondata")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+              //debugger;
+                var SethrdtypeData = $('#divhw');
+                jQuery('#divhw').html('');
+                var hardware = "";
+                //var headerdata = "<div class='form-group'><label for='nameField' class='col-xs-1 form_label'>Hardware Type </label><div class='col-xs-10'><div class='table-responsive'><table class='table table-striped table-bordered simple_datatable1' style='width:100%'>" +
+                var headerdata = "<div class='col-xs-10'><div class='table-responsive'><table class='table table-striped table-bordered tbldemo' style='width:100%'>" +
+                    "<thead><tr><th class='col-sm-1' data-orderable='false'><input type='checkbox' id='all' value='All' class='parent' data-group='.group1'  />  Select All</th></tr></thead><tbody> <tr><td class='col-sm-8'>";
+                for (var i = 0; i < data.hardwaretype.length; i++) {
+                    if (data.hardwaretype[i].hardware_class.toUpperCase() == 'BASEBOARD')
+                        hardware = "MOTHER BOARD";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'BATTERY')
+                        hardware = "BATTERY";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'BIOS')
+                        hardware = "BIOS";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'CDROMDRIVE')
+                        hardware = "CD ROM";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEM')
+                        hardware = "COMPUTER";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEMPRODUCT')
+                        hardware = "COMPUTER SYSTEM PRODUCT";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'DESKTOPMONITOR')
+                        hardware = "MONITOR";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'ENVIRONMENT')
+                        hardware = "ENVIRONMENT";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'HARDDISK')
+                        hardware = "HARD DISK";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'IDECONTROLLER')
+                        hardware = "IDE CONTROLLER";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'KEYBOARD')
+                        hardware = "KEYBOARD";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'MOTHERBOARDDEVICE')
+                        hardware = "MOTHER BOARD DEVICE";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'NICCARD')
+                        hardware = "NIC CARD";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PARALLELPORT')
+                        hardware = "PARALLEL PORT";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PHYSICALMEMORY')
+                        hardware = "RAM";
+                    //else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PNPENTITY')
+                    //    hardware = "PNP ENTITY";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'POINTINGDEVICE')
+                        hardware = "MOUSE";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PORTMOTHERBOARD')
+                        hardware = "PORT MOTHER BOARD";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PRINTER')
+                        hardware = "PRINTER";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'PROCESSOR')
+                        hardware = "PROCESSOR";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'SMBIOS')
+                        hardware = "SMBIOS";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'SOUNDDEVICE')
+                        hardware = "SOUND DEVICE";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'USBHUB')
+                        hardware = "USB PORT";
+                    else if (data.hardwaretype[i].hardware_class.toUpperCase() == 'VIDEO')
+                        hardware = "VIDEO CARD";
+
+                    if (hardware.length > 0) {
+                       // headerdata += "<div class='col-xs-2'><div class='radio'><label><input type='checkbox' class='group1' name='Hardware' value='" + data.hardwaretype[i].hardware_class + "' checked onchange='UncheckMain2()' >&nbsp " + hardware + "</label></div></div>";
+                        headerdata += "<div class='col-xs-3'><div class='radio'><label class='form_label'><input type='checkbox' class='group1' name='Hardware' value='" + data.hardwaretype[i].hardware_class + "' checked onchange='UncheckMain2()' >&nbsp " + hardware + "</label></div></div>";
+                    }
+                    hardware = "";
+                }
+                datatable_simple();
+
+
+                jQuery(function ($) {
+                    var $all = $('#all').change(function () {
+                        $checkboxes.prop('checked', this.checked);
+                        UncheckMain2();
+                    });
+                    var $checkboxes = $('input[class="group1"]').not($all).change(function () {
+                        $all.prop('checked', $checkboxes.not(':checked').length == 0);
+                        UncheckMain2();
+                    });
+                    $checkboxes.eq(0).change();
+                })
+                SethrdtypeData.append(headerdata + "</td></tr></tbody></table></div></div>");
+            }
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+
+    }
+
+    var chkhwclass = "";
+    function UncheckMain2() {
+
+     //   debugger;
+        chkhwclass = "";
+        var checkboxes = document.querySelectorAll('input[class="group1"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkhwclass += ",'" + checkboxes[i].value + "'";
+
+            }
+            else {
+            }
+        }
+    }
+
+    // Show Hardware Tpe data type wise check
+    var hardware1 = '';
+    var systemvalue = '';
+    var ipvalue = '';
+        function ShowHWTypeData() {
+            var $valid = $('#frm_hdinform_report').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            } else {
+                //debugger;
+                $("#overlay").show();
+                $("#overlay").fadeIn(300);
+                //systemvalue = document.getElementById("drpDevice").value;
+                var systemvalue = document.getElementById('add_systemname').value;
+                if (systemvalue == "") {
+                    systemvalue = document.getElementById("drpDevice").value;
+                }
+                ipvalue = document.getElementById("drpip").value;
+                if (chkhwclass == '') {
+                    alert('Please select any option..');
+                    var SetEventDataDiv = $('#divhwdetaildata');
+                    jQuery('#divhwdetaildata').html('');
+                    setTimeout(function () {
+                        $("#overlay").fadeOut(300);
+                    }, 500);
+                    return;
+                }
+                else {
+                    var url = '@Url.Content("~/csat_report/GetHWJsonDetailData?hwclass=")' + chkhwclass + '&ip=' + ipvalue + '&device=' + systemvalue + '&ouid=' + ouidvalue;
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        success: function (data) {
+                            //  debugger;
+                            var SetEventDataDiv = $('#divhwdetaildata');
+                            jQuery('#divhwdetaildata').html('');
+                            var SetEventData = "<table class='table table-striped table-bordered tbl_pdfexport_count'  style='width:100%'><thead><tr><th class='col-sm-1 select noExport' data-orderable='false'><input type='checkbox' id='chkhwtypeheader' onclick='checkallitems(this,this.id)' class='parent' data-group='.group2' />" +
+                                "</th><th class='col-sm-5'>Hardware Type</th><th class='col-sm-6'>Hardware Detail</th>" +
+                                "<th class='col-sm-1 noExport form_label'>Total Count</th><th class='col-sm-1 form_label'>Total Count</th></tr></thead><tbody>";
+                            for (var i = 0; i < data.hardwaredetaildata.length; i++) {
+                                if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'BASEBOARD')
+                                    hardware1 = "MOTHER BOARD";
+                                if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'BATTERY')
+                                    hardware1 = "BATTERY";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'BIOS')
+                                    hardware1 = "BIOS";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'CDROMDRIVE')
+                                    hardware1 = "CD ROM";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEM')
+                                    hardware1 = "COMPUTER";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEMPRODUCT')
+                                    hardware1 = "COMPUTER SYSTEM PRODUCT";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'DESKTOPMONITOR')
+                                    hardware1 = "MONITOR";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'ENVIRONMENT')
+                                    hardware1 = "ENVIRONMENT";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'HARDDISK')
+                                    hardware1 = "HARD DISK";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'IDECONTROLLER')
+                                    hardware1 = "IDE CONTROLLER";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'KEYBOARD')
+                                    hardware1 = "KEYBOARD";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'MOTHERBOARDDEVICE')
+                                    hardware1 = "MOTHER BOARD DEVICE";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'NICCARD')
+                                    hardware1 = "NIC CARD";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PARALLELPORT')
+                                    hardware1 = "PARALLEL PORT";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PHYSICALMEMORY')
+                                    hardware1 = "RAM";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PNPENTITY')
+                                    hardware1 = "PNP ENTITY";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'POINTINGDEVICE')
+                                    hardware1 = "MOUSE";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PORTMOTHERBOARD')
+                                    hardware1 = "PORT MOTHER BOARD";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PRINTER')
+                                    hardware1 = "PRINTER";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'PROCESSOR')
+                                    hardware1 = "PROCESSOR";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'SMBIOS')
+                                    hardware1 = "SMBIOS";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'SOUNDDEVICE')
+                                    hardware1 = "SOUND DEVICE";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'USBHUB')
+                                    hardware1 = "USB PORT";
+                                else if (data.hardwaredetaildata[i].hardware_class.toUpperCase() == 'VIDEO')
+                                    hardware1 = "VIDEO CARD";
+
+                                SetEventData += " <tr><td class=' col-sm-1 select'><input type='checkbox' class='group2' id='chkhwtype' onchange='UncheckMain()' value='" + data.hardwaredetaildata[i].details + "' name='" + data.hardwaredetaildata[i].hardware_class + "'[] /></td>" +
+                                    "<td class='col-sm-5'>" + hardware1 + "</td>" +
+                                    "<td class='col-sm-6'>" + data.hardwaredetaildata[i].details + "</td>" +
+                                    "<td class='col-sm-1 noExport'><a href='' data-toggle='modal' onclick=showhwdetails('" + data.hardwaredetaildata[i].hardware_class + "','" + encodeURIComponent(data.hardwaredetaildata[i].details) + "')>" + data.hardwaredetaildata[i].occurance + "</a></td>" +
+                                    "<td class='col-sm-1'>" + data.hardwaredetaildata[i].occurance + "</td></tr>";
+                            }
+
+                            SetEventDataDiv.append(SetEventData + "</tbody></table><div class='pull-left col-xs-1' style='margin-left:-9px;margin-top:-54px;'><input type='button' class='btn btn-primary' value='Details Report' data-toggle='modal' onclick = 'GenerateHWTypeData1()'></div>");
+                            reportname = "Hardware Information Report";
+                            datatable_pdfexport_counting(reportname);
+                            $(".parent").each(function (index) {
+                                var group = $(this).data("group");
+                                var parent = $(this);
+
+                                parent.change(function () {  //"select all" change
+                                    $(group).prop('checked', parent.prop("checked"));
+                                    UncheckMain();
+                                });
+                                $(group).change(function () {
+                                    parent.prop('checked', false);
+                                    if ($(group + ':checked').length == $(group).length) {
+                                        parent.prop('checked', true);
+                                    }
+                                });
+                            });
+
+                        }
+                    }).done(function () {
+                        setTimeout(function () {
+                            $("#overlay").fadeOut(300);
+                        }, 500);
+                    });
+                }
+            }
+    }
+
+        var ouidvalue = '';
+        $("#drpou").change(function () {
+
+        ouidvalue = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice = $('#drpDevice');
+        //var SetDataip = $('#drpip');
+
+        jQuery('#drpDevice').html('');
+        //jQuery('#drpip').html('');
+
+        var devicedata = "<option value='-1'>Select System Name</option>";
+        //var ipdata = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+        devicedata+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+        //ipdata+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+        }
+
+        SetDatadevice.append(devicedata);
+        //SetDataip.append(ipdata);
+
+        }
+
+        });
+
+    });
+
+
+     var ouidvalue1 = '';
+        $("#drpou1").change(function () {
+
+        ouidvalue1 = this.value;
+        var url = '@Url.Content("~/csat_report/Get_syatemname_ip?ouid=")' + this.value;
+        $.ajax({
+        type: "POST",
+        url: url,
+        success: function (data) {
+        // debugger;
+        var SetDatadevice1 = $('#drpdevice1');
+        //var SetDataip1 = $('#drpip1');
+
+        jQuery('#drpdevice1').html('');
+        //jQuery('#drpip1').html('');
+
+        var devicedata1 = "<option value='-1'>Select System Name</option>";
+        //var ipdata1 = "<option value='-1'>Select IP Address</option>";
+
+        for (var i = 0; i < data.systemip.length; i++) {
+        devicedata1+="<option value='"+ data.systemip[i].device_name +"'>"+ data.systemip[i].device_name +"</option>";
+        //ipdata1+="<option value='"+ data.systemip[i].ip +"'>"+ data.systemip[i].ip +"</option>";
+        }
+
+        SetDatadevice1.append(devicedata1);
+        //SetDataip1.append(ipdata1);
+
+        }
+
+        });
+
+        });
+
+    // Open Hw Detail popup
+    function showhwdetails(hardware_class, details) {
+     //   debugger;
+        $('#hardware_count').modal('show');
+        var url = '@Url.Content("~/csat_report/ShowHWJsonDetailData?hwclass=")' + hardware_class + '&detail=' + decodeURIComponent(details) + '&ip=' + ipvalue + '&device=' + systemvalue + '&ouid=' + ouidvalue;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                  //debugger;
+                var SetDataDiv = $('#divhwdetaildatapopup');
+                jQuery('#divhwdetaildatapopup').html('');
+
+                if ('BaseBoard' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Serial Number</th><th class='col-sm-1'>Product Name</th>" +
+                        "</tr></thead><tbody>";
+
+                }
+                else if ('Battery' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Name</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>Estimated Charge Remaining</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('BIOS' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Model</th><th class='col-sm-1'>BIOS Version</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('CDROMDRIVE' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr><th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Drive</th><th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Media Type</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>PNPDevice ID</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('ComputerSystem' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Model</th><th class='col-sm-1'>Capacity</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('ComputerSystemProduct' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr><th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Description</th><th class='col-sm-1'>Version</th><th class='col-sm-1'>Identifying Number</th><th class='col-sm-1'>Vendor</th><th class='col-sm-1'>UUID</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('DesktopMonitor' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Device ID</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('Environment' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>User Name</th><th class='col-sm-1'>Variable Value</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('HardDisk' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr><th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Disk Device</th><th class='col-sm-1'>Disk Model</th><th class='col-sm-1'>Disk Serial Number</th><th class='col-sm-1'>Disk Size</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('IDEController' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>PNP DeviceID</th><th class='col-sm-1'>Protocol Supported</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('Keyboard' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Slot Connector</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('MotherBoardDevice' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Device ID</th><th class='col-sm-1'>PNP DeviceID</th><th class='col-sm-1'>Primary Bus Type</th><th class='col-sm-1'>Secondary Bus Type</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('NicCard' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr><th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Connection</th><th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>MAC</th><th class='col-sm-1'>Adapter Type</th><th class='col-sm-1'>Service Name</th><th class='col-sm-1'>Speed</th><th class='col-sm-1'>Last Reset Time</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('ParallelPort' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>PNP DeviceID</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>Protocol Supported</th><th class='col-sm-1'>Availability</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('PhysicalMemory' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Serial Number</th><th class='col-sm-1'>Capacity</th><th class='col-sm-1'>Type</th><th class='col-sm-1'>Speed</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('PNPEntity' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Name</th><th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>PNP DeviceID</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>Service</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('PointingDevice' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Slot Connector</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('PortMotherBoard' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Provider Type</th><th class='col-sm-1'>PNP DeviceID</th><th class='col-sm-1'>Device ID</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('Printer' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-2'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-2'>Manufacturer</th><th class='col-sm-2'>Slot Connector</th><th class='col-sm-1'>Other Details</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('Processor' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Processor Id</th><th class='col-sm-1'>Speed</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('SMBIOS' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Device ID</th></tr></thead><tbody>";
+                }
+                else if ('SoundDevice' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Device Id</th></tr></thead><tbody>";
+                }
+                else if ('USBHUB' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Description</th>" +
+                        "</tr></thead><tbody>";
+                }
+                else if ('Video' == hardware_class) {
+                    var SetData = "<table class='table table-striped table-bordered hardware_count_datatable nowrap' style='width:100%'><thead><tr> <th class='col-sm-1'>Branch/ Unit</th><th class='col-sm-1'>System Name</th><th class='col-sm-1'>IP Address</th><th class='col-sm-1'>Hardware Type</th><th class='col-sm-2'>Hardware Detail</th>" +
+                        "<th class='col-sm-1'>Manufacturer</th><th class='col-sm-1'>Slot Connector</th><th class='col-sm-1'>Driver Version</th>" +
+                        "</tr></thead><tbody>";
+                }
+
+                for (var i = 0; i < data.showhardwaredetaildata.length; i++) {
+                    if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'BASEBOARD')
+                        hardware1 = "MOTHER BOARD";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'BATTERY')
+                        hardware1 = "BATTERY";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'BIOS')
+                        hardware1 = "BIOS";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'CDROMDRIVE')
+                        hardware1 = "CD ROM";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEM')
+                        hardware1 = "COMPUTER";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEMPRODUCT')
+                        hardware1 = "COMPUTER SYSTEM PRODUCT";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'DESKTOPMONITOR')
+                        hardware1 = "MONITOR";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'ENVIRONMENT')
+                        hardware1 = "ENVIRONMENT";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'HARDDISK')
+                        hardware1 = "HARD DISK";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'IDECONTROLLER')
+                        hardware1 = "IDE CONTROLLER";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'KEYBOARD')
+                        hardware1 = "KEYBOARD";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'MOTHERBOARDDEVICE')
+                        hardware1 = "MOTHER BOARD DEVICE";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'NICCARD')
+                        hardware1 = "NIC CARD";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PARALLELPORT')
+                        hardware1 = "PARALLEL PORT";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PHYSICALMEMORY')
+                        hardware1 = "RAM";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PNPENTITY')
+                        hardware1 = "PNP ENTITY";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'POINTINGDEVICE')
+                        hardware1 = "MOUSE";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PORTMOTHERBOARD')
+                        hardware1 = "PORT MOTHER BOARD";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PRINTER')
+                        hardware1 = "PRINTER";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'PROCESSOR')
+                        hardware1 = "PROCESSOR";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'SMBIOS')
+                        hardware1 = "SMBIOS";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'SOUNDDEVICE')
+                        hardware1 = "SOUND DEVICE";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'USBHUB')
+                        hardware1 = "USB PORT";
+                    else if (data.showhardwaredetaildata[i].hardware_class.toUpperCase() == 'VIDEO')
+                        hardware1 = "VIDEO CARD";
+
+                    var BaseBoarddata = "";
+                    if (hardware1 == "HARD DISK" || hardware1 == "NIC CARD")
+                        BaseBoarddata = "";
+                    else
+                        BaseBoarddata = JSON.parse(data.showhardwaredetaildata[i].hw_json);
+
+                    if ('BASEBOARD' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+                        if (BaseBoarddata.Status == 'OK')
+                            BaseBoarddata.Status = 'Enabled';
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.SerialNumber + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Product + "</td></tr>";
+                            //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('BATTERY' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.name + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.EstimatedChargeRemaining + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.description + "</td></tr>";
+                    }
+                    else if ('BIOS' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.SerialNumber + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Version + "</td></tr>";
+                            //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('CDROMDRIVE' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Drive + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.MediaType + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr > ";
+                    }
+                    else if ('COMPUTERSYSTEM' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Model + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.TotalPhysicalMemory + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('COMPUTERSYSTEMPRODUCT' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Version + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.IdentifyingNumber + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Vendor + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.UUID + "</td></tr > ";
+                    }
+                    else if ('DESKTOPMONITOR' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.MonitorManufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('ENVIRONMENT' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.UserName + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.VariableValue + "</td></tr>";
+                    }
+                    else if ('HARDDISK' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].disk_deviceid + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].disk_model + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].disk_serial_number + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].disk_size + "</td></tr > ";
+                    }
+                    else if ('IDECONTROLLER' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.ProtocolSupported + "</td></tr>";
+                    }
+                    else if ('KEYBOARD' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('MOTHERBOARDDEVICE' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PrimaryBusType + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.SecondaryBusType + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                    }
+                    else if ('NICCARD' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].connection_id + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].mac + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].adapter_type + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].service_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].speed_bps + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].last_reset_time + "</td></tr > ";
+                    }
+                    else if ('PARALLELPORT' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.ProtocolSupported + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Availability + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                    }
+                    else if ('PHYSICALMEMORY' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+                        if (BaseBoarddata.MemoryType == '20')
+                            BaseBoarddata.MemoryType = 'DDR';
+                        else if (BaseBoarddata.MemoryType == '21')
+                            BaseBoarddata.MemoryType = 'DDR2';
+                        else if (BaseBoarddata.MemoryType == '17')
+                            BaseBoarddata.MemoryType = 'SDRAM';
+                        else if (BaseBoarddata.MemoryType == '24')
+                            BaseBoarddata.MemoryType = 'DDR3';
+                        else
+                            BaseBoarddata.MemoryType = 'Unknown';
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.SerialNumber + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Capacity / 1024 / 1024 / 1024 + " GB</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.MemoryType + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Speed + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.status + "</td></tr>";
+                    }
+                    else if ('PNPENTITY' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Name + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.service + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                    }
+                    else if ('POINTINGDEVICE' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.PointingType + "</td></tr>";
+                    }
+                    else if ('PORTMOTHERBOARD' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.ProviderType + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                    }
+                    else if ('PRINTER' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += "<tr><td class='col-sm-2'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-2'>" + BaseBoarddata.SystemName + "</td>" +
+                            "<td class='col-sm-2'>" + BaseBoarddata.DeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.PrinterStatus + "</td></tr>";
+                    }
+                    else if ('PROCESSOR' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.ProcessorId + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.MaxClockSpeed + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                            //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('SMBIOS' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td></tr > ";
+                    }
+                    else if ('SOUNDDEVICE' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.manufacturer + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DeviceID + "</td></tr > ";
+                    }
+                    else if ('USBHUB' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.PNPDeviceID + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.Description + "</td></tr>";
+                        //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                    else if ('VIDEO' == data.showhardwaredetaildata[i].hardware_class.toUpperCase()) {
+
+                        SetData += " <tr><td class='col-sm-1'>" + data.showhardwaredetaildata[i].ou_longname + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].device_name + "</td>" +
+                            "<td class='col-sm-1'>" + data.showhardwaredetaildata[i].ip + "</td>" +
+                            "<td class='col-sm-1'>" + hardware1 + "</td>" +
+                            "<td class='col-sm-2'>" + decodeURIComponent(details) + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.AdapterCompatibility + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.InfSection + "</td>" +
+                            "<td class='col-sm-1'>" + BaseBoarddata.DriverVersion + "</td></tr>";
+                            //"<td class='col-sm-1'>" + BaseBoarddata.Status + "</td></tr>";
+                    }
+                }
+
+                SetDataDiv.append(SetData + "</tbody></table>");
+                //$(document).ready(function () {
+                //});
+                $(document).on('shown.bs.modal', '#hardware_count', function () {
+                    $(document).ready(function () {
+                        var hardwareinfo = $('.hardware_count_datatable').DataTable({
+                            retrieve: true,
+                            paging: true,
+                            scrollX: true,
+                            // orderCellsTop: true,
+                            // fixedHeader: true,
+                            order: [],
+                            columnDefs: [{
+                                orderable: false,
+
+                            }],
+                            colReorder: true,
+                            searching: true,
+                            filter: false,
+                            info: false,
+                            responsive: false,
+                            dom: '<"html5buttons"B>fTgitp',
+                            buttons: [
+                                {
+                                    extend: 'colvis'
+                                },
+                                {
+                                    extend: 'pdf',
+                                    title: 'Hardware Information Report - Date :-  ' + today,
+
+                                    //  orientation: 'landscape', //portrait
+                                    exportOptions: {
+                                        //  columns: ':visible',
+                                        columns: "thead th:not(.noExport)",
+                                    },
+                                    pageSize: 'A4',
+                                    customize: function (doc) {
+
+                                        doc.content.splice(0, 1);
+                                        var now = new Date();
+                                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                        doc.pageMargins = [20, 60, 20, 30];
+                                        doc.defaultStyle.fontSize = 7;
+                                        doc.styles.tableHeader.fontSize = 7;
+                                        doc.content.forEach(function (item) {
+                                            if (item.table) {
+                                                //item.table.widths = ['*', '*', '*',]
+                                            }
+                                        })
+                                        //var hardware_type = document.getElementById('hardware_type').innerText;
+                                        //var hardware_name = document.getElementById('hardware_name').innerText;
+
+                                        doc['header'] = (function () {
+                                            return {
+                                                columns: [
+                                                    {
+                                                        margin: [0, -5, 30, 15],
+                                                        alignment: 'left',
+                                                        width: 100,
+                                                        //image: logo
+                                                        image: 'data:image/png;base64,' + pdflogo + ''
+                                                    },
+                                                    {
+                                                        margin: [-10, 10, 10, 0],
+                                                        alignment: 'center',
+                                                        width: 410,
+                                                        //  italics: true,
+                                                        text: 'Hardware Information Report',
+                                                        fontSize: 12,
+                                                    },
+                                                    {
+                                                        margin: [0, 20, 0, 0],
+                                                        alignment: 'right',
+                                                        italics: true,
+                                                        text: '',
+                                                        fontSize: 8,
+                                                    },
+
+                                                ],
+                                                margin: 20
+                                            }
+                                        });
+
+                                        doc['footer'] = (function (page, pages) {
+                                            return {
+                                                columns: [
+                                                    {
+                                                        alignment: 'left',
+                                                        text: ['Created on: ', { text: jsDate.toString() }]
+                                                    },
+                                                    {
+                                                        alignment: 'right',
+                                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                    }
+                                                ],
+                                                margin: 20
+                                            }
+                                        });
+
+                                        var objLayout = {};
+                                        objLayout['hLineWidth'] = function (i) { return .5; };
+                                        objLayout['vLineWidth'] = function (i) { return .5; };
+                                        objLayout['hLineColor'] = function (i) { return '#ddd'; };
+                                        objLayout['vLineColor'] = function (i) { return '#ddd'; };
+                                        objLayout['paddingLeft'] = function (i) { return 5; };
+                                        objLayout['paddingRight'] = function (i) { return 5; };
+                                        doc.content[0].layout = objLayout;
+                                    },
+
+
+                                },
+                                {
+                                    extend: 'excel',
+                                    title: 'Software Information Report - Date :-  ' + today,
+                                    exportOptions: {
+                                        columns: "thead th:not(.noExport)",
+
+                                    },
+                                    customize: function (xlsx) {
+                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                        var numrows = 4;
+                                        var clR = $('row', sheet);
+                                        //update Row
+                                        clR.each(function () {
+                                            var attr = $(this).attr('r');
+                                            var ind = parseInt(attr);
+                                            ind = ind + numrows;
+                                            $(this).attr("r", ind);
+                                        });
+
+                                        // Create row before data
+                                        $('row c ', sheet).each(function () {
+                                            var attr = $(this).attr('r');
+                                            var pre = attr.substring(0, 1);
+                                            var ind = parseInt(attr.substring(1, attr.length));
+                                            ind = ind + numrows;
+                                            $(this).attr("r", pre + ind);
+                                        });
+
+                                        function Addrow(index, data) {
+                                            msg = '<row r="' + index + '">'
+                                            for (i = 0; i < data.length; i++) {
+                                                var key = data[i].key;
+                                                var value = data[i].value;
+                                                msg += '<c t="inlineStr" r="' + key + index + '">';
+                                                msg += '<is>';
+                                                msg += '<t>' + value + '</t>';
+                                                msg += '</is>';
+                                                msg += '</c>';
+                                            }
+                                            msg += '</row>';
+                                            return msg;
+                                        }
+
+                                        var r1 = Addrow(1, [{ key: 'B', value: 'Hardware Information Report' }]);
+                                        var r2 = Addrow(2, [{ key: 'A', value: '' }]);
+                                        sheet.childNodes[0].childNodes[1].innerHTML = r1 + r2 + sheet.childNodes[0].childNodes[1].innerHTML;
+                                        $('row c[r^="B1"]', sheet).attr('s', '2');
+                                    }
+                                }
+                            ],
+                        });
+                        $(".table").css({ "width": "100%" });
+                        $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                        hardwareinfo.columns.adjust().draw();
+                    });
+                });
+            }
+        });
+    }
+
+    // Generate Report
+
+    var chkhwclass1 = "";
+    var chkhwclasssdetail = "";
+    function UncheckMain() {
+
+        //debugger;
+        chkhwclass1 = "";
+        chkhwclasssdetail = "";
+        var checkboxes = document.querySelectorAll('input[id="chkhwtype"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                chkhwclass1 += ",'" + checkboxes[i].name + "'";
+                chkhwclasssdetail += ",'" + checkboxes[i].value + "'";
+
+            }
+            else {
+            }
+        }
+    }
+    function Unchecksoftcount(headid, rawid) {
+        // debugger;
+        headid.checked = false;
+
+        for (var i = 0; i < rawid.length; i++) {
+            if (rawid[i].checked == true) {
+                rawid[i].checked = false;
+            }
+            else {
+
+            }
+
+        }
+
+    }
+
+        function GenerateHWTypeData1() {
+            var $valid = $('#hd_form').valid();
+            if (!$valid) {
+                $validatorform.focusInvalid();
+                return false;
+            } else {
+                //debugger;
+                if (chkhwclass1 == '' || chkhwclasssdetail == '') {
+                    alert('Please select any option..');
+                    return;
+                }
+                else {
+                    $('#hardware_generat_report').modal('show');
+                    var systemvalue1 = document.getElementById("drpdevice1").value;
+                    var ipvalue1 = document.getElementById("drpip1").value;
+                    var url = '@Url.Content("~/csat_report/HWwiseJsonDetailData?hwclass=")' + chkhwclass1 + '&detail=' + chkhwclasssdetail + '&ip=' + ipvalue1 + '&device=' + systemvalue1 + '&ouid=' + ouidvalue1;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        success: function (data) {
+                            //debugger;
+                            Unchecksoftcount(chkhwtypeheader, chkhwtype);
+                            var dataclear = document.getElementById('divgenhwdetail_div');
+                            dataclear.innerHTML = '&nbsp;';
+                            $('#divgenhwdetail_div').append("<table id='divgenhwdetail' class='table table-striped table-bordered' width='100%'></table>");
+                            otable = document.getElementById('divgenhwdetail');
+                            var data1 = [];
+                            for (var i = 0; i < data.showhardwarewisedetaildata.length; i++) {
+                                if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'BASEBOARD')
+                                    hardware1 = "MOTHER BOARD";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'BATTERY')
+                                    hardware1 = "BATTERY";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'BIOS')
+                                    hardware1 = "BIOS";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'CDROMDRIVE')
+                                    hardware1 = "CD ROM";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEM')
+                                    hardware1 = "COMPUTER";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'COMPUTERSYSTEMPRODUCT')
+                                    hardware1 = "COMPUTER SYSTEM PRODUCT";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'DESKTOPMONITOR')
+                                    hardware1 = "MONITOR";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'ENVIRONMENT')
+                                    hardware1 = "ENVIRONMENT";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'HARDDISK')
+                                    hardware1 = "HARD DISK";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'IDECONTROLLER')
+                                    hardware1 = "IDE CONTROLLER";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'KEYBOARD')
+                                    hardware1 = "KEYBOARD";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'MOTHERBOARDDEVICE')
+                                    hardware1 = "MOTHER BOARD DEVICE";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'NICCARD')
+                                    hardware1 = "NIC CARD";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PARALLELPORT')
+                                    hardware1 = "PARALLEL PORT";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PHYSICALMEMORY')
+                                    hardware1 = "RAM";
+                                //else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PNPENTITY')
+                                //    hardware1 = "PNP ENTITY";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'POINTINGDEVICE')
+                                    hardware1 = "MOUSE";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PORTMOTHERBOARD')
+                                    hardware1 = "PORT MOTHER BOARD";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PRINTER')
+                                    hardware1 = "PRINTER";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'PROCESSOR')
+                                    hardware1 = "PROCESSOR";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'SMBIOS')
+                                    hardware1 = "SMBIOS";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'SOUNDDEVICE')
+                                    hardware1 = "SOUND DEVICE";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'USBHUB')
+                                    hardware1 = "USB PORT";
+                                else if (data.showhardwarewisedetaildata[i].hardware_class.toUpperCase() == 'VIDEO')
+                                    hardware1 = "VIDEO CARD";
+
+                                var BaseBoarddata = "";
+                                if (hardware1 == "HARD DISK" || hardware1 == "NIC CARD")
+                                    BaseBoarddata = "";
+                                else
+                                    BaseBoarddata = JSON.parse(data.showhardwarewisedetaildata[i].hw_json);
+                                var manufacturer = ""; var serialnumber = ""; var product = ""; var name = ""; var deviceid = ""; var estimateremaning = ""; var version = ""; var drive = ""; var media_type = ""; var pnp_deviceid = ""; var model = ""; var capacity = ""; var identifying_no = ""; var vendor = ""; var uuid = "";
+                                var user_name = ""; var variable_value = ""; var protocol_supported = ""; var primary_type = ""; var secondary_type = ""; var availability = ""; var ram_capacity = ""; var type = ""; var speed = ""; var provider_type = ""; var service = ""; var processorid = ""; var slot_connector = ""; var description = "";
+                                //manufacturer = BaseBoarddata.Manufacturer; serialnumber = BaseBoarddata.SerialNumber; product = BaseBoarddata.Product; name = BaseBoarddata.Name; deviceid = BaseBoarddata.Deviceid; estimateremaning = BaseBoarddata.EstimatedChargeRemaining; version = BaseBoarddata.Version; drive = BaseBoarddata.Drive; media_type = BaseBoarddata.MediaType; pnp_deviceid = BaseBoarddata.PNPDeviceID; model = BaseBoarddata.Model; capacity = BaseBoarddata.TotalPhysicalMemory; identifying_no = BaseBoarddata.IdentifyingNumber; vendor = BaseBoarddata.Vendor; uuid = BaseBoarddata.UUID; user_name = BaseBoarddata.UserName; variable_value = BaseBoarddata.VariableValue; protocol_supported = BaseBoarddata.ProtocolSupported; primary_type = BaseBoarddata.PrimaryBusType; secondary_type = BaseBoarddata.SecondaryBusType; availability = BaseBoarddata.Availability; ram_capacity = BaseBoarddata.Capacity; type = BaseBoarddata.MemoryType; speed = BaseBoarddata.Speed; service = BaseBoarddata.service; provider_type = BaseBoarddata.ProviderType; processorid = BaseBoarddata.ProcessorId; slot_connector = BaseBoarddata.InfSection; description = BaseBoarddata.Description;
+
+                                if (BaseBoarddata.Manufacturer == undefined) { manufacturer = ""; } else { manufacturer = BaseBoarddata.Manufacturer; }
+                                if (BaseBoarddata.SerialNumber == undefined) { serialnumber = ""; } else { serialnumber = BaseBoarddata.SerialNumber; }
+                                if (BaseBoarddata.Product == undefined) { product = ""; } else { product = BaseBoarddata.Product; }
+                                if (BaseBoarddata.Name == undefined) { name = ""; } else { name = BaseBoarddata.Name; }
+                                if (BaseBoarddata.Deviceid == undefined) { deviceid = ""; } else { deviceid = BaseBoarddata.Deviceid; }
+                                if (BaseBoarddata.EstimatedChargeRemaining == undefined) { estimateremaning = ""; } else { estimateremaning = BaseBoarddata.EstimatedChargeRemaining; }
+                                if (BaseBoarddata.Version == undefined) { version = ""; } else { version = BaseBoarddata.Version; }
+                                if (BaseBoarddata.Drive == undefined) { drive = ""; } else { drive = BaseBoarddata.Drive; }
+                                if (BaseBoarddata.MediaType == undefined) { media_type = ""; } else { media_type = BaseBoarddata.MediaType; }
+                                if (BaseBoarddata.PNPDeviceID == undefined) { pnp_deviceid = ""; } else { pnp_deviceid = BaseBoarddata.PNPDeviceID; }
+                                if (BaseBoarddata.Model == undefined) { model = ""; } else { model = BaseBoarddata.Model; }
+                                if (BaseBoarddata.TotalPhysicalMemory == undefined) { capacity = ""; } else { capacity = BaseBoarddata.TotalPhysicalMemory; }
+                                if (BaseBoarddata.IdentifyingNumber == undefined) { identifying_no = ""; } else { identifying_no = BaseBoarddata.IdentifyingNumber; }
+                                if (BaseBoarddata.Vendor == undefined) { vendor = ""; } else { vendor = BaseBoarddata.Vendor; }
+                                if (BaseBoarddata.UUID == undefined) { uuid = ""; } else { uuid = BaseBoarddata.UUID; }
+                                if (BaseBoarddata.UserName == undefined) { user_name = ""; } else { user_name = BaseBoarddata.UserName; }
+                                if (BaseBoarddata.VariableValue == undefined) { variable_value = ""; } else { variable_value = BaseBoarddata.VariableValue; }
+                                if (BaseBoarddata.ProtocolSupported == undefined) { protocol_supported = ""; } else { protocol_supported = BaseBoarddata.ProtocolSupported; }
+                                if (BaseBoarddata.PrimaryBusType == undefined) { primary_type = ""; } else { primary_type = BaseBoarddata.PrimaryBusType; }
+                                if (BaseBoarddata.SecondaryBusType == undefined) { secondary_type = ""; } else { secondary_type = BaseBoarddata.SecondaryBusType; }
+                                if (BaseBoarddata.Availability == undefined) { availability = ""; } else { availability = BaseBoarddata.Availability; }
+                                if (BaseBoarddata.Capacity == undefined) { ram_capacity = ""; } else { ram_capacity = BaseBoarddata.Capacity; }
+                                if (BaseBoarddata.MemoryType == undefined) { type = ""; } else { type = BaseBoarddata.MemoryType; }
+                                if (BaseBoarddata.Speed == undefined) { speed = ""; } else { speed = BaseBoarddata.Speed; }
+                                if (BaseBoarddata.service == undefined) { service = ""; } else { service = BaseBoarddata.service; }
+                                if (BaseBoarddata.ProviderType == undefined) { provider_type = ""; } else { provider_type = BaseBoarddata.ProviderType; }
+                                if (BaseBoarddata.ProcessorId == undefined) { processorid = ""; } else { processorid = BaseBoarddata.ProcessorId; }
+                                if (BaseBoarddata.InfSection == undefined) { slot_connector = ""; } else { slot_connector = BaseBoarddata.InfSection; }
+                                if (BaseBoarddata.Description == undefined) { description = ""; } else { description = BaseBoarddata.Description; }
+
+                                if (type == '20')
+                                    type = 'DDR';
+                                else if (type == '21')
+                                    type = 'DDR2';
+                                else if (type == '17')
+                                    type = 'SDRAM';
+                                else if (type == '24')
+                                    type = 'DDR3';
+                                data1.push([data.showhardwarewisedetaildata[i].ou_longname, data.showhardwarewisedetaildata[i].device_name, data.showhardwarewisedetaildata[i].ip, hardware1, data.showhardwarewisedetaildata[i].details, manufacturer, serialnumber, product, name, deviceid, estimateremaning, version, drive, media_type, pnp_deviceid, model, capacity, identifying_no, vendor, uuid, user_name, variable_value, data.showhardwarewisedetaildata[i].disk_deviceid, data.showhardwarewisedetaildata[i].disk_model, data.showhardwarewisedetaildata[i].disk_serial_number, data.showhardwarewisedetaildata[i].disk_size, protocol_supported, primary_type, secondary_type, data.showhardwarewisedetaildata[i].connection_id, data.showhardwarewisedetaildata[i].manufacturer, data.showhardwarewisedetaildata[i].mac, data.showhardwarewisedetaildata[i].adapter_type, data.showhardwarewisedetaildata[i].service_name, data.showhardwarewisedetaildata[i].speed_bps, data.showhardwarewisedetaildata[i].last_reset_time, availability, ram_capacity, type, speed, service, provider_type, processorid, slot_connector, description]);
+                            }
+                            var otable = $("#divgenhwdetail").DataTable({
+                                data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Manage Agent-Registry_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Manage Agent-Registry Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                                columns: [{ title: "Branch/ Unit" }, { title: "System Name" }, { title: "IP Address" }, { title: "Hardware Type" }, { title: "Hardware Detail" }, { title: "Manufacturer" }, { title: "Serial Number" }, { title: "Product Name" }, { title: "Name" }, { title: "Device ID" }, { title: "Estimated Charge Remaining" }, { title: "Version" }, { title: "Drive" }, { title: "Media Type" }, { title: "PNP Device ID" }, { title: "Model" }, { title: "Capacity" }, { title: "Identifying Number" }, { title: "Vendor" }, { title: "UUID" }, { title: "User Name" }, { title: "Variable Value" }, { title: "Disk Device Id" }, { title: "Disk Model" }, { title: "Disk Serial Number" }, { title: "Disk Size" }, { title: "Protocol Supported" }, { title: "Primary Bus Type" }, { title: "Secondary Bus Type" }, { title: "Connection" }, { title: "NIC Manufacturer" }, { title: "MAC" }, { title: "Adapter Type" }, { title: "Service Name" }, { title: "Speed" }, { title: "Last Reset Time" }, { title: "Availability" }, { title: "Capacity" }, { title: "Type" }, { title: "Speed" }, { title: "Service" }, { title: "Provider Type" }, { title: "Processor Id" }, { title: "Slot Connector" }, { title: "Description" }]
+                            });
+                            $(".table").css({ "width": "100%" });
+                            $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+                            ouidvalue = '';
+                            ipvalue1 = '';
+                            systemvalue1 = '';
+                        }
+                    });
+                }
+            }
+        }
+    function cleardata() {
+        document.getElementById("drpou1").value = '-1';
+        document.getElementById("drpdevice1").value = '-1';
+        document.getElementById("drpip1").value = '';
+        //$('#divgenhwdetail').html('');
+    }
+
+</script>
+<script>
+    //checkbox input hide & show
+    $('#inputsystemname').hide();
+    $('#add_system_chk').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#selectsys').hide();
+            $('#inputsystemname').show();
+        }
+        else {
+            $('#selectsys').show();
+            $('#inputsystemname').hide();
+            document.getElementById('add_systemname').value = "";
+        }
+    });
+</script>

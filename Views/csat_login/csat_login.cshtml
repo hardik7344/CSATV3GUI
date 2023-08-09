@@ -1,0 +1,500 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/csat_login/login_main_page.cshtml";
+}
+<body>
+<div class="custom-login-panel">
+    <div class="row" style="margin-top:150px">
+        <div class="col-xs-1 col-sm-2 col-md-1 col-lg-3">
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="panel panel-primary loginbox">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="color:#fff;">
+                        @*Cyber Security Audit Tool*@
+                        Cyber Security Audit Tool
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 " id="loginlogo" style="margin-top:35px;">
+                            @*<img src="~/images/ownyitcsat_header.png" class="login_logo" />*@
+                            <img src="~/images/Setting/logo.png"  class="login_logo" />
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 form-login">
+                            <form role="form" method="post" name="loginsubmit" id="loginsubmit" autocomplete="off" autofill="off">
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="Username" autocomplete="off" style="height: 30px;" autofocus onfocus="this.removeAttribute('readonly');" />
+                                    <input type="text" class="form-control" id="username_enc" name="username_enc" placeholder="Username" autocomplete="off" style="display:none">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <input type="password" class="form-control required pass" name="password" id="password" placeholder="Password" autocomplete="off" style="height: 30px;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <img src="/csat_login/GetCaptchaImage" title="Captcha" class="form-control" style="height:60px;!important" />
+                                </div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <input type="text" class="form-control" id="txtInput" name="txtInput" />
+                                </div>
+                                <div class="wrapper" style="margin-bottom: 20px;">
+                                    <span class="group-btn pull-left">
+                                        <input type="submit" class="submit btn btn-custom" id="csat_login" name="submit" value="Login" onclick="validateForm()">
+                                    </span>
+                                    <span class="pull-right">
+                                        <a data-toggle="modal" data-target="#forgot_password" style="color:red">Forgot Password ?</a>
+                                    </span>
+                                </div>
+                                <span class="col-xs-12 col-sm-12 col-md-12"> <span class="loginmsg" id="loginmsgname" style="color:red"></span></span>
+                                @*<div style="float:right;"><a style="color:indianred;" data-toggle="modal" data-target="#forgot_password">Forgot Password</a></div>*@
+
+                                <span class="col-xs-12 col-sm-12 col-md-12">
+
+                                    <span class="loginmsg">
+                                        <br />
+                                        @if (@TempData["Message"] != null)
+                                        {
+                                            <span id="msg1" class="msghide loginmsg">@TempData["Message"]</span>
+                                            <script>$("#msg1").removeClass("msghide").addClass("msgshow");</script>
+                                            @*<span class="loginmsg">@TempData["Message"]</span>*@
+                                        }
+
+                                        @if (@TempData["GroupMessage"] != null)
+                                        {
+                                            <span class="loginmsg" style="color:red">@TempData["GroupMessage"]</span>
+                                        }
+                                        @if (TempData["CaptchaMessage"] != null)
+                                        {
+                                            <span class="loginmsg" style="color:red">@TempData["CaptchaMessage"]</span>
+                                        }
+                                    </span>
+                                    <span id="msg" class="msghide loginmsg">Please enter valid username and password.</span>
+                                </span>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-0 col-sm-3 col-md-3 col-lg-3">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Forgot Password Question
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" id="frm_forgotpsw" name="frm_forgotpsw">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">User Name</label>
+                                <div class="col-xs-8">
+                                    <input type="text" name="user_name" id="user_name" class="form-control" placeholder="Enter User Name" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Security Question</label>
+                                <div class="col-xs-8">
+                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="securityquestion" id="securityquestion">
+                                        <option value="">Select Type</option>
+                                        <option value="What is your favorite food?">What is your favorite food?</option>
+                                        <option value="What is your favorite color?">What is your favorite color?</option>
+                                        <option value="What is your favorite pet name?">What is your favorite pet name?</option>
+                                        <option value="What is your favorite movie?">What is your favorite movie?</option>
+                                        <option value="What is your favorite restaurant?">What is your favorite restaurant?</option>
+                                        <option value="What is your favorite sports team?">What is your favorite sports team?</option>
+                                        <option value="What is your favorite musician?">What is your favorite musician?</option>
+                                        <option value="What city were you born in?">What city were you born in?</option>
+                                        <option value="What is your favorite book?">What is your favorite book?</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Security Answer</label>
+                                <div class="col-xs-8">
+                                    <input type="password" id="securityanswer" name="securityanswer" class="form-control required" placeholder="Enter Security Answer" data-placement="top" data-trigger="hover" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-8">
+                                    <input type="button" class="btn btn-primary" name="Save" value="Save" onclick="user_add_validate()" />
+                                    <a class="pull-right" onclick="getmaster_user()">Master Password ?</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="master_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata1()">&times;</button>
+                <h6 class=" modal-title">
+                    Master Password
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post" id="frm_masterpsw" name="frm_masterpsw">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4 form_label">User Name</label>
+                                <div class="col-xs-8">
+                                    <input type="text" name="master_username" id="master_username" class="form-control" disabled />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4 form_label">Enter Master Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" name="masterpassword" id="masterpassword" placeholder="Enter Master Password" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-4">
+                                    <input type="button" class="btn btn-primary" name="save" value="Apply" onclick="master_password_validate()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                <h6 class=" modal-title">
+                    Create New Password
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">New Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control required pass" name="newpassword" id="newpassword" placeholder="Enter New Password" data-placement="top" data-trigger="hover" autocomplete="off" data-content="Password should be a mix of alphabets, numerals and special characters ($#^@@\&%_.~!*) without any space in between and password length should be between 8 to 28 characters.">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4">Confirm Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="confirmpassword" placeholder="Enter Confirm Password" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <label style="color:#ff6a00"> Please keep these in mind while changing your password: </label>
+                                    <ul style="list-style-type:decimal">
+                                        <li> Password should be a mix of alphabets, numerals and special characters ($#^@@\&%_.~!*) without any space in between. </li>
+                                        <li> The password length should be between 8 to 28 characters.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nameField" class="col-xs-4"></label>
+                                <div class="col-xs-4">
+                                    <input type="button" class="btn btn-primary" name="save" value="Save" onclick="return(checkPasswordMatch());" />
+                                    <input type="button" class="btn btn-primary" name="Cancel" value="Cancel" data-dismiss="modal" onclick="cleardata()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    $(document).ready(function () {
+        validateSingleForm("#frm_forgotpsw");
+        validateSingleForm("#frm_masterpsw");
+    });
+</script>
+<script>
+    function checkPasswordMatch() {
+        var password = $("#newpassword").val();
+        var confirmPassword = $("#confirmpassword").val();
+        if (password != confirmPassword) {
+            alert("New Password and Confirm Password do not match!");
+            return false;
+        }
+        else {
+            reset_password_validate();
+            return (true);
+        }
+    }
+    function reset_password_validate() {
+        if ($("#newpassword").val() == "") {
+            alert("Please enter Password !");
+            return false;
+        }
+        if ($("#confirmpassword").val() == "") {
+            alert("Please enter Password !");
+            return false;
+        }
+        else {
+            save_reset_password();
+            return (true);
+        }
+    }
+    function save_reset_password() {
+        username = document.getElementById("user_name").value;
+        var confirmpassword = document.getElementById("confirmpassword").value;
+        var newpassword = document.getElementById("newpassword").value;
+        var url = '@Url.Content("~/csat_login/create_password?confirmpassword=")' + confirmpassword + '&newpassword=' + newpassword + '&username=' + username;
+		   $.ajax({
+            type: "POST",
+            url: url,
+               success: function (data) {
+                   alert(data);
+                   if (data == "Password set successfully") {
+                       document.getElementById("user_name").value = "";
+                       document.getElementById("confirmpassword").value = "";
+                       document.getElementById("newpassword").value = "";
+                       $('#create_password').modal("hide");
+                   }
+               }
+		   });
+    }
+    function user_add_validate() {
+        //if ($("#user_name").val() == "") {
+        //    alert("Please enter User Name !");
+        //    return false;
+        //}
+        //if ($("#securityquestion").val() == "-1") {
+        //    alert("Please Select Any Security Question !");
+        //    return false;
+        //}
+        //if ($("#securityanswer").val() == "") {
+        //    alert("Please enter Security Answer !");
+        //    return false;
+        //}
+        var $valid = $('#frm_forgotpsw').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            resetpassword();
+            return (true);
+        }
+    }
+    function master_password_validate() {
+        //if ($("#masterpassword").val() == "") {
+        //    alert("Please enter Master Password !");
+        //    return false;
+        //}
+        var $valid = $('#frm_masterpsw').valid();
+        if (!$valid) {
+            $validatorform.focusInvalid();
+            return false;
+        }
+        else {
+            masterpassword1();
+            return (true);
+        }
+    }
+    function cleardata() {
+        $('#forgot_password').modal('hide');
+        //group
+        document.getElementById("newpassword").value = "";
+        document.getElementById("confirmpassword").value = "";
+        document.getElementById("user_name").value = "";
+        document.getElementById("securityquestion").value = "";
+        document.getElementById("securityanswer").value = "";
+        document.getElementById("masterpassword").value = "";
+    }
+    function cleardata1() {
+        $('#master_password').modal('hide');
+        document.getElementById("masterpassword").value = "";
+    }
+    var username = "";
+    function resetpassword() {
+        //debugger;
+        username = document.getElementById("user_name").value;
+        var securityquestions = document.getElementById("securityquestion").value;
+        var securityanswers = document.getElementById("securityanswer").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/forgot_password?username=")' + username + "&securityquestion=" + securityquestions + "&securityanswer=" + securityanswers,
+            success: function (result) {
+                //debugger;
+                if (result == 0) {
+                    alert("Incorrect username or security answer.");
+                }
+                else {
+                    $('#forgot_password').modal('hide');
+                    $('#create_password').modal('show');
+                    document.getElementById("securityquestion").value = "";
+                    document.getElementById("securityanswer").value = "";
+                }
+            }
+        });
+    }
+    var master_name = "";
+    function getmaster_user() {
+        $('#master_password').modal('show');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/master_user")',
+            success: function (data) {
+                document.getElementById("master_username").value = data.getmasteruser;
+                master_name = data.getmasteruser;
+            }
+        });
+    }
+    function masterpassword1() {
+        //debugger;
+        var masterpsw = document.getElementById("masterpassword").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_login/master_password?masterpassword=")' + masterpsw + "&masteruser=" + master_name,
+            success: function (data) {
+                //debugger;
+                alert(data);
+                if (data == "Incorrect master password.") { }
+                else {
+                    $('#master_password').modal('hide');
+                    document.getElementById("masterpassword").value = "";
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $.fn.goValidate = function () {
+        var $form = this,
+            $inputs = $form.find('input:text, input:password');
+
+        var validators = {
+            name: {
+                regex: /^[A-Za-z]{3,}$/
+            },
+            pass: {
+                regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
+            }
+        };
+        var validate = function (klass, value) {
+            var isValid = true,
+                error = '';
+
+            if (!value && /required/.test(klass)) {
+                error = 'This field is required';
+                isValid = false;
+            } else {
+                klass = klass.split(/\s/);
+                $.each(klass, function (i, k) {
+                    if (validators[k]) {
+                        if (value && !validators[k].regex.test(value)) {
+                            isValid = false;
+                            error = validators[k].error;
+                        }
+                    }
+                });
+            }
+            return {
+                isValid: isValid,
+                error: error
+            }
+        };
+        var showError = function ($input) {
+            var klass = $input.attr('class'),
+                value = $input.val(),
+                test = validate(klass, value);
+
+            $input.removeClass('invalid').parent().removeClass('has-error');
+
+            if (!test.isValid) {
+                $input.addClass('invalid');
+
+                if (typeof $input.data("shown") == "undefined" || $input.data("shown") == false) {
+                    $input.popover('show').parent().addClass('has-error');
+                }
+
+            }
+            else {
+                $input.popover('hide');
+            }
+        };
+        $inputs.each(function () {
+            if ($(this).is('.required')) {
+                //showError($(this)); /* rem comment to enable initial display of validation rules */
+            }
+        });
+        $inputs.keyup(function () {
+            showError($(this));
+        });
+
+        $inputs.on('shown.bs.popover', function () {
+            $(this).data("shown", true);
+        });
+
+        $inputs.on('hidden.bs.popover', function () {
+            $(this).data("shown", false);
+        });
+        return this;
+    };
+
+    $('form').goValidate();
+</script>
+
+@*<script>
+        function fun_login() {
+            //debugger;
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/csat_login/login?username=")' + username + "&password=" + password,
+                success: function (data) {
+                    debugger;
+                    var strmsg = "";
+                    if (data.loginstatus == 1) {
+                         strmsg = "Please enter username and password!"
+                    }
+                    else if (data.loginstatus == 2)
+                    {
+                         strmsg = usernames + "user does not have any rights. Please Contact to Admin.";
+                    }
+                    else if (data.loginstatus == 3) {
+
+                    }
+                    else if (data.loginstatus == 4) {
+                       window.location.href = '@Url.Action("csat_main_dashboard", "csat_main_dashboard")';
+                    }
+                    else if (data.loginstatus == 5) {
+                         strmsg = "Please enter valid username and password!";
+                    }
+                    //alert(data);
+                    var SetData2 = $('#loginmsgname');
+                    jQuery('#loginmsgname').html('');
+                    SetData2.append(strmsg);
+                }
+            });
+        }
+    </script>*@

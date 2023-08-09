@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "Asset_maintanance";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+
+
+<div class="row">
+    <div class="ibox float-e-margins ">
+        <div class="ibox-content" style="padding:4px;">
+            <ul class="breadcrumb" style="margin-bottom:0px;">
+                <li>
+                    @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                    <i class="icon-angle-right"></i>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-2 col-md-2 col-lg-2">
+        @{
+            @Html.Partial("csat_asset_mgmt_menu");
+        }
+
+    </div>
+    <div class="col-sm-10 col-md-10 col-lg-10">
+
+        <ul class="breadcrumb">
+            <li>
+                @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                <i class="icon-angle-right"></i>
+            </li>
+
+        </ul>
+        <h1>Maintanance</h1>
+    </div>
+</div>
+
+

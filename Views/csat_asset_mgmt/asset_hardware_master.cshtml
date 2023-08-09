@@ -1,0 +1,1529 @@
+﻿@{ ViewData["Title"] = "Asset_hardware_master"; Layout = "~/Views/Shared/ownyit_main_page.cshtml"; }
+<body onload="bindhrddata();">
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="padding:4px;">
+                <div class="pull-right form_label btn_top_margin">
+                    <button type="button" data-toggle="modal" id="btnaddhardware" class="btn btn-primary btn-md day">Add New <b style="font-weight:bolder;">+</b></button>
+                    <button type="button" data-toggle="modal" data-target="#hardware_master_report" class="btn btn-primary btn-md day">Hardware Master Report </button>
+                </div>
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Asset Management", "csat_asset_mgmt", "csat_asset_mgmt")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Hardware Master</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--main Content-->
+    <div class="row ">
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding" style="padding-right:0px;">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu" style="padding-bottom: 30px;">
+                    @{ @Html.Partial("csat_asset_mgmt_menu"); }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+        <!--sub content-->
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <!--asset device form-->
+            <!--form  content-->
+            <div class="ibox float-e-margins" style="margin:0px;">
+                <div class="ibox-content">
+                    <!--asset Hardware master Datatable Start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="divgridhrd_div">
+                            <table id="divgridhrd" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+                    <!--asset Hardware master Datatable end-->
+                </div>
+            </div>
+        </div>
+        <!--sub content end-->
+        <div class="space_bottom">&nbsp;</div>
+    </div>
+    <!--main Content end-->
+    <!--add new hardware model form content-->
+    <div class="modal fade" id="hardware_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Add New Hardware</h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_addnewhd" id="frm_addnewhd">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2 ">Branch/ Unit Name </label>
+                                            <div class="col-xs-4">
+                                                <select class='form-control col-sm-3 col-lg-3 col-md-3' name='Branch/Unit' id='DrpOU'></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> AMC From to</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilter" id="amcdate" class="form-control" placeholder="DD/MM/YYYY - DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Hardware Name <b class="loginmsg">*</b></label>
+                                            <div class="col-xs-3">
+                                                <div id="hardware_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="HardwareName" id="HardwareName">
+                                                        @*<option>Hardware Name</option>
+                                                            <option value="01">HDD</option>
+                                                            <option value="02">RAM</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="hardware_text">
+                                                    <input type="text" class="form-control" id="txtHardwareName" placeholder="Hardware Name" name="txtHardwareName" />
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="hardware_check"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Warranty Period From to</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilter" class="form-control" id="warrantydate" placeholder="DD/MM/YYYY - DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Manufacture</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Manufacture" placeholder="Manufacture"  name="Manufacture"/>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Model No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="ModelNo" placeholder="Model No." name="ModelNo" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Allocate User</label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="User" value="true" checked id="select_user" onclick="javascript: Check1(); "> Yes </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="User" value="false" id="unselect_user" onclick="javascript: Check1(); "> No </label>
+                                                </div>
+                                            </div>
+                                            <div id="yes_user">
+                                                <label for="nameField" class="col-xs-2">User Name</label>
+                                                <div class="col-xs-4">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="User Name " id="drpUserName">
+                                                        @*<option>Select User Name </option>
+                                                            <option value="01">Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="no_user" style="display:none;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="vendor_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Vendor Name" id="VendorName">
+                                                        @*<option>Vendor Name</option>
+                                                            <option value="01">Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="vendor_text">
+                                                    <input type="text" class="form-control" id="txtVendorName" placeholder="Vendor Name" name="txtVendorName"/>
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="vendor_check"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Purchase Date</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="Pudatefilter" class="form-control" id="purchasedate" placeholder="DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2"> AMC Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="amc_vendor_select">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="AMC Vendor Name" id="amcVendorName">
+                                                        @*<option>AMC Vendor Name</option>
+                                                            <option value="01">Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="amc_vendor_text">
+                                                    <input type="text" class="form-control" id="txtamcVendorName" placeholder="AMC Vendor Name" name="txtamcVendorName"/>
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="amc_vendor_check"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Quantity</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Quantity" placeholder="Quantity" onkeypress="return isNumberKey(event)" maxlength="3" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">PO No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="PONo" placeholder="PO No." name="PONo"/>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> Purchase Amount</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="Amount" placeholder="Purchase Amount" onkeypress="return isNumberKey(event)" maxlength="8" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Invoice No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="InvoiceNo" placeholder="Invoice No." name="InvoiceNo"/>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> Asset ID</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="AssetID" placeholder="Asset ID" name="AssetID"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Remark</label>
+                                            <div class="col-xs-4">
+                                                <textarea type="text" class="form-control" id="Remark" name="Remark" placeholder="Your Remark"></textarea>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Machine Serial No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="MachineSerialNo" name="MachineSerialNo" placeholder="Machine Serial No." />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <label for="nameField" class="col-xs-2">Attachment</label>
+                                            <div class="col-xs-4">
+                                                <div class="input-group input-file" name="Attechment">
+                                                    <input type="text" class="form-control" id="txtattachment" placeholder='Choose a file...' />
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-choose" type="button">Choose</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="button" class="btn btn-primary" value="Save" name="add" id="btnsavehardware" />
+                                                <input type="button" class="btn btn-default" value="Cancel" name="cancel" id="btncancel" onclick="cleardata()" data-dismiss="modal" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--form  content end-->
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!--add new hardware model form content End-->
+    <!--delete_hardware device model  content-->
+    <div class="modal fade " id="delete_hardware" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-small">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h6 class="modal-title">Conformation </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-12">
+                                                <i class="glyphicon glyphicon-exclamation-sign delete_msg"></i>
+                                                <span style="font-weight:normal;margin-left:30px;">Are you sure you want to delete this record?</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-4"></label>
+                                            <div class="col-xs-6">
+                                                <input type="button" class="btn btn-primary" name="yes" value="Yes" id="btndelete" />
+                                                <input type="button" class="btn btn-default" name="no" value="No" id="btndeletecancle" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--form  content end-->
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!--edit new hardware model form content-->
+    <div class="modal fade" id="edit_hardware_master" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()">&times;</button>
+                    <h6 class="modal-title">Edit Hardware Master </h6>
+                </div>
+                <div class="modal-body">
+                    <!--form  content-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <form class="form-horizontal" method="post" name="frm_edithdmaster" id="frm_edithdmaster">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Branch/ Unit Name </label>
+                                            <div class="col-xs-4">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit Name " id="drpgetou"></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> AMC From to</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilter" class="form-control" id="editamcdate" placeholder="DD/MM/YYYY -  DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Hardware Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="hardware_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="drpHardwareName" id="drpHardwareName">
+                                                        @*<option>Hardware Name</option>
+                                                            <option value="01" selected>HDD</option>
+                                                            <option value="02">RAM</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="hardware_text1">
+                                                    <input type="text" class="form-control" id="editHardwareName" name="editHardwareName"placeholder="Hardware Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="hardware_check1"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Warranty Period From to</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="datefilter" id="editwarrantydate" class="form-control" placeholder="DD/MM/YYYY -  DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Manufacture</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editManufacture" name="editManufacture"placeholder="Manufacture" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Model No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editModelNo"name="editModelNo" placeholder="Model No." value="12" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Allocate User</label>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="User" value="true" checked id="Eselect_user" onclick="javascript: Check2(); "> Yes </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <div class="radio">
+                                                    <label> <input type="radio" name="User" value="false" id="Eunselect_user" onclick="javascript: Check2(); "> No </label>
+                                                </div>
+                                            </div>
+                                            <div id="Eyes_user">
+                                                <label for="nameField" class="col-xs-2">User Name</label>
+                                                <div class="col-xs-4">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="User Name " id="drpeditUserName">
+                                                        @*<option>Select User Name </option>
+                                                            <option value="01" selected>Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="Eno_user" style="display:none;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="vendor_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Vendor Name" id="drpVendorName">
+                                                        @*<option>Vendor Name</option>
+                                                            <option value="01" selected>Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="vendor_text1">
+                                                    <input type="text" class="form-control" id="editVendorName"name="editVendorName" placeholder="Vendor Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="vendor_check1"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Purchase Date</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" name="Pudatefilter" id="editpurchasedate" class="form-control" placeholder="DD/MM/YYYY " readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2"> AMC Vendor Name</label>
+                                            <div class="col-xs-3">
+                                                @*Select New Device*@
+                                                <div id="amc_vendor_select1">
+                                                    <select class="form-control col-sm-3 col-lg-3 col-md-3" name="AMC Vendor Name" id="drpamcVendorName">
+                                                        @*<option>AMC Vendor Name</option>
+                                                            <option value="01" selected>Rajesh Patel</option>
+                                                            <option value="02">Ajay Patel</option>
+                                                            <option value="03">Upendra Patel</option>*@
+                                                    </select>
+                                                </div>
+                                                <div id="amc_vendor_text1">
+                                                    <input type="text" class="form-control" id="edittxtamcVendorName"name="edittxtamcVendorName" placeholder="AMC Vendor Name" />
+                                                </div>@*<input type="checkbox" id="multiOptions" class="form-control">*@
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <div class="checkbox">
+                                                    <label><input type="checkbox" id="amc_vendor_check1"></label>
+                                                </div>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Quantity</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editQuantity" placeholder="Quantity" onkeypress="return isNumberKey(event)" maxlength="3" value="21" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">PO No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editPONo" placeholder="PO No." name="editPONo" value="23224" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> Purchase Amount</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editAmount" placeholder=" Purchase Amount" onkeypress="return isNumberKey(event)" maxlength="8" value="2000" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Invoice No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editInvoiceNo" name="editInvoiceNo"placeholder="Invoice No." value="43545" />
+                                            </div>
+                                            <label for="nameField" class="col-xs-2"> Asset ID</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editAssetID" name="editAssetID" placeholder="Asset ID" value="54654" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Remark</label>
+                                            <div class="col-xs-4">
+                                                <textarea type="text" class="form-control" id="editRemark" name="editRemark" placeholder="Your Remark">ADD Hardware</textarea>
+                                            </div>
+                                            <label for="nameField" class="col-xs-2">Machine Serial No.</label>
+                                            <div class="col-xs-4">
+                                                <input type="text" class="form-control" id="editMachineSerialNo" name="editMachineSerialNo"placeholder="Machine Serial No." value="33456" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-2">Attachment</label>
+                                            <div class="col-xs-4">
+                                                <div class="input-group input-file" name="Attechment">
+                                                    <input type="text" class="form-control" id="editattachment" placeholder='Choose a file...' value="Ownyitcsat.png" />
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-choose" type="button">Choose</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group model-button">
+                                            <div class="col-xs-7 pull-right ">
+                                                <input type="submit" class="btn btn-primary" value="Save" name="add" id="btnupdatehrddata" />
+                                                <input type="submit" class="btn btn-default" value="Cancel" name="cancel" id="btnupdatecancle" data-dismiss="modal" onclick="cleardata();" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--form  content end-->
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!--edit new hardware model form content End-->
+    <!-- hardware_report  Data pop-up model box  Content-->
+    <div class="modal fade" id="hardware_master_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" style="margin-top: 82px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#fff;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cleardata()" style="color:#555;">&times;</button>
+                    <h6 class=" modal-title">
+                        <ul class="mbreadcrumb" style="margin-bottom: 0px;padding: 4px;">
+                            <li>
+                                <a href="#">Assest Managment</a> <i class="icon-angle-right"></i>
+                            </li>
+                            <li><a href="#"> Hardware Master </a> <i class="icon-angle-right"></i></li>
+                            <li> Hardware Master Report</li>
+                        </ul>
+                    </h6>
+                </div>
+                <div class="modal-body model_body_scroll">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <!--form  content-->
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <form class="form-horizontal" method="post" name="frm_hdmaster_report" id="frm_hdmaster_report">
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Branch/ Unit</label>
+                                            <div class="col-xs-4" style="margin-left:6px;">
+                                                <select class="form-control col-sm-3 col-lg-3 col-md-3" name="Branch/Unit" id="drpou1"></select>
+                                            </div>
+                                            <label for="nameField" class="col-xs-1">Type</label>
+                                            <div class="col-xs-3" style="margin-left:-45px;">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="searchtype">
+                                                    <option value="-1">Select Type</option>
+                                                    <option value="hardware_name">Hardware Name</option>
+                                                    <option value="manufacture">Manufacture</option>
+                                                    <option value="model_no">Model No</option>
+                                                    <option value="user_name">Username</option>
+                                                    <option value="vendorname">Vendor Name</option>
+                                                    <option value="amc_vendor">AMC Vendor Name</option>
+                                                    <option value="invoice_no">Invoice Number</option>
+                                                    <option value="quantity">Quantity</option>
+                                                    <option value="amount">Purchase Amount</option>
+                                                    <option value="asset_id">Asset ID</option>
+                                                    <option value="machine_sr_no">Machine Serial No</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" placeholder="Search" id="searchvalue" name="searchvalue"autocomplete="off">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" type="button" onclick="hrdreport()">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nameField" class="col-xs-1 form_label">Date Selection</label>
+                                            <div class="col-xs-4" style="margin-left:6px;">
+                                                <select class="form-control col-sm-2 col-lg-2 col-md-2" name="type" id="datetype">
+                                                    <option value="-1">Select Date Type</option>
+                                                    <option value="Purchase_Date">Purchase Date</option>
+                                                    <option value="Warranty_Period">Warranty Period</option>
+                                                    <option value="AMC_Upto">AMC Upto</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <input type="text" name="datetime1" class="form-control" placeholder="DD/MM/YYYY - DD/MM/YYYY " id="datetime1" readonly>
+                                            </div>
+                                            <div class="pull-left col-xs-1">
+                                                <input type="button" class="btn btn-primary" value="Show" id="btnshowreport" onclick="hrdreport()">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--End form  content-->
+                        </div>
+                    </div>
+                    <!--hardware_datatable  Datatable start-->
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 " id="tblhrdreport_div">
+                            <table id="tblhrdreport" class="table table-striped table-bordered display nowrap" width="100%"></table>
+                        </div>
+                    </div>
+
+                    <!--hardware_datatable  Datatable end-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cleardata()">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- End hardware_report pop-up model box Content -->
+    <script>
+        var startdate = '';
+        var enddate = '';
+        $(function () {
+
+            $('input[name="datefilter"]').daterangepicker({
+                opens: 'left',
+                autoUpdateInput: false,
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    cancelLabel: 'Clear'
+                }
+            });
+            $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            });
+            $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        });
+
+        $(function () {
+            $('input[name="Pudatefilter"]').daterangepicker({
+                autoUpdateInput: false,
+                startDate: moment().startOf('hour'),
+                // endDate: moment().startOf('hour').add(48, 'hour'),
+
+                singleDatePicker: true,
+                minYear: 1901,
+                locale: {
+                    cancelLabel: 'Clear',
+                    format: 'DD/MM/YYYY'
+                }
+            });
+
+            $('input[name="Pudatefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+
+
+
+        });
+
+        $(function () {
+            $('input[name="datetime1"]').daterangepicker({
+                autoUpdateInput: false,
+
+                startDate: moment().startOf('hour').add(-24, 'hour'),
+                endDate: moment().startOf('hour'),
+                locale: {
+                    cancelLabel: 'Clear',
+                    format: 'DD/MM/YYYY '
+                }
+            });
+
+            $('input[name="datetime1"]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY '));
+            });
+
+            $('input[name="datetime1"]').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+
+            $(".model_body_scroll").bind('scroll', function () {
+                $(".daterangepicker").hide();
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        function Check1() {
+            if (document.getElementById('select_user').checked) {
+                document.getElementById('yes_user').style.display = 'block';
+                document.getElementById('no_user').style.display = 'none';
+            }
+
+            if (document.getElementById('unselect_user').checked) {
+                document.getElementById('no_user').style.display = 'block';
+                document.getElementById('yes_user').style.display = 'none';
+
+            }
+
+
+        }
+
+        function Check2() {
+            if (document.getElementById('Eselect_user').checked) {
+                document.getElementById('Eyes_user').style.display = 'block';
+                document.getElementById('Eno_user').style.display = 'none';
+            }
+
+            if (document.getElementById('Eunselect_user').checked) {
+                document.getElementById('Eno_user').style.display = 'block';
+                document.getElementById('Eyes_user').style.display = 'none';
+
+            }
+
+
+        }
+    </script>
+    <!--file upload  -->
+    <script type="text/javascript">
+        function bs_input_file() {
+            $(".input-file").before(
+                function () {
+                    if (!$(this).prev().hasClass('input-file')) {
+                        var element = $("<input type='file' class='input-file' style='visibility:hidden; height:0'>");
+                        element.attr("name", $(this).attr("name"));
+                        element.change(function () {
+                            //element.next(element).find('input').val((element.val()).split('\\').pop());
+                            element.next(element).find('input').val(element.val());
+                        });
+                        $(this).find("button.btn-choose").click(function () {
+                            element.click();
+                        });
+                        $(this).find("button.btn-reset").click(function () {
+                            element.val(null);
+                            $(this).parents(".input-file").find('input').val('');
+                        });
+                        $(this).find('input').css("cursor", "pointer");
+                        $(this).find('input').mousedown(function () {
+                            $(this).parents('.input-file').prev().click();
+                            return false;
+                        });
+                        return element;
+                    }
+                }
+            );
+        }
+        $(function () {
+            bs_input_file();
+        });
+    </script>
+    <!--file upload  -->
+    <script type="text/javascript">
+        $('#hardware_text').hide();
+        $('#hardware_check').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#hardware_select').hide();
+                $('#hardware_text').show();
+            } else {
+                $('#hardware_select').show();
+                $('#hardware_text').hide();
+            }
+        });
+        $('#hardware_text1').hide();
+
+        $('#hardware_check1').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#hardware_select1').hide();
+                $('#hardware_text1').show();
+            } else {
+                $('#hardware_select1').show();
+                $('#hardware_text1').hide();
+            }
+        });
+
+        $('#vendor_text').hide();
+
+        $('#vendor_check').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#vendor_select').hide();
+                $('#vendor_text').show();
+            } else {
+                $('#vendor_select').show();
+                $('#vendor_text').hide();
+            }
+        });
+
+
+
+        $('#vendor_text1').hide();
+
+        $('#vendor_check1').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#vendor_select1').hide();
+                $('#vendor_text1').show();
+            } else {
+                $('#vendor_select1').show();
+                $('#vendor_text1').hide();
+            }
+        });
+
+
+
+        $('#amc_vendor_text').hide();
+
+        $('#amc_vendor_check').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#amc_vendor_select').hide();
+                $('#amc_vendor_text').show();
+            } else {
+                $('#amc_vendor_select').show();
+                $('#amc_vendor_text').hide();
+            }
+        });
+
+        $('#amc_vendor_text1').hide();
+
+        $('#amc_vendor_check1').on('click', function () {
+            if ($(this).is(':checked')) {
+                $('#amc_vendor_select1').hide();
+                $('#amc_vendor_text1').show();
+            } else {
+                $('#amc_vendor_select1').show();
+                $('#amc_vendor_text1').hide();
+            }
+        });
+
+
+
+
+
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31 &&
+                (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
+    <script>
+function getdrpvalue() {
+     $.ajax({
+          type: "POST",
+          url: '@Url.Content("~/csat_asset_mgmt/GetOU")',
+          success: function(data) {
+
+               var SetouData = $('#DrpOU');
+               jQuery('#DrpOU').html('');
+               var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+               for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+               }
+               SetouData.append(oudata);
+
+               var Sethrddata = $('#HardwareName');
+               jQuery('#HardwareName').html('');
+               var hrddata = "<option value=''>Select Type Of Hardware</option>";
+               for (var i = 0; i < data.hardfware.length; i++) {
+                    hrddata += "<option value='" + data.hardfware[i].hardware_name + "'>" + data.hardfware[i].hardware_name + "</option>";
+               }
+               Sethrddata.append(hrddata);
+               //debugger
+               var Setvendordata = $('#VendorName');
+               jQuery('#VendorName').html('');
+               var vendordata = "<option value='-1'>Select Type Of Vendor</option>";
+               for (var i = 0; i < data.vendor.length; i++) {
+                    vendordata += "<option value='" + data.vendor[i].vendor_name + "'>" + data.vendor[i].vendor_name + "</option>";
+               }
+               Setvendordata.append(vendordata);
+
+               var Setamcvendordata = $('#amcVendorName');
+               jQuery('#amcVendorName').html('');
+               var amcvendordata = "<option value='-1'>Select Type Of AMC Vendor</option>";
+               for (var i = 0; i < data.amcvendor.length; i++) {
+                    amcvendordata += "<option value='" + data.amcvendor[i].vendor_name + "'>" + data.amcvendor[i].vendor_name + "</option>";
+               }
+               Setamcvendordata.append(amcvendordata);
+
+               var Setuserdata = $('#drpUserName');
+               jQuery('#drpUserName').html('');
+               var userdata = "<option value='-1'>Select Type Of User Name</option>";
+               for (var i = 0; i < data.username.length; i++) {
+                    userdata += "<option value='" + data.username[i].login_user + "'>" + data.username[i].login_user + "</option>";
+               }
+               Setuserdata.append(userdata);
+
+          }
+
+     });
+}
+$('#btnaddhardware').on('click', function() {
+     getdrpvalue();
+     document.getElementById('hardware_check').checked = false;
+     document.getElementById('select_user').checked = true;
+     document.getElementById('vendor_check').checked = false;
+     document.getElementById('amc_vendor_check').checked = false;
+     $('#hardware_master').modal('show');
+});
+
+
+
+
+
+var varouid = "";
+var varouname = "";
+
+$("#DrpOU").change(function() {
+     //debugger;
+     varouid = this.value;
+     var e = document.getElementById("DrpOU");
+     varouname = e.options[e.selectedIndex].text;
+
+});
+        $(document).ready(function () {
+            validateSingleForm("#frm_addnewhd");
+        });
+$('#btnsavehardware').on('click', function() {
+     //debugger;
+     var hrdname = "";
+     var allocateuser = "";
+     var varusername = "";
+     var varvendername = "";
+     var varamcvendername = "";
+     var amcfromdate = "";
+     var amctodate = "";
+     var warrentyfromdate = "";
+    var warrentytodate = "";
+    
+        // if ($("#txtHardwareName").val() == "" && $("#HardwareName").val() == "-1") {
+        //      alert('Please enter Hardware Detail !');
+        //      return false;
+        //}
+        // var chekboxhrd = document.getElementById("hardware_check");
+        // if (chekboxhrd.checked) {
+        //      if ($("#txtHardwareName").val() == "") {
+        //           alert('Please enter Hardware name !');
+        //           return false;
+        //      } else {
+        //           hrdname = document.getElementById("txtHardwareName").value;
+        //      }
+        // } else {
+        //      if ($("#HardwareName").val() == "-1") {
+        //           alert('please select Hardware name !');
+        //           return false;
+        //      } else {
+        //           hrdname = document.getElementById("HardwareName").value;
+        //           if (hrdname == '-1')
+        //                hrdname = "";
+        //      }
+        // }
+        //if (document.getElementById('select_user').checked) {
+        //     allocateuser = document.getElementById('select_user').value;
+        //     varusername = document.getElementById('drpUserName').value;
+        //     if (varusername == '-1')
+        //          varusername = "";
+        //} else if (document.getElementById('unselect_user').checked) {
+        //     allocateuser = document.getElementById('unselect_user').value;
+
+        //}
+    var $valid = $('#frm_addnewhd').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    }
+    else {
+        var chekboxhrd = document.getElementById("hardware_check");
+        if (chekboxhrd.checked) {
+             hrdname = document.getElementById("txtHardwareName").value;
+        }
+        else {
+              hrdname = document.getElementById("HardwareName").value;
+        }
+        if (document.getElementById('select_user').checked) {
+             allocateuser = document.getElementById('select_user').value;
+             varusername = document.getElementById('drpUserName').value;
+             if (varusername == '-1')
+                  varusername = "";
+        } else if (document.getElementById('unselect_user').checked) {
+             allocateuser = document.getElementById('unselect_user').value;
+        }
+
+        var chekboxvendor = document.getElementById("vendor_check");
+        if (chekboxvendor.checked) {
+            varvendername = document.getElementById("txtVendorName").value;
+            var url1 = '@Url.Content("~/csat_asset_mgmt/insert_hwvendor?vname=")' + varvendername;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+
+                }
+            });
+        } else {
+            varvendername = document.getElementById("VendorName").value;
+            if (varvendername == '-1')
+                varvendername = "";
+        }
+
+        var chekboxamcvendor = document.getElementById("amc_vendor_check");
+        if (chekboxamcvendor.checked) {
+            varamcvendername = document.getElementById("txtamcVendorName").value;
+            var url2 = '@Url.Content("~/csat_asset_mgmt/insert_hwvendor?vname=")' + varamcvendername;
+            $.ajax({
+                type: "POST",
+                url: url2,
+                success: function (result) {
+
+                }
+            });
+        } else {
+            varamcvendername = document.getElementById("amcVendorName").value;
+            if (varamcvendername == '-1')
+                varamcvendername = "";
+        }
+
+        var vardrpou = document.getElementById("DrpOU").value;
+        var varpo = document.getElementById("PONo").value;
+        var varinvoice = document.getElementById("InvoiceNo").value;
+        var varmanufactural = document.getElementById("Manufacture").value;
+        var varremark = document.getElementById("Remark").value;
+        var varmodel = document.getElementById("ModelNo").value;
+        var varqua = document.getElementById("Quantity").value;
+        var varPamount = document.getElementById("Amount").value;
+        var varAID = document.getElementById("AssetID").value;
+        var varMserial = document.getElementById("MachineSerialNo").value;
+        var varattechment = document.getElementById("txtattachment").value;
+        var varpurchasedate = document.getElementById("purchasedate").value;
+        var varadate = document.getElementById("amcdate").value;
+        var varvdate = document.getElementById("warrantydate").value;
+        //debugger
+
+        var avalues = varadate.split('-');
+        for (var i = 0; i < avalues.length; i++) {
+            if (i == "0") {
+                amcfromdate = avalues[i].trim();
+            }
+
+            if (i == "1") {
+                amctodate = avalues[i].trim();
+            }
+        }
+
+        var vvalues = varvdate.split('-');
+        for (var i = 0; i < vvalues.length; i++) {
+            if (i == "0") {
+                warrentyfromdate = vvalues[i].trim();
+            }
+
+            if (i == "1") {
+                warrentytodate = vvalues[i].trim();
+            }
+        }
+
+
+        var url = '@Url.Content("~/csat_asset_mgmt/store_Hardwaredata?hrd_name=")' + hrdname + '&manufacture=' + varmanufactural + '&model=' + varmodel + '&m_no=' + varMserial + '&p_date=' + varpurchasedate + '&vName=' + varvendername + '&po_no=' + varpo + '&i_no=' + varinvoice + '&w_from=' + warrentyfromdate + '&w_end=' + warrentytodate + '&Avendor=' + varamcvendername + '&A_to=' + amcfromdate + '&A_end=' + amctodate + '&A_end=' + amctodate + '&amount=' + varPamount + '&u_name=' + varusername + '&asset_id=' + varAID + '&remark=' + varremark + '&allocate_user=' + allocateuser + '&ouname=' + varouname + '&ou_id=' + vardrpou + '&quantity=' + varqua + '&attachment=' + varattechment;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (result) {
+                //debugger;
+                alert(result);
+                document.getElementById("PONo").value = '';
+                document.getElementById("InvoiceNo").value = '';
+                document.getElementById("Manufacture").value = '';
+                document.getElementById("Remark").value = '';
+                document.getElementById("ModelNo").value = '';
+                document.getElementById("Quantity").value = '';
+                document.getElementById("Amount").value = '';
+                document.getElementById("AssetID").value = '';
+                document.getElementById("MachineSerialNo").value = '';
+                document.getElementById("txtattachment").value = '';
+                document.getElementById("purchasedate").value = '';
+                document.getElementById("amcdate").value = '';
+                document.getElementById("warrantydate").value = '';
+                document.getElementById("txtamcVendorName").value = '';
+                document.getElementById("amcVendorName").value = '-1';
+                document.getElementById("VendorName").value = '-1';
+                document.getElementById("txtVendorName").value = '';
+                document.getElementById('drpUserName').value = '-1';
+                document.getElementById("HardwareName").value = '';
+                document.getElementById("txtHardwareName").value = '';
+                document.getElementById('hardware_check').checked = false;
+                document.getElementById('select_user').checked = false;
+                document.getElementById('vendor_check').checked = false;
+                document.getElementById('amc_vendor_check').checked = false;
+                $('#hardware_text').hide();
+                $('#hardware_select').show();
+                //chekboxhrd.checked= true;
+                //chekboxvendor.checked= true;
+                //chekboxamcvendor.checked= true;
+                $('#hardware_master').modal('hide');
+                bindhrddata();
+            }
+        });
+    }
+});
+
+// $('#btncancel').on('click',function(){
+//   $('#hardware_master').modal('hide');
+//});
+
+function bindhrddata() {
+     // debugger;
+    $("#overlay").show();
+    $("#overlay").fadeIn(300);　
+     $.ajax({
+          type: "POST",
+          url: '@Url.Content("~/csat_asset_mgmt/get_offline_hardware_data/")',
+          success: function(data) {
+               // debugger;
+              var dataclear = document.getElementById('divgridhrd_div');
+              dataclear.innerHTML = '&nbsp;';
+              $('#divgridhrd_div').append("<table id='divgridhrd' class='table table-striped table-bordered' width='100%'></table>");
+              otable = document.getElementById('divgridhrd');
+              var data1 = [];
+              for (var i = 0; i < data.hrddata.length; i++) {
+                  var hwedit = "<div class='icon'><i class=' glyphicon glyphicon-pencil manage_icon ' type='button' data-toggle='modal'    onclick='edithrddata(" + data.hrddata[i].hardware_id + ")' title='Edit'></i></div>";
+                  var deleteedit = "<div class='icon'><i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  title='Delete' onclick='deletehrddata(" + data.hrddata[i].hardware_id + ")'></i></div>";
+                  data1.push([data.hrddata[i].ouname, data.hrddata[i].hardware_name, data.hrddata[i].user_name, data.hrddata[i].vendorname, data.hrddata[i].manufacture, data.hrddata[i].purchase_date, data.hrddata[i].quantity, data.hrddata[i].po_no, hwedit, deleteedit]);
+              }
+              var otable = $("#divgridhrd").DataTable({
+                  data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                  columns: [{ title: "Branch/ Unit", width: '230px' }, { title: "Hardware Name", width: '80px' }, { title: "Username", width: '50px' }, { title: "Vendor Name", width: '70px' }, { title: "Manufacture", width: '50px' }, { title: "Purchase Date", width: '70px' }, { title: "Quantity", width: '10px' }, { title: "PO No.", width: '50px' }, { title: "Edit", width: '20px', orderable: false }, { title: "Delete", width: '15px', orderable: false }]
+              });
+              $(".table").css({ "width": "100%" });
+              $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+          }
+     }).done(function () {
+         setTimeout(function () {
+             $("#overlay").fadeOut(300);
+         }, 500);
+     });
+}
+var hrdid = "";
+
+function deletehrddata(id) {
+     //debugger;
+     hrdid = id;
+     $('#delete_hardware').modal('show');
+}
+$('#btndelete').on('click', function() {
+     //debugger;
+     //alert(hrdid);
+     var url1 = '@Url.Content("~/csat_asset_mgmt/delete_hrddata?hrdid=")' + hrdid;
+     $.ajax({
+          type: "POST",
+          url: url1,
+          success: function(result) {
+               alert(result);
+               $('#delete_hardware').modal('hide');
+               bindhrddata();
+          }
+     });
+
+});
+$('#btndeletecancle').on('click', function() {
+     $('#delete_hardware').modal('hide');
+});
+
+var hardwareid = "";
+
+function edithrddata(id) {
+     hardwareid = id;
+     // debugger;
+     var url1 = '@Url.Content("~/csat_asset_mgmt/get_show_offline_hardware_data?hrdid=")' + id;
+     $.ajax({
+          type: "POST",
+          url: url1,
+          success: function(data) {
+               var SetouData = $('#drpgetou');
+               jQuery('#drpgetou').html('');
+               var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+               for (var i = 0; i < data.ou.length; i++) {
+                    if (data.hrddatahrdwise[0].ouname == data.ou[i].ouname)
+                         oudata += "<option   value='" + data.ou[i].ouid + "' selected>" + data.ou[i].ouname + "</option>";
+                    else
+                         oudata += "<option   value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+               }
+               SetouData.append(oudata);
+
+               var Sethrddata = $('#drpHardwareName');
+               jQuery('#drpHardwareName').html('');
+               var hrddata = "<option value=''>Select Type Of Hardware</option>";
+               for (var i = 0; i < data.hardfware.length; i++) {
+                    if (data.hrddatahrdwise[0].hardware_name == data.hardfware[i].hardware_name)
+                         hrddata += "<option value='" + data.hardfware[i].hardware_name + "' selected>" + data.hardfware[i].hardware_name + "</option>";
+                    else
+                         hrddata += "<option value='" + data.hardfware[i].hardware_name + "'>" + data.hardfware[i].hardware_name + "</option>";
+               }
+               Sethrddata.append(hrddata);
+
+
+
+               var Setvendordata = $('#drpVendorName');
+               jQuery('#drpVendorName').html('');
+               var vendordata = "<option value='-1'>Select Type Of Vendor</option>";
+               for (var i = 0; i < data.vendor.length; i++) {
+                    if (data.hrddatahrdwise[0].vendorname == data.vendor[i].vendor_name)
+                         vendordata += "<option value='" + data.vendor[i].vendor_name + "' selected>" + data.vendor[i].vendor_name + "</option>";
+                    else
+                         vendordata += "<option value='" + data.vendor[i].vendor_name + "'>" + data.vendor[i].vendor_name + "</option>";
+               }
+               Setvendordata.append(vendordata);
+
+               var Setamcvendordata = $('#drpamcVendorName');
+               jQuery('#drpamcVendorName').html('');
+               var amcvendordata = "<option value='-1'>Select Type Of AMC Vendor</option>";
+               for (var i = 0; i < data.amcvendor.length; i++) {
+                    if (data.hrddatahrdwise[0].amc_vendor == data.amcvendor[i].vendor_name)
+                         amcvendordata += "<option value='" + data.amcvendor[i].vendor_name + "' selected>" + data.amcvendor[i].vendor_name + "</option>";
+                    else
+                         amcvendordata += "<option value='" + data.amcvendor[i].vendor_name + "'>" + data.amcvendor[i].vendor_name + "</option>";
+               }
+               Setamcvendordata.append(amcvendordata);
+
+               var Setuserdata = $('#drpeditUserName');
+               jQuery('#drpeditUserName').html('');
+               var userdata = "<option value='-1'>Select Type Of User Name</option>";
+               for (var i = 0; i < data.username.length; i++) {
+                    if (data.hrddatahrdwise[0].user_name == data.username[i].login_user)
+                         userdata += "<option value='" + data.username[i].login_user + "' selected>" + data.username[i].login_user + "</option>";
+                    else
+                         userdata += "<option value='" + data.username[i].login_user + "'>" + data.username[i].login_user + "</option>";
+               }
+               Setuserdata.append(userdata);
+
+               document.getElementById("editManufacture").value = data.hrddatahrdwise[0].manufacture;
+               if (data.hrddatahrdwise[0].allocate_user == true) {
+                    document.getElementById('Eselect_user').checked = true;
+                    document.getElementById('Eyes_user').style.display = 'block';
+                    document.getElementById('Eno_user').style.display = 'none';
+
+               } else {
+                    document.getElementById('Eunselect_user').checked = true;
+                    document.getElementById('Eno_user').style.display = 'block';
+                    document.getElementById('Eyes_user').style.display = 'none';
+
+               }
+               document.getElementById("editPONo").value = data.hrddatahrdwise[0].po_no;
+               document.getElementById("editInvoiceNo").value = data.hrddatahrdwise[0].invoice_no;
+               document.getElementById("editManufacture").value = data.hrddatahrdwise[0].manufacture;
+               document.getElementById("editRemark").value = data.hrddatahrdwise[0].remark;
+               document.getElementById("editModelNo").value = data.hrddatahrdwise[0].model_no;
+               document.getElementById("editpurchasedate").value = data.hrddatahrdwise[0].purchase_date;
+               document.getElementById("editQuantity").value = data.hrddatahrdwise[0].quantity;
+               document.getElementById("editAmount").value = data.hrddatahrdwise[0].amount;
+               document.getElementById("editAssetID").value = data.hrddatahrdwise[0].asset_id;
+               document.getElementById("editMachineSerialNo").value = data.hrddatahrdwise[0].machine_sr_no;
+               document.getElementById("editattachment").value = data.hrddatahrdwise[0].attachment;
+               document.getElementById("editamcdate").value = data.hrddatahrdwise[0].amc_fromto + ' - ' + data.hrddatahrdwise[0].amc_end;
+               document.getElementById("editwarrantydate").value = data.hrddatahrdwise[0].warranty_period_fromto + ' - ' + data.hrddatahrdwise[0].warranty_end;
+               $('#edit_hardware_master').modal('show');
+          }
+     });
+
+}
+
+
+        $(document).ready(function () {
+            validateSingleForm("#frm_edithdmaster");
+        });
+
+$('#btnupdatehrddata').on('click', function() {
+     //debugger;
+     var hrdname = "";
+     var allocateuser = "";
+     var varusername = "";
+     var varvendername = "";
+     var varamcvendername = "";
+     var amcfromdate = "";
+     var amctodate = "";
+     var warrentyfromdate = "";
+     var warrentytodate = "";
+     var vareouid = "";
+     var vareouname = "";
+     var eouid = document.getElementById("drpgetou").value;
+     var e = document.getElementById("drpgetou");
+     vareouname = e.options[e.selectedIndex].text;
+    var $valid = $('#frm_edithdmaster').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    }
+    else {
+        var chekboxhrd = document.getElementById("hardware_check1");
+        if (chekboxhrd.checked) {
+            hrdname = document.getElementById("editHardwareName").value;
+        } else {
+            hrdname = document.getElementById("drpHardwareName").value;
+            if (hrdname == '')
+                hrdname = "";
+        }
+        if (document.getElementById('Eselect_user').checked) {
+            allocateuser = document.getElementById('Eselect_user').value;
+            varusername = document.getElementById('drpeditUserName').value;
+            if (varusername == '-1')
+                varusername = "";
+        } else if (document.getElementById('Eunselect_user').checked) {
+            allocateuser = document.getElementById('Eunselect_user').value;
+
+        }
+
+        var chekboxvendor = document.getElementById("vendor_check1");
+        if (chekboxvendor.checked) {
+            varvendername = document.getElementById("editVendorName").value;
+            var url1 = '@Url.Content("~/csat_asset_mgmt/insert_hwvendor?vname=")' + varvendername;
+            $.ajax({
+                type: "POST",
+                url: url1,
+                success: function (result) {
+
+                }
+            });
+        } else {
+            varvendername = document.getElementById("drpVendorName").value;
+            if (varvendername == '-1')
+                varvendername = "";
+        }
+
+        var chekboxamcvendor = document.getElementById("amc_vendor_check1");
+        if (chekboxamcvendor.checked) {
+            varamcvendername = document.getElementById("edittxtamcVendorName").value;
+            var url2 = '@Url.Content("~/csat_asset_mgmt/insert_hwvendor?vname=")' + varamcvendername;
+            $.ajax({
+                type: "POST",
+                url: url2,
+                success: function (result) {
+
+                }
+            });
+        } else {
+            varamcvendername = document.getElementById("drpamcVendorName").value;
+            if (varamcvendername == '-1')
+                varamcvendername = "";
+        }
+
+        var varpo = document.getElementById("editPONo").value;
+        var varinvoice = document.getElementById("editInvoiceNo").value;
+        var varmanufactural = document.getElementById("editManufacture").value;
+        var varremark = document.getElementById("editRemark").value;
+        var varmodel = document.getElementById("editModelNo").value;
+        var varqua = document.getElementById("editQuantity").value;
+        var varPamount = document.getElementById("editAmount").value;
+        var varAID = document.getElementById("editAssetID").value;
+        var varMserial = document.getElementById("editMachineSerialNo").value;
+        var varattechment = document.getElementById("editattachment").value;
+        var varpurchasedate = document.getElementById("editpurchasedate").value;
+        var varadate = document.getElementById("editamcdate").value;
+        var varvdate = document.getElementById("editwarrantydate").value;
+        var avalues = varadate.split('-');
+        for (var i = 0; i < avalues.length; i++) {
+            if (i == "0") {
+                amcfromdate = avalues[i].trim();
+            }
+
+            if (i == "1") {
+                amctodate = avalues[i].trim();
+            }
+        }
+
+        var vvalues = varvdate.split('-');
+        for (var i = 0; i < vvalues.length; i++) {
+            if (i == "0") {
+                warrentyfromdate = vvalues[i].trim();
+            }
+
+            if (i == "1") {
+                warrentytodate = vvalues[i].trim();
+            }
+        }
+        submit_edit_data(hardwareid, hrdname, varmanufactural, varmodel, varMserial, varpurchasedate, varvendername, varpo, varinvoice, warrentyfromdate, warrentytodate, varamcvendername, amcfromdate, amctodate, varPamount, varusername, varAID, varremark, allocateuser, vareouname, eouid, varqua, varattechment);
+    }
+    });
+
+
+function submit_edit_data(hardwareid, hrdname, varmanufactural, varmodel, varMserial, varpurchasedate, varvendername, varpo, varinvoice, warrentyfromdate, warrentytodate, varamcvendername, amcfromdate, amctodate, varPamount, varusername, varAID, varremark, allocateuser, vareouname, vareouid, varqua, varattechment) {
+     var url = '@Url.Content("~/csat_asset_mgmt/Edit_offlineHardwaredata?hrd_id=")' + hardwareid + '&hrd_name=' + hrdname + '&manufacture=' + varmanufactural + '&model=' + varmodel + '&m_no=' + varMserial + '&p_date=' + varpurchasedate + '&vName=' + varvendername + '&po_no=' + varpo + '&i_no=' + varinvoice + '&w_from=' + warrentyfromdate + '&w_end=' + warrentytodate + '&Avendor=' + varamcvendername + '&A_to=' + amcfromdate + '&A_end=' + amctodate + '&amount=' + varPamount + '&u_name=' + varusername + '&asset_id=' + varAID + '&remark=' + varremark + '&allocate_user=' + allocateuser + '&ouname=' + vareouname + '&ou_id=' + vareouid + '&quantity=' + varqua + '&attachment=' + varattechment;
+     $.ajax({
+          type: "POST",
+          url: url,
+          success: function(result) {
+               //debugger;
+               //alert('11111');
+               alert(result);
+               document.getElementById("editPONo").value = '';
+               document.getElementById("editInvoiceNo").value = '';
+               document.getElementById("editManufacture").value = '';
+               document.getElementById("editRemark").value = '';
+               document.getElementById("editModelNo").value = '';
+               document.getElementById("editQuantity").value = '';
+               document.getElementById("editAmount").value = '';
+               document.getElementById("editAssetID").value = '';
+               document.getElementById("editMachineSerialNo").value = '';
+               document.getElementById("editattachment").value = '';
+               document.getElementById("editpurchasedate").value = '';
+               document.getElementById("editamcdate").value = '';
+               document.getElementById("editwarrantydate").value = '';
+               document.getElementById("editHardwareName").value = '';
+               document.getElementById("drpHardwareName").value = '';
+               document.getElementById("editVendorName").value = '';
+               document.getElementById("drpVendorName").value = '-1';
+               document.getElementById("drpamcVendorName").value = '-1';
+               document.getElementById("edittxtamcVendorName").value = '';
+               document.getElementById('drpeditUserName').value = '-1';
+
+               document.getElementById('hardware_check1').checked = false;
+               document.getElementById('Eselect_user').checked = false;
+               document.getElementById('vendor_check1').checked = false;
+               document.getElementById('amc_vendor_check1').checked = false;
+               $('#edit_hardware_master').modal('hide');
+               bindhrddata();
+          }
+     });
+     //alert('RRR : '+msg);
+}
+
+    function cleardata() {
+        var dataclear = document.getElementById('tblhrdreport_div');
+        dataclear.innerHTML = '&nbsp;';
+        $('#tblhrdreport_div').append("<table id='tblhrdreport' class='table table-striped table-bordered' width='100%'></table>");
+        otable = document.getElementById('tblhrdreport');
+     document.getElementById("amcdate").value = '';
+     document.getElementById("HardwareName").value = '-1';
+     document.getElementById("txtHardwareName").value = '';
+     $('#hardware_text').hide();
+     $('#hardware_select').show();
+     document.getElementById('hardware_check').checked = false;
+     document.getElementById("warrantydate").value = '';
+     document.getElementById("Manufacture").value = '';
+     document.getElementById("ModelNo").value = '';
+     document.getElementById('select_user').checked = true;
+     document.getElementById('yes_user').style.display = 'block';
+     document.getElementById("VendorName").value = '-1';
+     document.getElementById("txtVendorName").value = '';
+     $('#vendor_text').hide();
+     $('#vendor_select').show();
+     document.getElementById('vendor_check').checked = false;
+     document.getElementById("purchasedate").value = '';
+     document.getElementById("amcVendorName").value = '-1';
+     document.getElementById("txtamcVendorName").value = '';
+     $('#amc_vendor_text').hide();
+     $('#amc_vendor_select').show();
+     document.getElementById('amc_vendor_check').checked = false;
+     document.getElementById("Quantity").value = '';
+     document.getElementById("PONo").value = '';
+     document.getElementById("Amount").value = '';
+     document.getElementById("InvoiceNo").value = '';
+     document.getElementById("AssetID").value = '';
+     document.getElementById("Remark").value = '';
+     document.getElementById("MachineSerialNo").value = '';
+     document.getElementById("txtattachment").value = '';
+     //edit
+     document.getElementById("drpgetou").value = '-1';
+     document.getElementById("editamcdate").value = '';
+     document.getElementById("drpHardwareName").value = '';
+     document.getElementById("editHardwareName").value = '';
+     $('#hardware_text1').hide();
+     $('#hardware_select1').show();
+     document.getElementById('hardware_check1').checked = false;
+     document.getElementById("editwarrantydate").value = '';
+     document.getElementById("editManufacture").value = '';
+     document.getElementById("editModelNo").value = '';
+     document.getElementById('Eselect_user').checked = true;
+     document.getElementById('Eyes_user').style.display = 'block';
+     document.getElementById("drpVendorName").value = '-1';
+     document.getElementById("editVendorName").value = '';
+     $('#vendor_text1').hide();
+     $('#vendor_select1').show();
+     document.getElementById('vendor_check1').checked = false;
+     document.getElementById("editpurchasedate").value = '';
+     document.getElementById("drpamcVendorName").value = '-1';
+     document.getElementById("edittxtamcVendorName").value = '';
+     $('#amc_vendor_text1').hide();
+     $('#amc_vendor_select1').show();
+     document.getElementById('amc_vendor_check1').checked = false;
+     document.getElementById("editQuantity").value = '';
+     document.getElementById("editPONo").value = '';
+     document.getElementById("editAmount").value = '';
+     document.getElementById("editInvoiceNo").value = '';
+     document.getElementById("editAssetID").value = '';
+     document.getElementById("editRemark").value = '';
+     document.getElementById("editMachineSerialNo").value = '';
+     document.getElementById("editattachment").value = '';
+     $('#tblhrdreport').html('');
+     document.getElementById("drpou1").value = '-1';
+     document.getElementById("searchtype").value = '-1';
+     document.getElementById("searchvalue").value = '';
+     document.getElementById("datetype").value = '-1';
+     document.getElementById("datetime1").value = '';
+     //setdate();
+}
+
+$.get('@Url.Content("~/csat_report/GetOU/")', null, DataBind)
+
+function DataBind(data) {
+     //debugger;
+     var url = '@Url.Content("~/csat_report/GetOU/")';
+     $.ajax({
+          type: "POST",
+          url: url,
+          success: function(data) {
+               var SetData = $('#drpou1');
+               jQuery('#drpou1').html('');
+               var oudata = "<option value='-1'>Select Branch/ Unit</option>";
+               for (var i = 0; i < data.ou.length; i++) {
+                    oudata += "<option value='" + data.ou[i].ouid + "'>" + data.ou[i].ouname + "</option>";
+               }
+               SetData.append(oudata);
+          }
+     });
+}
+
+var ouidvalue = '';
+$("#drpou1").change(function() {
+     ouidvalue = this.value;
+})
+
+$("#datetype").change(function() {
+     document.getElementById("datetime1").value = '';
+})
+        $(document).ready(function () {
+            validateSingleForm("#frm_hdmaster_report");
+        });
+function hrdreport() {
+    var $valid = $('#frm_hdmaster_report').valid();
+    if (!$valid) {
+        $validatorform.focusInvalid();
+        return false;
+    } else {
+        startdate = $('#datetime1').data('daterangepicker').startDate.format('DD/MM/YYYY');
+        enddate = $('#datetime1').data('daterangepicker').endDate.format('DD/MM/YYYY');
+        var serchtype = document.getElementById('searchtype').value;
+        var searchval = document.getElementById('searchvalue').value;
+        var dateduration = document.getElementById('datetype').value;
+        var url = '@Url.Content("~/csat_asset_mgmt/Asset_hrdreport?ouid=")' + ouidvalue + '&startdate=' + startdate + '&enddate=' + enddate + '&dateduration=' + dateduration + '&serchtype=' + serchtype + '&searchval=' + searchval;
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (data) {
+                // debugger;
+                var dataclear = document.getElementById('tblhrdreport_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#tblhrdreport_div').append("<table id='tblhrdreport' class='table table-striped table-bordered' width='100%'></table>");
+                otable = document.getElementById('tblhrdreport');
+                var data1 = [];
+                for (var i = 0; i < data.hrdreportdata.length; i++) {
+                    if (data.hrdreportdata[i].amc_fromto == '01-01-1900') { data.hrdreportdata[i].amc_fromto = ''; } if (data.hrdreportdata[i].amc_end == '01-01-1900') { data.hrdreportdata[i].amc_end = ''; } if (data.hrdreportdata[i].warranty_period_fromto == '01-01-1900') { data.hrdreportdata[i].warranty_period_fromto = ''; } if (data.hrdreportdata[i].warranty_end == '01-01-1900') { data.hrdreportdata[i].warranty_end = ''; } if (data.hrdreportdata[i].purchase_date == '01-01-1900') { data.hrdreportdata[i].purchase_date = ''; }
+                    if (data.hrdreportdata[i].allocate_user == '1') data.hrdreportdata[i].allocate_user = 'Yes'; else data.hrdreportdata[i].allocate_user = 'No';
+                    data1.push([data.hrdreportdata[i].ouname, data.hrdreportdata[i].hardware_name, data.hrdreportdata[i].manufacture, data.hrdreportdata[i].model_no, data.hrdreportdata[i].allocate_user, data.hrdreportdata[i].user_name, data.hrdreportdata[i].vendorname, data.hrdreportdata[i].amc_vendor, data.hrdreportdata[i].po_no, data.hrdreportdata[i].invoice_no, data.hrdreportdata[i].amc_fromto, data.hrdreportdata[i].amc_end, data.hrdreportdata[i].warranty_period_fromto, data.hrdreportdata[i].warranty_end, data.hrdreportdata[i].purchase_date, data.hrdreportdata[i].quantity, data.hrdreportdata[i].amount, data.hrdreportdata[i].asset_id, data.hrdreportdata[i].machine_sr_no, data.hrdreportdata[i].attachment, data.hrdreportdata[i].remark]);
+                }
+                var otable = $("#tblhrdreport").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis", { text: "PDF", extend: "pdfHtml5", download: "open", filename: "Hardware Master Report_" + today, orientation: "portrait", pageSize: "A4", exportOptions: { columns: ":visible", search: "applied", order: "applied" }, customize: function (t) { t.content.splice(0, 1); var e = new Date, n = e.getDate() + "-" + (e.getMonth() + 1) + "-" + e.getFullYear(); t.pageMargins = [20, 60, 20, 30], t.defaultStyle.fontSize = 7, t.styles.tableHeader.fontSize = 7, t.header = function () { return { columns: [{ margin: [0, -5, 30, 15], alignment: "left", width: 100, image: "data:image/png;base64," + pdflogo }, { margin: [-10, 10, 10, 0], alignment: "center", width: 410, text: "Hardware Master Report", fontSize: 12 }, { alignment: "right", fontSize: 14, text: "" }], margin: 20 } }, t.footer = function (t, e) { return { columns: [{ alignment: "left", text: ["Created on: ", { text: n.toString() }] }, { alignment: "right", text: ["page ", { text: t.toString() }, " of ", { text: e.toString() }] }], margin: 20 } }; var a = { hLineWidth: function (t) { return .5 }, vLineWidth: function (t) { return .5 }, hLineColor: function (t) { return "#aaa" }, vLineColor: function (t) { return "#aaa" }, paddingLeft: function (t) { return 4 }, paddingRight: function (t) { return 4 } }; t.content[0].layout = a } }, 'excel'],
+                    columns: [{ title: "Branch/ Unit" }, { title: "Hardware Name" }, { title: "Manufacture" }, { title: "Model No" }, { title: "Allocate User" }, { title: "Username" }, { title: "Vendor Name" }, { title: "AMC Vendor Name" }, { title: "PO No" }, { title: "Invoice No" }, { title: "AMC From" }, { title: "AMC To" }, { title: "Warranty From" }, { title: "Warranty To" }, { title: "Purchase Date" }, { title: "Quantity" }, { title: "Purchase Amount" }, { title: "Asset ID" }, { title: "Machine Serial No" }, { title: "Attechment" }, { title: "Remark" }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+        });
+    }
+}
+    </script>
+</body>

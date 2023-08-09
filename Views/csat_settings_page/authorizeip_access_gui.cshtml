@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewData["Title"] = "authorizeip_access_gui";
+    Layout = "~/Views/Shared/ownyit_main_page.cshtml";
+}
+<script src="~/js/ipaddress_validation.js"></script>
+<body onload="showauthipaddress();">
+    <div class="row">
+
+        <div class="ibox float-e-margins ">
+            <div class="ibox-content" style="padding:4px;">               
+                <ul class="breadcrumb" style="margin-bottom:0px;">
+                    <li>
+                        @Html.ActionLink("Settings", "setting_scan_ip_range", "csat_settings_page")
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>Authorized IP Access GUI</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--side menu-->
+        <div class="col-sm-2 col-md-2 col-lg-2 no_padding">
+            <div class="ibox float-e-margins ">
+                <div class="ibox-content sidemenu">
+                    @{
+                        @Html.Partial("csat_settings_page_menu");
+                    }
+                </div>
+            </div>
+        </div>
+        <!--side menu end-->
+
+        <div class="col-sm-10 col-md-10 col-lg-10">
+            <div class="ibox float-e-margins" style="margin-bottom: 10px;">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" method="post" name="ip_scan_form">
+                                <div class="form-group">
+                                    <label for="nameField" class="col-xs-1">IP Address</label>
+                                    <div class="col-xs-2">
+                                        <input type="text" name="accessip" id="accessip" class="form-control ip_address" placeholder="Enter IP" />
+                                    </div>
+                                    <div class="pull-left col-xs-1">
+                                        <input type="button" class="btn btn-primary" value="Add IP" id="btnsavescanip" onclick="authip_accessGUI()">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--form  content end-->
+
+            <div class="row ibox2">
+                <div class="col-sm-12 col-md-12 col-lg-12 ibox2-content" id="divauthip_div">
+                    <table id="divauthip" class="table table-striped table-bordered " width="100%"></table>
+                </div>
+            </div>
+        </div>
+        <div class="space_bottom">&nbsp;</div>
+    </div>
+    <!--delete_range device model  content-->
+    <div class='modal fade ' id='delete_range' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+        <div class='modal-dialog  modal-small'>
+            <div class='modal-content '>
+                <div class='modal-header'>
+                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                    <h6 class='modal-title'>Conformation </h6>
+                </div>
+                <div class='modal-body'>
+                    <!--form  content-->
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-12 col-lg-12'>
+
+                            <div class='row'>
+                                <div class='col-xs-12'>
+                                    <form class='form-horizontal' method='post'>
+                                        <div class='form-group'>
+
+                                            <label for='nameField' class='col-xs-12'>
+                                                <i class='glyphicon glyphicon-exclamation-sign delete_msg'></i>
+                                                <span style='font-weight:normal;margin-left:30px;'>Are you sure you want to delete this record?</span>
+                                            </label>
+
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='nameField' class='col-xs-4'></label>
+                                            <div class='col-xs-6'>
+                                                <input type='button' class='btn btn-primary' name='yes' value='Yes' id="btnauthguidelete" />
+                                                <input type='button' class='btn btn-default' data-dismiss="modal" name='no' value='No' />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>  <!--form  content end-->
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- delete_range main node popup model box  Content-->
+    @*// Scan IP range*@
+    <script>
+        function showauthipaddress() {
+            $("#overlay").show();
+            $("#overlay").fadeIn(300);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/csat_settings_page/GetAuthIPAddress")',
+            success: function (data) {
+                //debugger;
+                var dataclear = document.getElementById('divauthip_div');
+                dataclear.innerHTML = '&nbsp;';
+                $('#divauthip_div').append("<table id='divauthip' class='table table-striped table-bordered' width='100%'></table>");
+                dtable = document.getElementById('divauthip');
+                var data1 = [];
+                for (var i = 0; i < data.dtauthip.length; i++) {
+                    //debugger;
+                    var delete_div = "<i class=' glyphicon glyphicon-trash manage_icon ' type='button' data-toggle='modal'  title='Delete' onclick=deleteauthipgui('" + data.dtauthip[i].ipaddress + "')></i>";
+                    data1.push([data.dtauthip[i].ipaddress, delete_div]);
+                }
+                var dtable = $("#divauthip").DataTable({
+                    data: data1, scrollX: !0, searching: !1, dom: "<'top'lB>rt<'bottom'ip><'clear'>", buttons: ["colvis"],
+                    columns: [{ title: "IP Address" },{ title: "Delete", orderable: false,className: 'dt-center', width: '30px' }]
+                });
+                $(".table").css({ "width": "100%" });
+                $(".dataTables_scrollHeadInner ").css({ "width": "100%" });
+            }
+
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
+    }
+
+        function authip_accessGUI() {          
+           // debugger;
+                 var varipadd = document.getElementById('accessip').value;
+                 var ip = varipadd.split(".");
+                    if (ip.length != 4) {
+                        alert("Please provide Proper IP Range !");                       
+                        return false;
+                    }
+                    //Check Numbers
+                    for (var c = 0; c < 4; c++) {
+                        //Perform Test
+                        if (!(1 / ip[c] > 0) || ip[c] > 255 || isNaN(parseFloat(ip[c])) || !isFinite(ip[c]) || ip[c].indexOf(" ") !== -1) {
+                            alert("Please provide Proper IP Range !");
+                            return false;
+                        }
+                    }  
+                     //alert("Please provide Proper IP Range !");
+                     $.ajax({
+                        type: "POST",
+                         url: '@Url.Content("~/csat_settings_page/AddAuthIPAddress?ipaddress=")' + varipadd,
+                         success: function (data) {
+                          // debugger;
+                            alert(data);                          
+                             showauthipaddress();
+                             document.getElementById('accessip').value = "";
+                        }
+                     });
+          }
+
+    // Delete Scan IP Range
+        var ipaddress2 = "";  
+        function deleteauthipgui(ipaddress) {
+      //  debugger;       
+            ipaddress2 = ipaddress
+           $('#delete_range').modal('show');
+        }
+        $('#btnauthguidelete').on('click',function(){
+            var url1 = '@Url.Content("~/csat_settings_page/DeleteAuthGUIIP?ipaddress=")' + ipaddress2;
+        $.ajax({
+        type: "POST",
+        url: url1,
+        success: function (result) {
+            alert(result);
+            $('#delete_range').modal('hide');
+            showauthipaddress();
+            ipaddress = "";            
+		 }
+		 });
+
+	});
+
+
+    </script>
+    <script>
+        $('.ip_address').mask('099.099.099.099');
+    </script>
+</body>
+
+
+
